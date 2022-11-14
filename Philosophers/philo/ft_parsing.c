@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/11/14 11:08:53 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/11/14 14:20:34 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #include <stdio.h>
 
 //en principe c'est ok, mais il faut gérer les ' " maintenant
+
+
 
 char	*ft_get_var_env(char *str, int i, int *alias_len)
 {
