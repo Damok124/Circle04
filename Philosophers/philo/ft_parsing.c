@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/11/21 15:40:34 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/11/21 19:28:19 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -291,7 +291,7 @@ int	ft_is_valid_var_env(char *str, int i)
 	return (0);
 }
 
-char	*ft_get_var_env(t_layers *strs, int i, int *alias_len)
+char	*ft_get_var_env_val(t_layers *strs, int i, int *alias_len)
 {
 	char	*tmp;
 	char	*var_env;
@@ -305,7 +305,9 @@ char	*ft_get_var_env(t_layers *strs, int i, int *alias_len)
 	tmp = ft_strdup(strs->src);
 	tmp[i + j] = '\0';
 	var_env = getenv(tmp + i);
-	*alias_len = ft_strlen(tmp + i) + 1;///////good?
+	*alias_len = ft_strlen(tmp + i);///////good?
+	free(tmp);
+	tmp = NULL;
 	return (var_env);
 }
 /*
@@ -328,22 +330,22 @@ char	*ft_get_var_env(t_layers *strs, int i, int *alias_len)
 	return (var_env);
 }
 */
-char	*ft_setup_newstr(char *str, char *var_env, int alias_len)
+/*
+char	*ft_setup_newstr(t_layers *strs, char *var_env, int alias_len)
 {
-	int		len;
 	int		var_len;
-	int		total_len;
+	//int		total_len;
 	char	*newstr;
 
-	len = ft_strlen(str);
 	var_len = ft_strlen(var_env);
-	total_len = len - alias_len + var_len;
-	newstr = (char *)malloc(sizeof(char) * (total_len + 1));
+	strs->clone_len = strs->src_len - alias_len + var_len;
+	newstr = (char *)malloc(sizeof(char) * (strs->clone_len + 1));
 	if (!newstr)
 		return (NULL);
+	newstr[strs->clone_len] = '\0';
 	return (newstr);
 }
-
+*/
 char	*ft_replace_alias(char *src, int i, char *var_env, char *dest)
 {
 	int	j;
@@ -363,23 +365,31 @@ char	*ft_replace_alias(char *src, int i, char *var_env, char *dest)
 	return (dest);
 }
 
+///je dois transformer la chaine pour inclure les var_env
+
+void	ft_setup_clone(t_layers *strs, char *var_env_val)
+{
+	char *str;
+
+	str =
+}
+
 char	*ft_translate_vars_env(t_layers *strs)
 {
 	int		i;
-	char	*var_env;
-	char	*newstr;
+	char	*var_env_val;
 	int		alias_len;
 
 	i = 0;
 	alias_len = 0;
 	var_env = NULL;
-	newstr = NULL;
 	while (strs->src_trans && strs->src_trans[i])
 	{
 		if (strs->src_trans[i] == '$')
 		{
-			var_env = ft_get_var_env(strs, i, &alias_len);/////////
-			newstr = ft_setup_newstr(str, var_env, alias_len);
+			var_env_val = ft_get_var_env_val(strs, i, &alias_len);
+			//strs->clone = ft_setup_newstr(strs, var_env, alias_len);//////////
+			strs->clone = ft_setup_clone(strs, var_env, alias_len);//////////
 			str = ft_replace_alias(str, i, var_env, newstr);
 			i += ft_strlen(var_env);
 		}
@@ -474,6 +484,7 @@ void	ft_var_env_focus(t_layers *strs, int i, int *sq, int *dq)
 			strs->src_trans[i - 1] = '0';
 		strs->src_trans[i] = strs->src[i];
 	}
+	//////checker les <<   $lol
 	free(strs->clone_trans);
 	strs->clone_trans = ft_strdup(strs->src_trans);
 }
@@ -568,7 +579,7 @@ int	ft_check_quotes(t_layers *strs)
 		ft_quotes_focus(strs, i++, &sq, &dq);
 	if (!ft_check_format_quotes(strs))
 	{
-		ft_destroy_layers(&strs);//faire fonction pour clean strs et mettre a null
+		ft_destroy_layers(&strs);
 		return (0);
 	}
 	return (1);
@@ -591,7 +602,7 @@ int	ft_check_angl_brackets(t_layers *strs)
 	}
 	if (!ft_check_format_angl_brackets(strs))
 	{
-		ft_destroy_layers(&strs);//faire fonction pour clean strs et mettre a null
+		ft_destroy_layers(&strs);
 		return (0);
 	}
 	return (1);
@@ -615,7 +626,7 @@ int	ft_check_pipes(t_layers *strs)
 	}
 	if (!ft_check_format_pipes(strs))
 	{
-		ft_destroy_layers(&strs);//faire fonction pour clean strs et mettre a null
+		ft_destroy_layers(&strs);
 		return (0);
 	}
 	return (1);
@@ -635,7 +646,7 @@ int	ft_check_var_env(t_layers *strs)
 		ft_quotes_focus(strs, i, &sq, &dq);
 		ft_angled_brackets_focus(strs, i, &sq, &dq);
 		ft_pipes_focus(strs, i, &sq, &dq);
-		ft_var_env_focus(strs, i, &sq, &dq);
+		ft_var_env_focus(strs, i, &sq, &dq);////////////////
 		i++;
 	}
 
