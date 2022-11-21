@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/11/17 20:51:18 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/11/21 15:40:34 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -291,7 +291,25 @@ int	ft_is_valid_var_env(char *str, int i)
 	return (0);
 }
 
-char	*ft_get_var_env(char *str, int i, int *alias_len)
+char	*ft_get_var_env(t_layers *strs, int i, int *alias_len)
+{
+	char	*tmp;
+	char	*var_env;
+	int		j;
+
+	j = 0;
+	var_env = NULL;
+	i++;
+	while (strs->src_trans[i + j] && strs->src_trans[i + j] == '0')
+		j++;
+	tmp = ft_strdup(strs->src);
+	tmp[i + j] = '\0';
+	var_env = getenv(tmp + i);
+	*alias_len = ft_strlen(tmp + i) + 1;///////good?
+	return (var_env);
+}
+/*
+char	*ft_get_var_env(t_layers *strs, int i, int *alias_len)
 {
 	char	*var_env;
 	int		j;
@@ -309,7 +327,7 @@ char	*ft_get_var_env(char *str, int i, int *alias_len)
 	}
 	return (var_env);
 }
-
+*/
 char	*ft_setup_newstr(char *str, char *var_env, int alias_len)
 {
 	int		len;
@@ -345,6 +363,32 @@ char	*ft_replace_alias(char *src, int i, char *var_env, char *dest)
 	return (dest);
 }
 
+char	*ft_translate_vars_env(t_layers *strs)
+{
+	int		i;
+	char	*var_env;
+	char	*newstr;
+	int		alias_len;
+
+	i = 0;
+	alias_len = 0;
+	var_env = NULL;
+	newstr = NULL;
+	while (strs->src_trans && strs->src_trans[i])
+	{
+		if (strs->src_trans[i] == '$')
+		{
+			var_env = ft_get_var_env(strs, i, &alias_len);/////////
+			newstr = ft_setup_newstr(str, var_env, alias_len);
+			str = ft_replace_alias(str, i, var_env, newstr);
+			i += ft_strlen(var_env);
+		}
+		else
+			i++;
+	}
+	return (str);
+}
+/*
 char	*ft_translate_vars_env(char *str)
 {
 	int		i;
@@ -370,7 +414,8 @@ char	*ft_translate_vars_env(char *str)
 	}
 	return (str);
 }
-
+*/
+/*
 int	ft_check_if_vars_env(char *str)
 {
 	int		i;
@@ -385,7 +430,7 @@ int	ft_check_if_vars_env(char *str)
 	}
 	return (1);
 }
-
+*/
 void	ft_quotes_focus(t_layers *strs, int i, int *sq, int *dq)
 {
 	if (strs->src[i] == '\"' && (*sq % 2) == 0)
@@ -419,22 +464,32 @@ void	ft_pipes_focus(t_layers *strs, int i, int *sq, int *dq)
 	strs->clone_trans = ft_strdup(strs->src_trans);
 }
 
+void	ft_var_env_focus(t_layers *strs, int i, int *sq, int *dq)
+{
+	if ((i == 0 && strs->src[i] == '$') || (i != (strs->src_len - 1) \
+		&& strs->src[i] == '$' && (*sq % 2) == 0 && (*dq % 2) == 0))
+	{
+		if (i > 0 && strs->src_trans[i - 1] && strs->src_trans[i - 1] == '$' \
+			&& strs->src[i] == '$')
+			strs->src_trans[i - 1] = '0';
+		strs->src_trans[i] = strs->src[i];
+	}
+	free(strs->clone_trans);
+	strs->clone_trans = ft_strdup(strs->src_trans);
+}
+
 char	**ft_get_wrong_angl_brackets(void)
 {
 	char	**needle;
 
-	needle = (char **)malloc(sizeof(char *) * 9);
+	needle = (char **)malloc(sizeof(char *) * 5);
 	if (!needle)
 		return (NULL);
 	needle[0] = ft_strdup("<<<");
 	needle[1] = ft_strdup(">>>");
-	needle[2] = ft_strdup("<<>");
-	needle[3] = ft_strdup(">><");
-	needle[4] = ft_strdup("<><");
-	needle[5] = ft_strdup("><>");
-	needle[6] = ft_strdup("><<");
-	needle[7] = ft_strdup("><<");
-	needle[8] = NULL;
+	needle[2] = ft_strdup("><");
+	needle[3] = ft_strdup("<>");
+	needle[4] = NULL;
 	return (needle);
 }
 
@@ -566,13 +621,37 @@ int	ft_check_pipes(t_layers *strs)
 	return (1);
 }
 
+int	ft_check_var_env(t_layers *strs)
+{
+	int		i;
+	int		sq;
+	int		dq;
+
+	i = 0;
+	sq = 0;
+	dq = 0;
+	while (strs->src && strs->src[i])
+	{
+		ft_quotes_focus(strs, i, &sq, &dq);
+		ft_angled_brackets_focus(strs, i, &sq, &dq);
+		ft_pipes_focus(strs, i, &sq, &dq);
+		ft_var_env_focus(strs, i, &sq, &dq);
+		i++;
+	}
+
+	return (1);
+}
+
 void	ft_translate_all(t_layers *strs)
 {
 	if (ft_check_quotes(strs) && ft_check_angl_brackets(strs) \
 		&& ft_check_pipes(strs))
-
-		//free(strs->clone_trans);
-		//strs->clone_trans = ft_strdup(strs->src_trans);
+	{
+		ft_check_var_env(strs);
+		ft_translate_vars_env(strs);
+		free(strs->clone_trans);
+		strs->clone_trans = ft_strdup(strs->src_trans);
+	}
 }
 
 void ft_minishell_parsing(t_layers *strs)
