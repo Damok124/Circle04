@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/11/21 19:28:19 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/11/22 00:50:30 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -489,6 +489,94 @@ void	ft_var_env_focus(t_layers *strs, int i, int *sq, int *dq)
 	strs->clone_trans = ft_strdup(strs->src_trans);
 }
 
+char	*ft_strnstr(const char *big, const char *little, size_t len)
+{
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	j = 0;
+	if (little[j] == '\0')
+		return ((char *)big);
+	while ((big[i]) && i < len)
+	{
+		j = 0;
+		while (big[i + j] == little[j] && ((i + j) < len) && big[i])
+		{
+			j++;
+			if (little[j] == '\0')
+				return ((char *)&big[i]);
+		}
+		i++;
+	}
+	return (NULL);
+}
+
+int	ft_occurences_counter(char *big, char *little)
+{
+	int		i;
+	int		total;
+	int		big_len;
+	int		little_len;
+	char	*tmp;
+
+	tmp = NULL;
+	total = 0;
+	big_len = ft_strlen(big);
+	little_len = ft_strlen(little);
+	if (big && little && big_len >= little_len)
+	{
+		while (big[i])
+		{
+			tmp = ft_strnstr(big + i, little, little_len);
+			if (tmp)
+			{
+				i += little_len - 1;
+				tmp = NULL;
+			}
+			i++;
+		}
+	}
+	return (total);///////////a verifier
+}
+
+void	ft_remove_symbol_var_env(t_layers *strs, int i)
+{
+	while (strs->src && strs->src[i] && !ft_isprint(strs->src[i]))
+		i++;
+	while (strs->src && strs->src[i] && ft_isprint(strs->src[i]) \
+		&& !ft_strchr("<>|$", strs->src_trans[i]))
+		i++;
+	if (strs->src && strs->src[i] && strs->src_trans[i] == '$')
+		strs->src_trans = '0';
+}
+
+void	ft_disable_var_env(t_layers *strs)
+{
+	char	*tmp;
+	int		heredocs;
+	int		i;
+	int		j;
+
+	i = 0;
+	tmp = NULL;
+	heredocs = ft_occurences_counter(strs->src_trans, "<<");
+	while (strs->src_trans && strs->src_trans[i] && heredocs)
+	{
+		tmp = ft_strnstr(strs->src_trans + i, "<<", 2);
+		if (tmp)
+		{
+			i += 1;
+			tmp = NULL;
+			heredocs -= 1;
+			if (ft_strnstr(strs->src_trans + i + 1, \
+				"$", strs->src_len  - (i + 1)))
+				ft_remove_symbol_var_env(strs, i + 1);
+		}
+		i++;
+	}
+}
+
 char	**ft_get_wrong_angl_brackets(void)
 {
 	char	**needle;
@@ -649,6 +737,8 @@ int	ft_check_var_env(t_layers *strs)
 		ft_var_env_focus(strs, i, &sq, &dq);////////////////
 		i++;
 	}
+	if (ft_strnstr(strs->src_trans, "<<", strs->src_len))
+		ft_disable_var_env(strs);
 
 	return (1);
 }
