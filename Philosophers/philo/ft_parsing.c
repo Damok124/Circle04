@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/11/22 20:32:25 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/11/23 00:35:55 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -321,7 +321,7 @@ char	*ft_get_var_env_val(t_layers *strs, int i)
 	tmp = (char *)malloc(sizeof(char) * (j + 1));
 	if (!tmp)
 		return (NULL);
-	tmp = ft_strlcpy(tmp, strs->src + i, j);
+	ft_strlcpy(tmp, strs->src + i, j);
 	val = getenv(tmp);
 	return (val);
 }
@@ -361,6 +361,7 @@ char	*ft_setup_newstr(t_layers *strs, char *var_env, int alias_len)
 	return (newstr);
 }
 */
+/*
 char	*ft_replace_alias(char *src, int i, char *var_env, char *dest)
 {
 	int	j;
@@ -379,8 +380,42 @@ char	*ft_replace_alias(char *src, int i, char *var_env, char *dest)
 		dest[j++] = src[i++];
 	return (dest);
 }
-
+*/
 ///je dois transformer la chaine pour inclure les var_env
+
+char	**ft_get_parts(const char *src, int len, int i)
+{
+	char	**parts;
+	char	*first;
+	char	*middle;
+	char	*last;
+	int		j;
+
+	j = 0;
+	while (src && strs->src[i + j] \
+		&& ft_isalnum(strs->src[i + j]))
+		j++;
+	parts = (char **)malloc(sizeof(char *) * 4);
+	first = (char *)malloc(sizeof(char) * (i + 1));
+	middle = (char *)malloc(sizeof(char) * j);
+	last = (char *)malloc(sizeof(char) * (len - i) + 1);
+	if (!parts || !first || !middle || !last)
+		return (NULL);
+	ft_strlcpy(first, src, i);
+	ft_strlcpy(last, src + i, len - i);
+	parts[0] = first;
+	parts[1] = middle;
+	parts[2] = last;
+	parts[3] = NULL;
+	return (parts);
+}
+
+void	ft_var_env_to_layers(t_layers *strs, char *val, int i)
+{
+	char	**parts;
+
+	parts = ft_get_parts(strs, i);
+}
 
 void	ft_renew_with_vars_env(t_layers *strs)
 {
@@ -394,9 +429,11 @@ void	ft_renew_with_vars_env(t_layers *strs)
 		if (strs->src_trans[i] == '$')
 		{
 			val = ft_get_var_env_val(strs, i);
-			ft_
+			ft_var_env_to_layers(strs, val, i);
+			i = 0;
 		}
-		i++;
+		else
+			i++;
 	}
 }
 
@@ -455,8 +492,6 @@ void	ft_quotes_focus(t_layers *strs, int i, int *sq, int *dq)
 		strs->src_trans[i] = '\'';
 		*sq += 1;
 	}
-	free(strs->clone_trans);
-	strs->clone_trans = ft_strdup(strs->src_trans);
 }
 
 void	ft_angled_brackets_focus(t_layers *strs, int i, int *sq, int *dq)
@@ -464,16 +499,12 @@ void	ft_angled_brackets_focus(t_layers *strs, int i, int *sq, int *dq)
 	if ((strs->src[i] == '<' || strs->src[i] == '>') \
 		&& (*sq % 2) == 0 && (*dq % 2) == 0)
 		strs->src_trans[i] = strs->src[i];
-	free(strs->clone_trans);
-	strs->clone_trans = ft_strdup(strs->src_trans);
 }
 
 void	ft_pipes_focus(t_layers *strs, int i, int *sq, int *dq)
 {
 	if (strs->src[i] == '|' && (*sq % 2) == 0 && (*dq % 2) == 0)
 		strs->src_trans[i] = strs->src[i];
-	free(strs->clone_trans);
-	strs->clone_trans = ft_strdup(strs->src_trans);
 }
 
 void	ft_var_env_focus(t_layers *strs, int i, int *sq, int *dq)
@@ -487,8 +518,7 @@ void	ft_var_env_focus(t_layers *strs, int i, int *sq, int *dq)
 		strs->src_trans[i] = strs->src[i];
 	}
 	//////checker les <<   $lol
-	free(strs->clone_trans);
-	strs->clone_trans = ft_strdup(strs->src_trans);
+	//////ET gaffe aux espaces entre les '' ""
 }
 
 int	ft_occurences_counter(char *big, char *little)
@@ -729,8 +759,6 @@ void	ft_translate_all(t_layers *strs)
 	{
 		ft_check_var_env(strs);
 		ft_renew_with_vars_env(strs);/////////////
-		// free(strs->clone_trans);
-		// strs->clone_trans = ft_strdup(strs->src_trans);
 	}
 }
 
