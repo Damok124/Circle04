@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/11/22 00:50:30 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/11/22 20:32:25 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,6 +229,22 @@ char	*ft_strtrim(char const *s1, char const *set)
 	return (str);
 }
 
+size_t	ft_strlcpy(char *dst, const char *src, size_t size)
+{
+	size_t	i;
+
+	i = 0;
+	if (size == 0)
+		return (ft_strlen(src));
+	while (i < (size - 1) && src[i])
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	dst[i] = '\0';
+	return (ft_strlen(src));
+}
+
 ////////////////////////////////////////////////////////
 
 void	ft_destroy_layers(t_layers **strs)
@@ -291,24 +307,23 @@ int	ft_is_valid_var_env(char *str, int i)
 	return (0);
 }
 
-char	*ft_get_var_env_val(t_layers *strs, int i, int *alias_len)
+char	*ft_get_var_env_val(t_layers *strs, int i)
 {
+	char	*val;
 	char	*tmp;
-	char	*var_env;
 	int		j;
 
 	j = 0;
-	var_env = NULL;
 	i++;
-	while (strs->src_trans[i + j] && strs->src_trans[i + j] == '0')
+	while (strs && strs->src && strs->src[i + j] \
+		&& ft_isalnum(strs->src[i + j]))
 		j++;
-	tmp = ft_strdup(strs->src);
-	tmp[i + j] = '\0';
-	var_env = getenv(tmp + i);
-	*alias_len = ft_strlen(tmp + i);///////good?
-	free(tmp);
-	tmp = NULL;
-	return (var_env);
+	tmp = (char *)malloc(sizeof(char) * (j + 1));
+	if (!tmp)
+		return (NULL);
+	tmp = ft_strlcpy(tmp, strs->src + i, j);
+	val = getenv(tmp);
+	return (val);
 }
 /*
 char	*ft_get_var_env(t_layers *strs, int i, int *alias_len)
@@ -367,37 +382,24 @@ char	*ft_replace_alias(char *src, int i, char *var_env, char *dest)
 
 ///je dois transformer la chaine pour inclure les var_env
 
-void	ft_setup_clone(t_layers *strs, char *var_env_val)
-{
-	char *str;
-
-	str =
-}
-
-char	*ft_translate_vars_env(t_layers *strs)
+void	ft_renew_with_vars_env(t_layers *strs)
 {
 	int		i;
-	char	*var_env_val;
-	int		alias_len;
+	char	*val;
 
 	i = 0;
-	alias_len = 0;
-	var_env = NULL;
+	val = NULL;
 	while (strs->src_trans && strs->src_trans[i])
 	{
 		if (strs->src_trans[i] == '$')
 		{
-			var_env_val = ft_get_var_env_val(strs, i, &alias_len);
-			//strs->clone = ft_setup_newstr(strs, var_env, alias_len);//////////
-			strs->clone = ft_setup_clone(strs, var_env, alias_len);//////////
-			str = ft_replace_alias(str, i, var_env, newstr);
-			i += ft_strlen(var_env);
+			val = ft_get_var_env_val(strs, i);
+			ft_
 		}
-		else
-			i++;
+		i++;
 	}
-	return (str);
 }
+
 /*
 char	*ft_translate_vars_env(char *str)
 {
@@ -489,29 +491,6 @@ void	ft_var_env_focus(t_layers *strs, int i, int *sq, int *dq)
 	strs->clone_trans = ft_strdup(strs->src_trans);
 }
 
-char	*ft_strnstr(const char *big, const char *little, size_t len)
-{
-	size_t	i;
-	size_t	j;
-
-	i = 0;
-	j = 0;
-	if (little[j] == '\0')
-		return ((char *)big);
-	while ((big[i]) && i < len)
-	{
-		j = 0;
-		while (big[i + j] == little[j] && ((i + j) < len) && big[i])
-		{
-			j++;
-			if (little[j] == '\0')
-				return ((char *)&big[i]);
-		}
-		i++;
-	}
-	return (NULL);
-}
-
 int	ft_occurences_counter(char *big, char *little)
 {
 	int		i;
@@ -533,6 +512,7 @@ int	ft_occurences_counter(char *big, char *little)
 			{
 				i += little_len - 1;
 				tmp = NULL;
+				total++;
 			}
 			i++;
 		}
@@ -540,7 +520,7 @@ int	ft_occurences_counter(char *big, char *little)
 	return (total);///////////a verifier
 }
 
-void	ft_remove_symbol_var_env(t_layers *strs, int i)
+void	ft_remove_symbol_var_env(t_layers *strs, int i)////////a verifier
 {
 	while (strs->src && strs->src[i] && !ft_isprint(strs->src[i]))
 		i++;
@@ -551,7 +531,7 @@ void	ft_remove_symbol_var_env(t_layers *strs, int i)
 		strs->src_trans = '0';
 }
 
-void	ft_disable_var_env(t_layers *strs)
+void	ft_disable_var_env(t_layers *strs)//////a verifier
 {
 	char	*tmp;
 	int		heredocs;
@@ -739,7 +719,6 @@ int	ft_check_var_env(t_layers *strs)
 	}
 	if (ft_strnstr(strs->src_trans, "<<", strs->src_len))
 		ft_disable_var_env(strs);
-
 	return (1);
 }
 
@@ -749,9 +728,9 @@ void	ft_translate_all(t_layers *strs)
 		&& ft_check_pipes(strs))
 	{
 		ft_check_var_env(strs);
-		ft_translate_vars_env(strs);
-		free(strs->clone_trans);
-		strs->clone_trans = ft_strdup(strs->src_trans);
+		ft_renew_with_vars_env(strs);/////////////
+		// free(strs->clone_trans);
+		// strs->clone_trans = ft_strdup(strs->src_trans);
 	}
 }
 
