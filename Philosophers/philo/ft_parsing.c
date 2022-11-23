@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/11/23 00:35:55 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/11/23 18:26:28 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,6 +266,14 @@ void	ft_layers_visualizer(t_layers *strs)
 	printf("clone_len   :%d\n", strs->clone_len);
 }
 
+int	ft_isspace(int c)
+{
+	if (c > 9 && c < 16 || c == 32)
+		return (1);
+	else
+		return (0);
+}
+
 int	ft_is_heredoc(char *str)
 {
 	if (str && str[0] && str[1])
@@ -414,7 +422,7 @@ void	ft_var_env_to_layers(t_layers *strs, char *val, int i)
 {
 	char	**parts;
 
-	parts = ft_get_parts(strs, i);
+	parts = ft_get_parts(strs->src, strs->src_trans, i);
 }
 
 void	ft_renew_with_vars_env(t_layers *strs)
@@ -517,8 +525,6 @@ void	ft_var_env_focus(t_layers *strs, int i, int *sq, int *dq)
 			strs->src_trans[i - 1] = '0';
 		strs->src_trans[i] = strs->src[i];
 	}
-	//////checker les <<   $lol
-	//////ET gaffe aux espaces entre les '' ""
 }
 
 int	ft_occurences_counter(char *big, char *little)
@@ -552,11 +558,24 @@ int	ft_occurences_counter(char *big, char *little)
 
 void	ft_remove_symbol_var_env(t_layers *strs, int i)////////a verifier
 {
-	while (strs->src && strs->src[i] && !ft_isprint(strs->src[i]))
+	while (strs->src && strs->src[i] && ft_isspace(strs->src[i]))
 		i++;
-	while (strs->src && strs->src[i] && ft_isprint(strs->src[i]) \
-		&& !ft_strchr("<>|$", strs->src_trans[i]))
+	while (strs->src && strs->src[i] && !ft_strchr("<>|$", strs->src_trans[i]) && !ft_isspace(strs->src[i]))
+	{
+		if (strs->src_trans[i] == '\"')
+		{
+			i++;
+			while (strs->src_trans[i] && strs->src_trans[i] != '\"')
+				i++;
+		}
+		else if (strs->src_trans[i] == '\'')
+		{
+			i++;
+			while (strs->src_trans[i] && strs->src_trans[i] != '\'')
+				i++;
+		}
 		i++;
+	}
 	if (strs->src && strs->src[i] && strs->src_trans[i] == '$')
 		strs->src_trans = '0';
 }
@@ -744,7 +763,7 @@ int	ft_check_var_env(t_layers *strs)
 		ft_quotes_focus(strs, i, &sq, &dq);
 		ft_angled_brackets_focus(strs, i, &sq, &dq);
 		ft_pipes_focus(strs, i, &sq, &dq);
-		ft_var_env_focus(strs, i, &sq, &dq);////////////////
+		ft_var_env_focus(strs, i, &sq, &dq);
 		i++;
 	}
 	if (ft_strnstr(strs->src_trans, "<<", strs->src_len))
