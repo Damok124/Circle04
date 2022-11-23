@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/11/23 18:26:28 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/11/23 20:22:53 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,14 @@ typedef struct s_layers {
 	int		src_len;
 	int		clone_len;
 }			t_layers;
+
+typedef struct s_sections {
+	char	*first;
+	char	*mid;
+	char	*new_mid;
+	char	*last;
+	int		*cut;
+}			t_sections;
 
 void	*ft_memset(void *s, int c, size_t n)
 {
@@ -391,6 +399,20 @@ char	*ft_replace_alias(char *src, int i, char *var_env, char *dest)
 */
 ///je dois transformer la chaine pour inclure les var_env
 
+typedef struct s_sections {
+	char	*first;
+	char	*mid;
+	char	*new_mid;
+	char	*last;
+	int		cut;
+}			t_sections;
+
+void	ft_get_parts(char *full, char *trans, t_sections *parts)
+{
+	parts->first = (char *)malloc(sizeof(char) * parts->cut);
+	ft_strlcpy(parts->first, full)
+}
+/*
 char	**ft_get_parts(const char *src, int len, int i)
 {
 	char	**parts;
@@ -417,12 +439,14 @@ char	**ft_get_parts(const char *src, int len, int i)
 	parts[3] = NULL;
 	return (parts);
 }
-
+*/
 void	ft_var_env_to_layers(t_layers *strs, char *val, int i)
 {
-	char	**parts;
+	t_sections	parts;
 
-	parts = ft_get_parts(strs->src, strs->src_trans, i);
+	parts.new_mid = ft_strdup(val);
+	parts.cut = i;
+	ft_get_parts(strs->src, strs->src_trans, &parts);
 }
 
 void	ft_renew_with_vars_env(t_layers *strs)
