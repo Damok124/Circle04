@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/11/23 20:22:53 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/11/24 20:36:59 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,13 @@
 #include <stdarg.h>
 #include <fcntl.h>
 
-//en principe c'est ok, mais il faut gérer les ' " maintenant
+#define SRC 0
+#define TRANS 1
 
 typedef struct s_layers {
 	char	*src;
 	char	*src_trans;
-	char	*clone;
-	char	*clone_trans;
 	int		src_len;
-	int		clone_len;
 }			t_layers;
 
 typedef struct s_sections {
@@ -38,6 +36,11 @@ typedef struct s_sections {
 	char	*last;
 	int		*cut;
 }			t_sections;
+
+typedef struct s_size {
+	int	second;
+	int	third;
+}			t_size;
 
 void	*ft_memset(void *s, int c, size_t n)
 {
@@ -253,30 +256,52 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 	return (ft_strlen(src));
 }
 
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	int				i;
+	int				j;
+	unsigned int	k;
+	char			*str;
+
+	i = 0;
+	j = 0;
+	k = ft_strlen(s1) + ft_strlen(s2);
+	str = (char *)malloc(sizeof(char) *(k + 1));
+	if (!str)
+		return (NULL);
+	while (s1 && s1[i])
+	{
+		str[i + j] = s1[i];
+		i++;
+	}
+	while (s2 && s2[j])
+	{
+		str[i + j] = s2[j];
+		j++;
+	}
+	str[i + j] = '\0';
+	return (str);
+}
+
 ////////////////////////////////////////////////////////
 
 void	ft_destroy_layers(t_layers **strs)
 {
-	//(*strs)->src = NULL;//tofree
-	(*strs)->clone = NULL;//tofree
-	//(*strs)->src_trans = NULL;//tofree
-	(*strs)->clone_trans = NULL;//tofree
-	//*strs = NULL;
+	(*strs)->src = NULL;//tofree
+	(*strs)->src_trans = NULL;//tofree
+	*strs = NULL;
 }
 
 void	ft_layers_visualizer(t_layers *strs)
 {
 	printf(">src         :%s\n>", strs->src);
 	printf("src_trans   :%s\n>", strs->src_trans);
-	printf("clone       :%s\n>", strs->clone);
-	printf("clone_trans :%s\n>", strs->clone_trans);
-	printf("src_len     :%d\n>", strs->src_len);
-	printf("clone_len   :%d\n", strs->clone_len);
+	printf("src_len     :%d\n", strs->src_len);
 }
 
 int	ft_isspace(int c)
 {
-	if (c > 9 && c < 16 || c == 32)
+	if ((c > 9 && c < 16) || c == 32)
 		return (1);
 	else
 		return (0);
@@ -312,17 +337,6 @@ int	ft_is_outfile(char *str)
 	return (0);
 }
 
-int	ft_is_valid_var_env(char *str, int i)
-{
-	if (str && str[i] && str[i + 1])
-	{
-		if (str && str[i] == '$' && ft_isprint(str[i + 1]))
-//			if (ft_translate_or_not(str, i))
-				return (1);
-	}
-	return (0);
-}
-
 char	*ft_get_var_env_val(t_layers *strs, int i)
 {
 	char	*val;
@@ -337,116 +351,96 @@ char	*ft_get_var_env_val(t_layers *strs, int i)
 	tmp = (char *)malloc(sizeof(char) * (j + 1));
 	if (!tmp)
 		return (NULL);
-	ft_strlcpy(tmp, strs->src + i, j);
+	ft_strlcpy(tmp, strs->src + i, j + 1);
+	printf("tmp %ld:%s\n", ft_strlen(tmp), tmp);
 	val = getenv(tmp);
+	printf("val %ld:%s\n", ft_strlen(val), val);
 	return (val);
 }
-/*
-char	*ft_get_var_env(t_layers *strs, int i, int *alias_len)
-{
-	char	*var_env;
-	int		j;
 
-	j = 0;
-	var_env = NULL;
-	if (str && str[i + j] == '$')
+char	*ft_get_mid_part(char *str)
+{
+	char	*tmp;
+	int		i;
+
+	i = 0;
+	tmp = NULL;
+	if (str && str[i] == '$')
 	{
 		i++;
-		while (str[i + j] && ft_isalnum(str[i + j]))
-			j++;
-		str[i + j] = '\0';
-		var_env = getenv(str + i);
-		*alias_len = ft_strlen(str + i + 1);
+		while (str[i] && ft_isalnum(str[i]))
+			i++;
+		tmp = (char *)malloc(sizeof(char) * (i + 1));
+		if (!tmp)
+			return (NULL);
+		ft_strlcpy(tmp, str, i + 1);
 	}
-	return (var_env);
+	return (tmp);
 }
-*/
-/*
-char	*ft_setup_newstr(t_layers *strs, char *var_env, int alias_len)
-{
-	int		var_len;
-	//int		total_len;
-	char	*newstr;
 
-	var_len = ft_strlen(var_env);
-	strs->clone_len = strs->src_len - alias_len + var_len;
-	newstr = (char *)malloc(sizeof(char) * (strs->clone_len + 1));
-	if (!newstr)
-		return (NULL);
-	newstr[strs->clone_len] = '\0';
-	return (newstr);
+void	ft_get_parts_src(char *full, t_sections *parts, t_size *index)
+{
+	index->second = *parts->cut;
+	parts->mid = ft_get_mid_part(full + index->second);
+	index->third = index->second + ft_strlen(parts->mid);
+	parts->last = ft_strdup(full + index->third);
+	full[index->second] = '\0';
+	parts->first = ft_strdup(full);
 }
-*/
-/*
-char	*ft_replace_alias(char *src, int i, char *var_env, char *dest)
-{
-	int	j;
-	int	k;
 
-	j = -1;
-	k = -1;
-	while (++j < i && dest && src && dest[j] && src[j])
-		dest[j] = src[j];
-	i ++;
-	while (src && src[i] && ft_isalnum(src[i]))
-		i++;
-	while (var_env && var_env[++k])
-		dest[j++] = var_env[k];
-	while (src && src[i])
-		dest[j++] = src[i++];
-	return (dest);
+void	ft_get_parts_trans(char *trans, t_sections *parts, t_size *index)
+{
+	parts->last = ft_strdup(trans + index->third);
+	trans[index->second] = '\0';
+	parts->first = ft_strdup(trans);
 }
-*/
-///je dois transformer la chaine pour inclure les var_env
 
-typedef struct s_sections {
-	char	*first;
-	char	*mid;
-	char	*new_mid;
-	char	*last;
-	int		cut;
-}			t_sections;
-
-void	ft_get_parts(char *full, char *trans, t_sections *parts)
+void	ft_join_parts_to_layers(t_layers *strs, t_sections **parts)
 {
-	parts->first = (char *)malloc(sizeof(char) * parts->cut);
-	ft_strlcpy(parts->first, full)
+	char	*tmp;
+
+	tmp = ft_strjoin(parts[SRC]->new_mid, parts[SRC]->last);
+	strs->src = ft_strjoin(parts[SRC]->first, tmp);
+	tmp = ft_strjoin(parts[TRANS]->new_mid, parts[TRANS]->last);
+	strs->src_trans = ft_strjoin(parts[TRANS]->first, tmp);
 }
-/*
-char	**ft_get_parts(const char *src, int len, int i)
-{
-	char	**parts;
-	char	*first;
-	char	*middle;
-	char	*last;
-	int		j;
 
-	j = 0;
-	while (src && strs->src[i + j] \
-		&& ft_isalnum(strs->src[i + j]))
-		j++;
-	parts = (char **)malloc(sizeof(char *) * 4);
-	first = (char *)malloc(sizeof(char) * (i + 1));
-	middle = (char *)malloc(sizeof(char) * j);
-	last = (char *)malloc(sizeof(char) * (len - i) + 1);
-	if (!parts || !first || !middle || !last)
-		return (NULL);
-	ft_strlcpy(first, src, i);
-	ft_strlcpy(last, src + i, len - i);
-	parts[0] = first;
-	parts[1] = middle;
-	parts[2] = last;
-	parts[3] = NULL;
-	return (parts);
+t_sections	*ft_init_t_sections(void)
+{
+	t_sections *part;
+
+	part = (t_sections *)malloc(sizeof(t_sections));
+	part->first = NULL;
+	part->mid = NULL;
+	part->new_mid = NULL;
+	part->last = NULL;
+	part->cut = NULL;
+	return (part);
 }
-*/
-void	ft_var_env_to_layers(t_layers *strs, char *val, int i)
-{
-	t_sections	parts;
 
-	parts.new_mid = ft_strdup(val);
-	parts.cut = i;
-	ft_get_parts(strs->src, strs->src_trans, &parts);
+void	ft_var_env_to_layers(t_layers *strs, char *val, int *i)
+{
+	t_sections	**parts;
+	t_size		index;
+	char		*copy;
+
+	copy = ft_strdup(val);
+	ft_layers_visualizer(strs);
+	parts = (t_sections **)malloc(sizeof(t_sections *) * 2);
+	parts[SRC] = ft_init_t_sections();
+	parts[TRANS] = ft_init_t_sections();
+	index.second = 0;
+	index.third = 0;
+	parts[SRC]->new_mid = ft_strdup(val);
+	copy = ft_memset(copy, '0', ft_strlen(copy));
+	parts[TRANS]->new_mid = ft_strdup(copy);
+	parts[SRC]->cut = i;
+	parts[TRANS]->cut = i;
+	ft_get_parts_src(strs->src, parts[SRC], &index);
+	parts[TRANS]->mid = ft_memset(parts[SRC]->mid, '0', \
+		ft_strlen(parts[SRC]->mid));
+	ft_get_parts_trans(strs->src_trans, parts[TRANS], &index);
+	ft_join_parts_to_layers(strs, parts);
 }
 
 void	ft_renew_with_vars_env(t_layers *strs)
@@ -461,7 +455,8 @@ void	ft_renew_with_vars_env(t_layers *strs)
 		if (strs->src_trans[i] == '$')
 		{
 			val = ft_get_var_env_val(strs, i);
-			ft_var_env_to_layers(strs, val, i);
+			printf("test val :%s\n", val);
+			ft_var_env_to_layers(strs, val, &i);
 			i = 0;
 		}
 		else
@@ -469,49 +464,6 @@ void	ft_renew_with_vars_env(t_layers *strs)
 	}
 }
 
-/*
-char	*ft_translate_vars_env(char *str)
-{
-	int		i;
-	char	*var_env;
-	char	*newstr;
-	int		alias_len;
-
-	i = 0;
-	alias_len = 0;
-	var_env = NULL;
-	newstr = NULL;
-	while (str && str[i])
-	{
-		if (ft_is_valid_var_env(str, i))
-		{
-			var_env = ft_get_var_env(str, i, &alias_len);
-			newstr = ft_setup_newstr(str, var_env, alias_len);
-			str = ft_replace_alias(str, i, var_env, newstr);
-			i += ft_strlen(var_env);
-		}
-		else
-			i++;
-	}
-	return (str);
-}
-*/
-/*
-int	ft_check_if_vars_env(char *str)
-{
-	int		i;
-
-	i = 0;
-	if (str && str[i])
-	{
-		while (str[i] && !ft_is_valid_var_env(str, i))
-			i++;
-		if (str[i] == '\0')
-			return (0);
-	}
-	return (1);
-}
-*/
 void	ft_quotes_focus(t_layers *strs, int i, int *sq, int *dq)
 {
 	if (strs->src[i] == '\"' && (*sq % 2) == 0)
@@ -563,9 +515,10 @@ int	ft_occurences_counter(char *big, char *little)
 	total = 0;
 	big_len = ft_strlen(big);
 	little_len = ft_strlen(little);
+	i = -1;
 	if (big && little && big_len >= little_len)
 	{
-		while (big[i])
+		while (big[++i])
 		{
 			tmp = ft_strnstr(big + i, little, little_len);
 			if (tmp)
@@ -574,17 +527,17 @@ int	ft_occurences_counter(char *big, char *little)
 				tmp = NULL;
 				total++;
 			}
-			i++;
 		}
 	}
-	return (total);///////////a verifier
+	return (total);
 }
 
-void	ft_remove_symbol_var_env(t_layers *strs, int i)////////a verifier
+void	ft_remove_symbol_var_env(t_layers *strs, int i)
 {
 	while (strs->src && strs->src[i] && ft_isspace(strs->src[i]))
 		i++;
-	while (strs->src && strs->src[i] && !ft_strchr("<>|$", strs->src_trans[i]) && !ft_isspace(strs->src[i]))
+	while (strs->src && strs->src[i] && !ft_strchr("<>|$", strs->src_trans[i]) \
+		&& !ft_isspace(strs->src[i]))
 	{
 		if (strs->src_trans[i] == '\"')
 		{
@@ -601,15 +554,14 @@ void	ft_remove_symbol_var_env(t_layers *strs, int i)////////a verifier
 		i++;
 	}
 	if (strs->src && strs->src[i] && strs->src_trans[i] == '$')
-		strs->src_trans = '0';
+		strs->src_trans[i] = '0';
 }
 
-void	ft_disable_var_env(t_layers *strs)//////a verifier
+void	ft_disable_var_env(t_layers *strs)
 {
 	char	*tmp;
 	int		heredocs;
 	int		i;
-	int		j;
 
 	i = 0;
 	tmp = NULL;
@@ -703,7 +655,6 @@ int	ft_check_format_pipes(t_layers *strs)
 	while (tmp && tmp[++i])
 		if (i > 0 && tmp[i - 1] && tmp[i] == '|' && tmp[i - 1] == '|')
 			return (0);
-	//trouver davantage de cas d'erreurs
 	return (1);
 }
 
@@ -801,29 +752,26 @@ void	ft_translate_all(t_layers *strs)
 		&& ft_check_pipes(strs))
 	{
 		ft_check_var_env(strs);
-		ft_renew_with_vars_env(strs);/////////////
+		if (ft_strchr(strs->src_trans, '$'))
+			ft_renew_with_vars_env(strs);
 	}
 }
+
+////////////////////////////////////////////////////////////////////////
 
 void ft_minishell_parsing(t_layers *strs)
 {
 	ft_layers_visualizer(strs);
-	ft_translate_all(strs);
+	ft_translate_all(strs);////////done
 	ft_layers_visualizer(strs);
-
 }
 
 void	ft_layers_init(t_layers *strs, char *cmdline)
 {
 	strs->src = ft_strdup(cmdline);
 	strs->src_len = ft_strlen(strs->src);
-	strs->clone = ft_strdup(strs->src);
-	strs->clone_len = strs->src_len;
 	strs->src_trans = ft_strdup(strs->src);
 	strs->src_trans = (char *)ft_memset(strs->src_trans, '0', strs->src_len);
-	strs->clone_trans = ft_strdup(strs->clone);
-	strs->clone_trans = \
-		(char *)ft_memset(strs->clone_trans, '0', strs->src_len);
 }
 
 int	main(void)
@@ -837,9 +785,11 @@ int	main(void)
 	tmp = (char *)malloc(sizeof(char) * (150 + 1));
 	fd = open("cmdline", O_RDONLY);
 	n = read(fd, tmp, 150);
+	tmp[n] = '\0';
 	if (n)
 	{
-		cmdline = ft_strtrim(tmp, "\a\b\t\n\v\f\r");
+		printf("%s\n", tmp);
+		cmdline = ft_strtrim(tmp, "\a\b\t\n\v\f\r ");
 		free(tmp);
 		ft_layers_init(&strs, cmdline);
 		ft_minishell_parsing(&strs);
