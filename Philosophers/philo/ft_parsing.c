@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/11/24 20:36:59 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/11/24 23:34:31 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,15 @@ typedef struct s_sections {
 	int		*cut;
 }			t_sections;
 
+typedef struct s_blocks {
+	char	**src;
+	char	**src_trans;
+}			t_blocks;
+
 typedef struct s_size {
 	int	second;
 	int	third;
-}			t_size;
+}		t_size;
 
 void	*ft_memset(void *s, int c, size_t n)
 {
@@ -281,6 +286,59 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	}
 	str[i + j] = '\0';
 	return (str);
+}
+
+void	ft_true_split(char const *s, char **strs, char c, ssize_t len)
+{
+	ssize_t	i;
+	ssize_t	j;
+	ssize_t	a;
+
+	a = 0;
+	i = 0;
+	j = 0;
+	while (s[i] && a < len)
+	{
+		while (s[i + j] && s[i + j] == c)
+			i++;
+		while ((s[i + j] && s[i + j] != c))
+			j++;
+		if (s[i + j] == c || s[i + j] == 0)
+			strs[a] = ft_substr(s, i, j);
+		a++;
+		i = i + j;
+		j = 0;
+	}
+}
+
+char	**ft_split(char const *s, char c)
+{
+	char	**strs;
+	ssize_t	len;
+
+	strs = NULL;
+	if (s)
+	{
+		len = ft_count_strs(s, c);
+		strs = (char **)malloc(sizeof(char *) * (len + 1));
+		if (!strs)
+			return (NULL);
+		strs[len] = NULL;
+		ft_true_split(s, strs, c, len);
+	}
+	return (strs);
+}
+
+void	ft_show_strs_fd(char **strs, int fd)
+{
+	int	i;
+
+	i = 0;
+	while (strs && strs[i])
+	{
+		ft_putstr_fd(strs[i], fd);
+		i++;
+	}
 }
 
 ////////////////////////////////////////////////////////
@@ -759,11 +817,61 @@ void	ft_translate_all(t_layers *strs)
 
 ////////////////////////////////////////////////////////////////////////
 
+char	**ft_strsdup(char **src)
+{
+	char	**dest;
+	int		i;
+
+	i = 0;
+	while (src && src[i])
+		i++;
+	dest = (char **)malloc(sizeof(char *) * i);
+	dest[i] = NULL;
+	while (--i >= 0)
+		dest[i] = ft_strdup(src[i]);
+	return (dest);
+}
+
+char	**ft_parallel_split(char **model, char *to_split)
+{
+	int		i;
+	int		j;
+	char	*tmp;
+	char	**dest;
+
+	i = 0;
+	j = 0;
+	tmp = ft_strdup(to_split);
+	dest = ft_strsdup(model);
+	while (model && model[i])
+	{
+		ft_strlcpy(dest[i], to_split + j, ft_strlen(dest[i]) + 1);
+		j += ft_strlen(dest[i]) + 1;
+		i++;
+	}
+	ft_show_strs_fd(model, 1);
+	ft_show_strs_fd(dest, 1);
+	return (dest);
+}
+
+t_blocks	*ft_layers_pipe_split(t_layers *strs)
+{
+	t_blocks	*blocks;
+
+	blocks = (t_blocks *)malloc(sizeof(t_blocks) * 1);
+	blocks->src_trans = ft_split(strs->src_trans, '|');
+	blocks->src = ft_parallel_split(blocks->src_trans, strs->src);
+	return (&blocks);
+}
+
 void ft_minishell_parsing(t_layers *strs)
 {
+	t_blocks *blocks;
+
 	ft_layers_visualizer(strs);
-	ft_translate_all(strs);////////done
+	ft_translate_all(strs);
 	ft_layers_visualizer(strs);
+	blocks = ft_layers_pipe_split(strs);///////////////
 }
 
 void	ft_layers_init(t_layers *strs, char *cmdline)
@@ -797,3 +905,30 @@ int	main(void)
 	close(fd);
 	return (0);
 }
+
+/*
+cat<lol>filex|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*/
