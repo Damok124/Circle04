@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/11/25 18:41:07 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/11/26 10:55:31 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -907,52 +907,65 @@ char	**ft_parallel_split(char **model, char *to_split)
 	return (dest);
 }
 
-void	ft_strstrim_to_blocks(char **src, char **trs, char*set)
+char	*ft_index_trim(char *str, int begin, int end)
 {
-	char	*tmptmp;
-	int		i;
-	int		j;
+	char	*ret;
+	int		len;
 
+	if (!str || (begin + end) > ft_strlen(str))
+		return (NULL);
+	ret = NULL;
+	len = ft_strlen(str);
+	str[len - end] = '\0';
+	ret = ft_strdup(str + begin);
+	return (ret);
+}
+
+char	*ft_strtrim_index_to_blocks(char *src, char *trans, char *set)
+{
+	char	*ret;
+	int		begin;
+	int		end;
+	int		i;
+
+	begin = 0;
+	end = 0;
 	i = -1;
-	j = 0;
-	tmptmp = NULL;
-	while (src && src[++i])
+	ret = NULL;
+	if (src && set)
 	{
-		tmptmp = ft_strtrim(src[i], set);
-		if (tmptmp && ft_strncmp(src[i], tmptmp, ft_strlen(src[i])))
-		{
-			while (ft_strchr(set, src[i][j]))
-				j++;
-			tmptmp = ft_strdup(trs[i] + j);
-			j = ft_strlen(tmptmp);/////probleme, refaire fonction sans doute
-			while (j >= 0 && ft_strrchr(set, src[i][--j]))
-			{
-				printf("src[%d][%d]:[%c]\n", i, j, src[i][j]);
-				printf("src[%d]:%s%%\n", i, src[i]);
-				printf("tmptmp:%s\n", tmptmp);
-				tmptmp[j] = '\0';
-				printf("tmptmp:%s\n", tmptmp);
-			}
-			trs[i] = ft_strdup(tmptmp);
-			tmptmp = ft_strtrim(src[i], set);
-			src[i] = tmptmp;
-			j = 0;
-		}
-		tmptmp = NULL;
+		while (ft_strchr(set, src[++i]))
+			begin++;
+		i = ft_strlen(src);
+		while (i >= 0 && ft_strchr(set, src[--i]))
+			end++;
+		ret = ft_index_trim(trans, begin, end);
+	}
+	return (ret);
+}
+
+void	ft_strstrim_to_blocks(t_blocks **block, char *set)
+{
+	int	i;
+
+	i = 0;
+	if (block && *block)
+	{
+		while ((*block)->src && (*block)->)
 	}
 }
 
 t_blocks	*ft_layers_pipe_split(t_layers *strs)
 {
-	t_blocks	*blocks;
+	t_blocks	*block;
 
-	blocks = (t_blocks *)malloc(sizeof(t_blocks) * 1);
-	blocks->src_trans = ft_split(strs->src_trans, '|');
-	blocks->src = ft_parallel_split(blocks->src_trans, strs->src);
-	ft_strstrim_to_blocks(blocks->src, blocks->src_trans, "\a\b\t\n\v\f\r ");
+	block = (t_blocks *)malloc(sizeof(t_blocks) * 1);
+	block->src_trans = ft_split(strs->src_trans, '|');
+	block->src = ft_parallel_split(block->src_trans, strs->src);
+	ft_strstrim_to_block(&block, "\a\b\t\n\v\f\r ");
 	printf("GOOD?\n");
-	ft_show_duo_strs(blocks->src, blocks->src_trans);
-	return (blocks);
+	ft_show_duo_strs(block->src, block->src_trans);
+	return (block);
 }
 
 void ft_minishell_parsing(t_layers *strs)
