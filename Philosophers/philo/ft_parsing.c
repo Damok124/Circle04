@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/11/26 10:55:31 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/11/26 16:06:49 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -951,7 +951,12 @@ void	ft_strstrim_to_blocks(t_blocks **block, char *set)
 	i = 0;
 	if (block && *block)
 	{
-		while ((*block)->src && (*block)->)
+		while ((*block)->src_trans && (*block)->src && (*block)->src_trans[i] \
+			&& (*block)->src[i])
+		{
+			(*block)->src_trans[i] = ft_strtrim_index_to_blocks((*block)->src, (*block)->src_trans)
+			i++;
+		}
 	}
 }
 
