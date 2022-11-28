@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/11/26 16:06:49 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/11/28 09:35:18 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,17 @@ typedef struct s_sections {
 	char	*last;
 	int		*cut;
 }			t_sections;
+
+typedef struct s_pages {
+	char			*src;
+	char			*trans;
+	char			**cmds;
+	char			**infiles;
+	char			**outfiles;
+	char			**tmp;///////recoit tous les elements avant dispatch selon les types
+	char			**trans;///////recoit tous les elements avant dispatch selon les types
+	struct s_pages	*next;
+}					t_pages;
 
 typedef struct s_blocks {
 	char	**src;
@@ -374,6 +385,16 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 }
 
 ////////////////////////////////////////////////////////
+
+int	ft_strslen(char **strs)
+{
+	int	i;
+
+	i = 0;
+	while (strs && strs[i])
+		i++;
+	return (i);
+}
 
 void	ft_destroy_layers(t_layers **strs)
 {
@@ -912,7 +933,7 @@ char	*ft_index_trim(char *str, int begin, int end)
 	char	*ret;
 	int		len;
 
-	if (!str || (begin + end) > ft_strlen(str))
+	if (!str || (begin + end) > (int)ft_strlen(str))
 		return (NULL);
 	ret = NULL;
 	len = ft_strlen(str);
@@ -949,12 +970,14 @@ void	ft_strstrim_to_blocks(t_blocks **block, char *set)
 	int	i;
 
 	i = 0;
-	if (block && *block)
+	if (block && *block && set)
 	{
 		while ((*block)->src_trans && (*block)->src && (*block)->src_trans[i] \
 			&& (*block)->src[i])
 		{
-			(*block)->src_trans[i] = ft_strtrim_index_to_blocks((*block)->src, (*block)->src_trans)
+			(*block)->src_trans[i] = ft_strtrim_index_to_blocks
+				((*block)->src[i], (*block)->src_trans[i], set);
+			(*block)->src[i] = ft_strtrim((*block)->src[i], set);
 			i++;
 		}
 	}
@@ -967,20 +990,103 @@ t_blocks	*ft_layers_pipe_split(t_layers *strs)
 	block = (t_blocks *)malloc(sizeof(t_blocks) * 1);
 	block->src_trans = ft_split(strs->src_trans, '|');
 	block->src = ft_parallel_split(block->src_trans, strs->src);
-	ft_strstrim_to_block(&block, "\a\b\t\n\v\f\r ");
-	printf("GOOD?\n");
+	ft_strstrim_to_blocks(&block, "\a\b\t\n\v\f\r ");
 	ft_show_duo_strs(block->src, block->src_trans);
 	return (block);
 }
 
+void	ft_page_split(t_pages **book, char *src, char *trans)
+{
+	t_pages	*copy;
+	int		i;
+	int		quotes;
+
+	i = 0;
+	quotes = 0;
+	copy = *book;
+	while (src && trans && src[i] && trans[i])
+	{
+		while (src[i] && ft_isspace(src[i]))
+			i++;
+		if (trans[i] && ft_strchr("\'\"", trans[i]))
+			quotes++;
+		else/////////////////////////////////////////////a finir
+			if (src[i] && quotes % 2 == 0 && )
+		i++;
+	}
+	copy->tmp =
+}
+
+t_pages	*ft_fill_pages(char *src, char *src_trans)
+{
+	t_pages	*page;
+
+	page = (t_pages *)malloc(sizeof(t_pages));
+	page->src = src;
+	page->trans = src_trans;
+	ft_page_split(&page, src, src_trans);
+	//page->tmp = ;
+	//page->tmp_trans;a remplir directement dans la fonction
+	page->next = NULL;
+	page->cmds = NULL;
+	page->infiles = NULL;
+	page->outfiles = NULL;
+	return (page);
+}
+
+t_pages	*ft_fill_book(t_blocks *blocks)
+{
+	t_pages	*book;
+	t_pages	*first;
+	int		i;
+
+	i = 0;
+	book = NULL;
+	while (blocks && blocks->src && blocks->src[i])
+	{
+		if (!book)
+		{
+			book = ft_fill_pages(blocks->src[i], blocks->src_trans[i]);
+			first = book;
+		}
+		else
+		{
+			book->next = ft_fill_pages(blocks->src[i], blocks->src_trans[i]);
+			book = book->next;
+		}
+		i++;
+	}
+	return (first);
+}
+
+void	ft_show_book(t_pages *book)
+{
+	t_pages	*tmp;
+	int		i;
+
+	tmp = book;
+	i = 0;
+	while (tmp)
+	{
+		printf("src  %d:%s\n", i, tmp->src);
+		printf("trans%d:%s\n", i, tmp->trans);
+		tmp = tmp->next;
+		i++;
+	}
+}
+
 void ft_minishell_parsing(t_layers *strs)
 {
-	t_blocks *blocks;
+	t_blocks	*blocks;
+	t_pages		*book;
 
 	ft_layers_visualizer(strs);
 	ft_translate_all(strs);
 	ft_layers_visualizer(strs);
-	blocks = ft_layers_pipe_split(strs);///////////////
+	blocks = ft_layers_pipe_split(strs);
+	ft_show_duo_strs(blocks->src, blocks->src_trans);
+	book = ft_fill_book(blocks);
+	ft_show_book(book);
 	(void)blocks;
 }
 
