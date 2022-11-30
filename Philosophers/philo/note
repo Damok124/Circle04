@@ -7,3 +7,4 @@ typedef struct s_page {
 	char			**outfiles;
 	struct s_page	*next;
 }					t_page;
+

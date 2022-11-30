@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/11/28 09:35:18 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/11/30 10:06:51 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ typedef struct s_pages {
 	char			**infiles;
 	char			**outfiles;
 	char			**tmp;///////recoit tous les elements avant dispatch selon les types
-	char			**trans;///////recoit tous les elements avant dispatch selon les types
+	char			**tmp_trans;///////recoit tous les elements avant dispatch selon les types
 	struct s_pages	*next;
 }					t_pages;
 
@@ -412,7 +412,7 @@ void	ft_layers_visualizer(t_layers *strs)
 
 int	ft_isspace(int c)
 {
-	if ((c > 9 && c < 16) || c == 32)
+	if ((c > 8 && c < 17) || c == 32)
 		return (1);
 	else
 		return (0);
@@ -612,6 +612,12 @@ void	ft_var_env_focus(t_layers *strs, int i, int *sq, int *dq)
 			strs->src_trans[i - 1] = '0';
 		strs->src_trans[i] = strs->src[i];
 	}
+}
+
+void	ft_spaces_focus(t_layers *strs, int i, int *sq, int *dq)
+{
+	if (ft_isspace(strs->src[i]) && (*sq % 2) == 0 && (*dq % 2) == 0)
+		strs->src_trans[i] = ' ';
 }
 
 int	ft_occurences_counter(char *big, char *little)
@@ -857,6 +863,67 @@ int	ft_check_var_env(t_layers *strs)
 	return (1);
 }
 
+int	ft_check_spaces(t_layers *strs)
+{
+	int		i;
+	int		sq;
+	int		dq;
+
+	i = 0;
+	sq = 0;
+	dq = 0;
+	while (strs->src && strs->src[i])
+	{
+		ft_quotes_focus(strs, i, &sq, &dq);
+		ft_spaces_focus(strs, i, &sq, &dq);
+		i++;
+	}
+	return (1);
+}
+
+void	ft_replace_spaces(t_layers *strs)
+{
+	int	i;
+
+	i = 0;
+	while (strs && strs->src_trans && strs->src_trans[i])
+	{
+		if (ft_strchr("<>", strs->src_trans[i]) && strs->src_trans[i + 1] == ' ')
+		{
+			while (strs->src_trans[i + 1] && strs->src_trans[i + 1] == ' ')
+			{
+				strs->src_trans[i + 1] = '0';
+				i++;
+			}
+			i -= 1;
+		}
+		i++;
+	}
+}
+
+void	ft_rename_angl_brackets(t_layers *strs)
+{
+	int	i;
+
+	i = 0;
+	while (strs && strs->src_trans && strs->src_trans[i] && strs->src_trans[i + 1])
+	{
+		if (strs->src_trans[i] == '<' && strs->src_trans[i + 1] == '<')
+		{
+			strs->src_trans[i] = 'H';
+			strs->src_trans[i + 1] = '0';
+			i++;
+		}
+		else if (strs->src_trans[i] == '>' && strs->src_trans[i + 1] == '>')
+		{
+			strs->src_trans[i] = 'A';
+			strs->src_trans[i + 1] = '0';
+			i++;
+		}
+		i++;
+	}
+}
+
 void	ft_translate_all(t_layers *strs)
 {
 	if (ft_check_quotes(strs) && ft_check_angl_brackets(strs) \
@@ -865,6 +932,9 @@ void	ft_translate_all(t_layers *strs)
 		ft_check_var_env(strs);
 		if (ft_strchr(strs->src_trans, '$'))
 			ft_renew_with_vars_env(strs);
+		ft_check_spaces(strs);/////////////////
+		ft_replace_spaces(strs);
+		ft_rename_angl_brackets(strs);
 	}
 }
 
@@ -995,26 +1065,125 @@ t_blocks	*ft_layers_pipe_split(t_layers *strs)
 	return (block);
 }
 
-void	ft_page_split(t_pages **book, char *src, char *trans)
+void	ft_pages_src_split(t_pages **page)
+{
+	int		i;
+	int		j;
+	int		k;
+	char	*copy;
+	t_pages *tmp;
+
+	i = 0;
+	j = 0;
+	k = 0;
+	tmp = *page;
+	copy = tmp->src;
+	tmp->tmp_trans = ft_split(tmp->trans, ' ');
+	tmp->tmp = ft_strsdup(tmp->tmp_trans);
+	while (tmp->tmp[i])
+	{
+		j = ft_strlen(tmp->tmp_trans[i]);
+		ft_strlcpy(tmp->tmp[i], copy, j + 1);
+		copy += j;
+		while (copy && copy[k] && ft_isspace(copy[k]))
+			k++;
+		copy += k;
+		k = 0;
+		i++;
+	}
+	ft_show_duo_strs(tmp->tmp, tmp->tmp_trans);
+}
+
+char **ft_split_at_index(char *str, int i)
+{
+	char	**final;
+	char	*first;
+	char	*last;
+
+	final = NULL;
+	if (str)
+	{
+		last = ft_strdup(str + i);
+		str[i] = '\0';
+		first = ft_strdup(str);
+		final = (char **)malloc(sizeof(char *) * 3);
+		if (!final)
+			return (NULL);
+		final[0] = first;
+		final[1] = last;
+		final[2] = NULL;
+	}
+	return (final);
+}
+
+void	ft_include_spaces(t_pages **page)
+{
+	t_pages		*copy;
+	t_blocks	parts;
+	char		*buffer;
+	int			i;
+
+	i = 0;
+	copy = *page;
+	while (copy)
+	{
+		while (copy->trans && copy->trans[i])
+		{
+			if (i != 0 && ft_strchr("<>AH", copy->trans[i]) && !ft_isspace(copy->trans[i - 1]))
+			{
+				parts.src = ft_split_at_index(copy->src, i);
+				parts.src_trans = ft_split_at_index(copy->trans, i);
+				buffer = ft_strjoin(parts.src[0], " ");
+				copy->src = ft_strjoin(buffer, parts.src[1]);
+				buffer = ft_strjoin(parts.src_trans[0], " ");
+				copy->trans = ft_strjoin(buffer, parts.src_trans[1]);
+				i = -1;
+			}
+			i++;
+		}
+		copy = copy->next;
+	}
+}
+
+void	ft_init_page(t_pages **page)
+{
+	(*page)->src = NULL;
+	(*page)->trans = NULL;
+	(*page)->cmds = NULL;
+	(*page)->infiles = NULL;
+	(*page)->outfiles = NULL;
+	(*page)->tmp = NULL;
+	(*page)->tmp_trans = NULL;
+	(*page)->next = NULL;
+}
+
+void	ft_pages_clean_quotes(t_pages **pages)
 {
 	t_pages	*copy;
 	int		i;
-	int		quotes;
 
 	i = 0;
-	quotes = 0;
-	copy = *book;
-	while (src && trans && src[i] && trans[i])
+	copy = *pages;
+	while (copy && copy->src && copy->trans)
 	{
-		while (src[i] && ft_isspace(src[i]))
+		while (copy->trans[i])
+		{
+			if (ft_strchr("\'\"", copy->trans[i]))
+			{
+				while (copy->trans[i + 1])
+				{
+					copy->trans[i] = copy->trans[i + 1];
+					copy->src[i] = copy->src[i + 1];
+					i++;
+				}
+				copy->trans[i] = '\0';
+				copy->src[i] = '\0';
+				i = -1;
+			}
 			i++;
-		if (trans[i] && ft_strchr("\'\"", trans[i]))
-			quotes++;
-		else/////////////////////////////////////////////a finir
-			if (src[i] && quotes % 2 == 0 && )
-		i++;
+		}
+		copy = copy->next;
 	}
-	copy->tmp =
 }
 
 t_pages	*ft_fill_pages(char *src, char *src_trans)
@@ -1022,9 +1191,14 @@ t_pages	*ft_fill_pages(char *src, char *src_trans)
 	t_pages	*page;
 
 	page = (t_pages *)malloc(sizeof(t_pages));
+	if (!page)
+		return (NULL);
+	ft_init_page(&page);
 	page->src = src;
 	page->trans = src_trans;
-	ft_page_split(&page, src, src_trans);
+	ft_include_spaces(&page);//////////nouveau
+	ft_pages_clean_quotes(&page);
+	ft_pages_src_split(&page);
 	//page->tmp = ;
 	//page->tmp_trans;a remplir directement dans la fonction
 	page->next = NULL;
@@ -1070,6 +1244,8 @@ void	ft_show_book(t_pages *book)
 	{
 		printf("src  %d:%s\n", i, tmp->src);
 		printf("trans%d:%s\n", i, tmp->trans);
+		printf("tmp et tmp_trans%d:\n", i);
+		ft_show_duo_strs(tmp->tmp, tmp->tmp_trans);
 		tmp = tmp->next;
 		i++;
 	}
@@ -1106,9 +1282,9 @@ int	main(void)
 	int		fd;
 	int		n;
 
-	tmp = (char *)malloc(sizeof(char) * (150 + 1));
+	tmp = (char *)malloc(sizeof(char) * (200 + 1));
 	fd = open("cmdline", O_RDONLY);
-	n = read(fd, tmp, 150);
+	n = read(fd, tmp, 200);
 	tmp[n] = '\0';
 	if (n)
 	{
