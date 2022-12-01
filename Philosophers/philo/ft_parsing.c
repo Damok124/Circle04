@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/11/30 10:06:51 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/01 15:29:15 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ typedef struct s_pages {
 	char			**cmds;
 	char			**infiles;
 	char			**outfiles;
-	char			**tmp;///////recoit tous les elements avant dispatch selon les types
-	char			**tmp_trans;///////recoit tous les elements avant dispatch selon les types
+	char			**tmp;
+	char			**tmp_trans;
 	struct s_pages	*next;
 }					t_pages;
 
@@ -57,6 +57,12 @@ typedef struct s_size {
 	int	second;
 	int	third;
 }		t_size;
+
+typedef struct s_quantity {
+	int	cmd;
+	int	infile;
+	int	outfile;
+}		t_quantity;
 
 void	*ft_memset(void *s, int c, size_t n)
 {
@@ -231,31 +237,6 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	return (str);
 }
 
-char	*ft_strtrim(char const *s1, char const *set)
-{
-	char	*str;
-	ssize_t	i;
-	ssize_t	j;
-
-	i = -1;
-	j = ft_strlen(s1);
-	if (s1)
-	{
-		while (ft_strchr(set, s1[++i]))
-			;
-		while (ft_strrchr(set, s1[--j]) && j >= 0)
-			;
-		str = ft_substr(s1, i, (j - i + 1));
-		if (str)
-			return (str);
-	}
-	str = malloc(sizeof(char));
-	if (!str)
-		return (NULL);
-	str[0] = '\0';
-	return (str);
-}
-
 size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 {
 	size_t	i;
@@ -384,7 +365,44 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 	return (0);
 }
 
+void	ft_show_strs(char **strs)
+{
+	int	i;
+
+	i = 0;
+	while (strs && strs[i])
+	{
+		printf("%s%%", strs[i]);
+		i++;
+	}
+}
+
 ////////////////////////////////////////////////////////
+
+char	*ft_strtrim(char const *s1, char const *set)
+{
+	char	*str;
+	ssize_t	i;
+	ssize_t	j;
+
+	i = 0;
+	j = ft_strlen(s1);
+	if (s1)
+	{
+		while (s1 && s1[i] && ft_strchr(set, s1[i]))
+			i++;
+		while (s1 && s1[i] && ft_strrchr(set, s1[j]))
+			j--;
+		str = ft_substr(s1, i, (j - i + 1));
+		if (str)
+			return (str);
+	}
+	str = malloc(sizeof(char));
+	if (!str)
+		return (NULL);
+	str[0] = '\0';
+	return (str);
+}
 
 int	ft_strslen(char **strs)
 {
@@ -418,32 +436,33 @@ int	ft_isspace(int c)
 		return (0);
 }
 
-int	ft_is_heredoc(char *str)
+int	ft_iscmd(char *str)
 {
-	if (str && str[0] && str[1])
-	{
-		if (str[0] == '<' && str[1] == '<')
-			return (1);
-	}
+	if (str && str[0] && str[0] == '0')
+		return (1);
 	return (0);
 }
 
-int	ft_is_infile(char *str)
-{
-	if (str && str[0] && str[1])
-	{
-		if (str[0] == '<' && str[1] != '<')
-			return (1);
-	}
-	return (0);
-}
-
-int	ft_is_outfile(char *str)
+int	ft_isoutfile(char *str)
 {
 	if (str && str[0])
 	{
-		if (str[0] == '>')
+		if(str[0] == '>')
 			return (1);
+		if(str[0] == 'A')
+			return (2);
+	}
+	return (0);
+}
+
+int	ft_isinfile(char *str)
+{
+	if (str && str[0])
+	{
+		if(str[0] == '<')
+			return (1);
+		if(str[0] == 'H')
+			return (2);
 	}
 	return (0);
 }
@@ -1091,7 +1110,7 @@ void	ft_pages_src_split(t_pages **page)
 		k = 0;
 		i++;
 	}
-	ft_show_duo_strs(tmp->tmp, tmp->tmp_trans);
+	//ft_show_duo_strs(tmp->tmp, tmp->tmp_trans);
 }
 
 char **ft_split_at_index(char *str, int i)
@@ -1186,6 +1205,135 @@ void	ft_pages_clean_quotes(t_pages **pages)
 	}
 }
 
+void	ft_show_book(t_pages *book)
+{
+	t_pages	*tmp;
+	int		i;
+
+	tmp = book;
+	i = 0;
+	while (tmp)
+	{
+		printf("\nsrc  %d____:%s\n", i, tmp->src);
+		printf("\ntrans%d____:%s\n", i, tmp->trans);
+		printf("\ncmds_____ :");
+		ft_show_strs(tmp->cmds);
+		printf("\ninfiles__ :");
+		ft_show_strs(tmp->infiles);
+		printf("\noutfiles_ :");
+		ft_show_strs(tmp->outfiles);
+		printf("\ntmp______ :");
+		ft_show_strs(tmp->tmp);
+		printf("\ntmp_trans :");
+		ft_show_strs(tmp->tmp_trans);
+		printf("\n________________________________________________________\n");
+		tmp = tmp->next;
+		i++;
+	}
+}
+
+void	ft_pages_clean_redirection(t_pages **page)
+{
+	t_pages	*tmp;
+	int	i;
+
+	i = 0;
+	tmp = *page;
+	while (tmp)
+	{
+		while (tmp->tmp_trans && tmp->tmp_trans[i])
+		{
+			tmp->tmp_trans[i][1] = '\0';
+			if (tmp->tmp_trans[i][0] == 'A' || tmp->tmp_trans[i][0] == 'H')
+			{
+				tmp->tmp[i][0] = ' ';
+				tmp->tmp[i][1] = ' ';
+			}
+			else if (tmp->tmp_trans[i][0] == '<' || tmp->tmp_trans[i][0] == '>')
+				tmp->tmp[i][0] = ' ';
+			tmp->tmp[i] = ft_strtrim(tmp->tmp[i], "\a\b\t\n\v\f\r ");
+			if (tmp->tmp_trans[i][0] == '<' || tmp->tmp_trans[i][0] == '>' \
+			|| tmp->tmp_trans[i][0] == 'A' || tmp->tmp_trans[i][0] == 'H')
+				tmp->tmp[i] = ft_strjoin(tmp->tmp_trans[i], tmp->tmp[i]);
+			i++;
+		}
+		i = 0;
+		tmp = tmp->next;
+	}
+}
+
+t_quantity	ft_quantity_counter(char **trans)
+{
+	t_quantity	count;
+	int			i;
+
+	i = 0;
+	count.cmd = 0;
+	count.infile = 0;
+	count.outfile = 0;
+	while (trans && trans[i])
+	{
+		if (ft_iscmd(trans[i]))
+			count.cmd++;
+		else if (ft_isinfile(trans[i]))
+			count.infile++;
+		else if (ft_isoutfile(trans[i]))
+			count.outfile++;
+		i++;
+	}
+	return (count);
+}
+
+void	ft_pages_alloc(t_pages **page, t_quantity count)
+{
+	(*page)->cmds = (char **)malloc(sizeof(char *) * (count.cmd + 1));
+	(*page)->infiles = (char **)malloc(sizeof(char *) * (count.infile + 1));
+	(*page)->outfiles = (char **)malloc(sizeof(char *) * (count.outfile + 1));
+	/////a securiser
+	(*page)->cmds[count.cmd] = NULL;
+	(*page)->infiles[count.infile] = NULL;
+	(*page)->outfiles[count.outfile] = NULL;
+}
+
+t_quantity	ft_init_quantity(int n)
+{
+	t_quantity q;
+
+	q.cmd = n;
+	q.infile = n;
+	q.outfile = n;
+	return (q);
+}
+
+void	ft_pages_dispatch_units(t_pages **page)
+{
+	t_pages *copy;
+	t_quantity count;
+	t_quantity index;
+
+	int	i;
+	i = 0;
+	copy = *page;
+	index = ft_init_quantity(-1);
+	while (copy)
+	{
+		count = ft_quantity_counter(copy->tmp_trans);
+		ft_pages_alloc(&copy, count);
+		while (copy->tmp_trans[i])
+		{
+			if (ft_iscmd(copy->tmp_trans[i]))
+				copy->cmds[++index.cmd] = ft_strdup(copy->tmp[i]);
+			else if (ft_isinfile(copy->tmp_trans[i]))
+				copy->infiles[++index.infile] = ft_strdup(copy->tmp[i]);
+			else if (ft_isoutfile(copy->tmp_trans[i]))
+				copy->outfiles[++index.outfile] = ft_strdup(copy->tmp[i]);
+			i++;
+		}
+		i = 0;
+		copy = copy->next;
+	}
+}
+
 t_pages	*ft_fill_pages(char *src, char *src_trans)
 {
 	t_pages	*page;
@@ -1196,15 +1344,14 @@ t_pages	*ft_fill_pages(char *src, char *src_trans)
 	ft_init_page(&page);
 	page->src = src;
 	page->trans = src_trans;
-	ft_include_spaces(&page);//////////nouveau
+	ft_include_spaces(&page);
 	ft_pages_clean_quotes(&page);
 	ft_pages_src_split(&page);
-	//page->tmp = ;
-	//page->tmp_trans;a remplir directement dans la fonction
-	page->next = NULL;
-	page->cmds = NULL;
-	page->infiles = NULL;
-	page->outfiles = NULL;
+	//ft_show_book(page);
+	ft_pages_clean_redirection(&page);
+	ft_pages_dispatch_units(&page);
+	ft_show_book(page);
+
 	return (page);
 }
 
@@ -1233,37 +1380,20 @@ t_pages	*ft_fill_book(t_blocks *blocks)
 	return (first);
 }
 
-void	ft_show_book(t_pages *book)
-{
-	t_pages	*tmp;
-	int		i;
-
-	tmp = book;
-	i = 0;
-	while (tmp)
-	{
-		printf("src  %d:%s\n", i, tmp->src);
-		printf("trans%d:%s\n", i, tmp->trans);
-		printf("tmp et tmp_trans%d:\n", i);
-		ft_show_duo_strs(tmp->tmp, tmp->tmp_trans);
-		tmp = tmp->next;
-		i++;
-	}
-}
-
 void ft_minishell_parsing(t_layers *strs)
 {
 	t_blocks	*blocks;
 	t_pages		*book;
 
-	ft_layers_visualizer(strs);
+	//ft_layers_visualizer(strs);
 	ft_translate_all(strs);
-	ft_layers_visualizer(strs);
+	//ft_layers_visualizer(strs);
 	blocks = ft_layers_pipe_split(strs);
-	ft_show_duo_strs(blocks->src, blocks->src_trans);
+	//ft_show_duo_strs(blocks->src, blocks->src_trans);
 	book = ft_fill_book(blocks);
-	ft_show_book(book);
+	//ft_show_book(book);
 	(void)blocks;
+	(void)book;
 }
 
 void	ft_layers_init(t_layers *strs, char *cmdline)
