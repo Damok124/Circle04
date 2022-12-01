@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/01 15:29:15 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/01 20:02:12 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -484,6 +484,8 @@ char	*ft_get_var_env_val(t_layers *strs, int i)
 	ft_strlcpy(tmp, strs->src + i, j + 1);
 	printf("tmp %ld:%s\n", ft_strlen(tmp), tmp);
 	val = getenv(tmp);
+	if (!val)
+		return ("");
 	printf("val %ld:%s\n", ft_strlen(val), val);
 	return (val);
 }
@@ -621,13 +623,13 @@ void	ft_pipes_focus(t_layers *strs, int i, int *sq, int *dq)
 		strs->src_trans[i] = strs->src[i];
 }
 
-void	ft_var_env_focus(t_layers *strs, int i, int *sq, int *dq)
+void	ft_var_env_focus(t_layers *strs, int i, int *sq)
 {
-	if ((i == 0 && strs->src[i] == '$') || (i != (strs->src_len - 1) \
-		&& strs->src[i] == '$' && (*sq % 2) == 0 && (*dq % 2) == 0))
+	if ((i == 0 && strs->src[i] == '$' && strs->src_len > 1) \
+		|| (i != (strs->src_len - 1) && strs->src[i] == '$' && (*sq % 2) == 0))
 	{
-		if (i > 0 && strs->src_trans[i - 1] && strs->src_trans[i - 1] == '$' \
-			&& strs->src[i] == '$')
+		if (i > 0 && strs->src_trans[i - 1] \
+			&& strs->src_trans[i - 1] == '$' && strs->src[i] == '$')
 			strs->src_trans[i - 1] = '0';
 		strs->src_trans[i] = strs->src[i];
 	}
@@ -770,11 +772,11 @@ int	ft_check_format_angl_brackets(t_layers *strs)
 			return (0);
 	}
 	i = strs->src_len;
-	if (tmp[i - 2] && ft_strchr("<>", tmp[i - 2]))
+	if (i >= 2 && tmp[i - 2] && ft_strchr("<>", tmp[i - 2]))
 		if (ft_strchr("\t\n \"\'#&*./|~<>", strs->src[i - 1]) \
 			|| (!ft_isprint(strs->src[i - 1])))
 			return (0);
-	if (tmp[i - 1] && ft_strchr("<>", tmp[i - 1]))
+	if (i >= 1 && tmp[i - 1] && ft_strchr("<>", tmp[i - 1]))
 		return (0);
 	return (1);
 }
@@ -874,7 +876,7 @@ int	ft_check_var_env(t_layers *strs)
 		ft_quotes_focus(strs, i, &sq, &dq);
 		ft_angled_brackets_focus(strs, i, &sq, &dq);
 		ft_pipes_focus(strs, i, &sq, &dq);
-		ft_var_env_focus(strs, i, &sq, &dq);
+		ft_var_env_focus(strs, i, &sq);
 		i++;
 	}
 	if (ft_strnstr(strs->src_trans, "<<", strs->src_len))
