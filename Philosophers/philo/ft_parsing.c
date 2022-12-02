@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/01 20:02:12 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/02 16:21:20 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,20 @@ typedef struct s_sections {
 	int		*cut;
 }			t_sections;
 
+typedef struct s_quantity {
+	int	cmds;
+	int	redirections;
+	int	heredocs;
+}		t_quantity;
+
 typedef struct s_pages {
 	char			*src;
 	char			*trans;
 	char			**cmds;
-	char			**infiles;
-	char			**outfiles;
+	char			**redirections;
 	char			**tmp;
 	char			**tmp_trans;
+	t_quantity		quantity;
 	struct s_pages	*next;
 }					t_pages;
 
@@ -57,12 +63,6 @@ typedef struct s_size {
 	int	second;
 	int	third;
 }		t_size;
-
-typedef struct s_quantity {
-	int	cmd;
-	int	infile;
-	int	outfile;
-}		t_quantity;
 
 void	*ft_memset(void *s, int c, size_t n)
 {
@@ -451,6 +451,16 @@ int	ft_isoutfile(char *str)
 			return (1);
 		if(str[0] == 'A')
 			return (2);
+	}
+	return (0);
+}
+
+int	ft_isheredoc(char *str)
+{
+	if (str && str[0])
+	{
+		if(str[0] == 'A')
+			return (1);
 	}
 	return (0);
 }
@@ -1044,7 +1054,7 @@ char	*ft_strtrim_index_to_blocks(char *src, char *trans, char *set)
 	end = 0;
 	i = -1;
 	ret = NULL;
-	if (src && set)
+	if (src && src[0] && set)
 	{
 		while (ft_strchr(set, src[++i]))
 			begin++;
@@ -1064,7 +1074,7 @@ void	ft_strstrim_to_blocks(t_blocks **block, char *set)
 	if (block && *block && set)
 	{
 		while ((*block)->src_trans && (*block)->src && (*block)->src_trans[i] \
-			&& (*block)->src[i])
+			&& (*block)->src[i] && (*block)->src[0][0])
 		{
 			(*block)->src_trans[i] = ft_strtrim_index_to_blocks
 				((*block)->src[i], (*block)->src_trans[i], set);
@@ -1079,8 +1089,22 @@ t_blocks	*ft_layers_pipe_split(t_layers *strs)
 	t_blocks	*block;
 
 	block = (t_blocks *)malloc(sizeof(t_blocks) * 1);
-	block->src_trans = ft_split(strs->src_trans, '|');
-	block->src = ft_parallel_split(block->src_trans, strs->src);
+	if (strs->src_trans && strs->src_trans[0])
+	{
+		block->src_trans = ft_split(strs->src_trans, '|');
+		block->src = ft_parallel_split(block->src_trans, strs->src);
+	}
+	else if (strs->src_trans && strs->src_trans[0] == '\0')
+	{
+		block->src_trans = (char **)malloc(sizeof(char *) * 2);
+		block->src = (char **)malloc(sizeof(char *) * 2);
+		if (!block->src || !block->src_trans)
+			return (NULL);
+		block->src[0] = strs->src;
+		block->src_trans[0] = "0";
+		block->src[1] = NULL;
+		block->src_trans[1] = NULL;
+	}
 	ft_strstrim_to_blocks(&block, "\a\b\t\n\v\f\r ");
 	ft_show_duo_strs(block->src, block->src_trans);
 	return (block);
@@ -1112,7 +1136,6 @@ void	ft_pages_src_split(t_pages **page)
 		k = 0;
 		i++;
 	}
-	//ft_show_duo_strs(tmp->tmp, tmp->tmp_trans);
 }
 
 char **ft_split_at_index(char *str, int i)
@@ -1171,8 +1194,8 @@ void	ft_init_page(t_pages **page)
 	(*page)->src = NULL;
 	(*page)->trans = NULL;
 	(*page)->cmds = NULL;
-	(*page)->infiles = NULL;
-	(*page)->outfiles = NULL;
+	(*page)->redirections = NULL;
+	//(*page)->outfiles = NULL;
 	(*page)->tmp = NULL;
 	(*page)->tmp_trans = NULL;
 	(*page)->next = NULL;
@@ -1220,10 +1243,10 @@ void	ft_show_book(t_pages *book)
 		printf("\ntrans%d____:%s\n", i, tmp->trans);
 		printf("\ncmds_____ :");
 		ft_show_strs(tmp->cmds);
-		printf("\ninfiles__ :");
-		ft_show_strs(tmp->infiles);
-		printf("\noutfiles_ :");
-		ft_show_strs(tmp->outfiles);
+		printf("\nredirect_ :");
+		ft_show_strs(tmp->redirections);
+		//printf("\noutfiles_ :");
+		//ft_show_strs(tmp->outfiles);
 		printf("\ntmp______ :");
 		ft_show_strs(tmp->tmp);
 		printf("\ntmp_trans :");
@@ -1270,17 +1293,19 @@ t_quantity	ft_quantity_counter(char **trans)
 	int			i;
 
 	i = 0;
-	count.cmd = 0;
-	count.infile = 0;
-	count.outfile = 0;
+	count.cmds = 0;
+	count.redirections = 0;
+	count.heredocs = 0;
 	while (trans && trans[i])
 	{
 		if (ft_iscmd(trans[i]))
-			count.cmd++;
-		else if (ft_isinfile(trans[i]))
-			count.infile++;
-		else if (ft_isoutfile(trans[i]))
-			count.outfile++;
+			count.cmds++;
+		else if (ft_isinfile(trans[i]) || ft_isoutfile(trans[i]))
+			count.redirections++;
+		if (ft_isheredoc(trans[i]))
+			count.heredocs++;
+		//else if (ft_isoutfile(trans[i]))
+		//	count.outfile++;
 		i++;
 	}
 	return (count);
@@ -1288,25 +1313,56 @@ t_quantity	ft_quantity_counter(char **trans)
 
 void	ft_pages_alloc(t_pages **page, t_quantity count)
 {
-	(*page)->cmds = (char **)malloc(sizeof(char *) * (count.cmd + 1));
-	(*page)->infiles = (char **)malloc(sizeof(char *) * (count.infile + 1));
-	(*page)->outfiles = (char **)malloc(sizeof(char *) * (count.outfile + 1));
+	(*page)->cmds = (char **)malloc(sizeof(char *) * (count.cmds + 1));
+	(*page)->redirections = (char **)malloc(sizeof(char *) * (count.redirections + 1));
+	//(*page)->heredocs = (char **)malloc(sizeof(char *) * (count.outfile + 1));
 	/////a securiser
-	(*page)->cmds[count.cmd] = NULL;
-	(*page)->infiles[count.infile] = NULL;
-	(*page)->outfiles[count.outfile] = NULL;
+	(*page)->cmds[count.cmds] = NULL;
+	(*page)->redirections[count.redirections] = NULL;
+	//(*page)->outfiles[count.outfile] = NULL;
 }
 
 t_quantity	ft_init_quantity(int n)
 {
 	t_quantity q;
 
-	q.cmd = n;
-	q.infile = n;
-	q.outfile = n;
+	q.cmds = n;
+	q.redirections = n;
+	q.heredocs = n + 1;
 	return (q);
 }
 
+void	ft_pages_dispatch_units(t_pages **page)
+{
+	t_pages *copy;
+	t_quantity count;
+	t_quantity index;
+
+	int	i;
+	i = 0;
+	copy = *page;
+	index = ft_init_quantity(-1);
+	while (copy)
+	{
+		count = ft_quantity_counter(copy->tmp_trans);
+		ft_pages_alloc(&copy, count);
+		while (copy->tmp_trans[i])
+		{
+			if (ft_iscmd(copy->tmp_trans[i]))
+				copy->cmds[++index.cmds] = ft_strdup(copy->tmp[i]);
+			else if (ft_isinfile(copy->tmp_trans[i]) || ft_isoutfile(copy->tmp_trans[i]))
+				copy->redirections[++index.redirections] = ft_strdup(copy->tmp[i]);
+			if (ft_isheredoc(copy->tmp_trans[i]))
+				index.heredocs++;
+			//else if (ft_isoutfile(copy->tmp_trans[i]))
+			//	copy->outfiles[++index.outfile] = ft_strdup(copy->tmp[i]);
+			i++;
+		}
+		i = 0;
+		copy = copy->next;
+	}
+}
+/*
 void	ft_pages_dispatch_units(t_pages **page)
 {
 	t_pages *copy;
@@ -1335,7 +1391,7 @@ void	ft_pages_dispatch_units(t_pages **page)
 		copy = copy->next;
 	}
 }
-
+*/
 t_pages	*ft_fill_pages(char *src, char *src_trans)
 {
 	t_pages	*page;
@@ -1390,9 +1446,13 @@ void ft_minishell_parsing(t_layers *strs)
 	//ft_layers_visualizer(strs);
 	ft_translate_all(strs);
 	//ft_layers_visualizer(strs);
-	blocks = ft_layers_pipe_split(strs);
-	//ft_show_duo_strs(blocks->src, blocks->src_trans);
-	book = ft_fill_book(blocks);
+	if (strs && strs->src[0])
+	{
+		blocks = ft_layers_pipe_split(strs);
+		//ft_show_duo_strs(blocks->src, blocks->src_trans);
+		book = ft_fill_book(blocks);
+	}
+
 	//ft_show_book(book);
 	(void)blocks;
 	(void)book;
