@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/03 11:22:39 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/02 16:21:20 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,24 +22,12 @@
 
 #define SRC 0
 #define TRANS 1
-/*
-typedef struct s_size {
-	int	second;
-	int	third;
-}		t_size;///////revoir
-
-typedef struct s_blocks {
-	char	**src;
-	char	**src_trans;
-}			t_blocks;//////////inutile
-
 
 typedef struct s_layers {
 	char	*src;
 	char	*src_trans;
 	int		src_len;
-}			t_layers;////////doublon
-*/
+}			t_layers;
 
 typedef struct s_sections {
 	char	*first;
@@ -52,31 +40,29 @@ typedef struct s_sections {
 typedef struct s_quantity {
 	int	cmds;
 	int	redirections;
-}		t_quantity;///////////a eviter si possible
+	int	heredocs;
+}		t_quantity;
 
-typedef struct s_parsed {
-	int		empty;
-	char	**cmds;
-	char	**redirections;
-	int		heredocs;
-}	t_parsed;
-
-typedef struct s_book {
+typedef struct s_pages {
 	char			*src;
-	char			*s_trans;
-	char			**dest;
-	char			**d_trans;
+	char			*trans;
 	char			**cmds;
 	char			**redirections;
-	int				empty;
-	struct s_book	*next;
-}					t_book;
+	char			**tmp;
+	char			**tmp_trans;
+	t_quantity		quantity;
+	struct s_pages	*next;
+}					t_pages;
 
-typedef struct s_twins {
+typedef struct s_blocks {
 	char	**src;
-	char	**trans;
-	int		len;
-}			t_twins;
+	char	**src_trans;
+}			t_blocks;
+
+typedef struct s_size {
+	int	second;
+	int	third;
+}		t_size;
 
 void	*ft_memset(void *s, int c, size_t n)
 {
@@ -417,7 +403,7 @@ char	*ft_strtrim(char const *s1, char const *set)
 	str[0] = '\0';
 	return (str);
 }
-/*
+
 int	ft_strslen(char **strs)
 {
 	int	i;
@@ -1376,7 +1362,7 @@ void	ft_pages_dispatch_units(t_pages **page)
 		copy = copy->next;
 	}
 }
-
+/*
 void	ft_pages_dispatch_units(t_pages **page)
 {
 	t_pages *copy;
@@ -1405,7 +1391,7 @@ void	ft_pages_dispatch_units(t_pages **page)
 		copy = copy->next;
 	}
 }
-
+*/
 t_pages	*ft_fill_pages(char *src, char *src_trans)
 {
 	t_pages	*page;
@@ -1479,46 +1465,54 @@ void	ft_layers_init(t_layers *strs, char *cmdline)
 	strs->src_trans = ft_strdup(strs->src);
 	strs->src_trans = (char *)ft_memset(strs->src_trans, '0', strs->src_len);
 }
-*/
-//test multi cmdline
+
 int	main(void)
 {
-	char	*name;
+	t_layers	strs;
 	char	*cmdline;
-	char	**tmp;
-	int		fd[5];
-	int		i;
-	int		n[5] = {0, 0, 0, 0, 0};
+	char	*tmp;
+	int		fd;
+	int		n;
 
-	tmp = (char **)malloc(sizeof(char *) * 6);
-	tmp[5] = NULL;
-	name = ft_strdup("cmdline0");
-	i = -1;
-	while (++i < 5)
+	tmp = (char *)malloc(sizeof(char) * (200 + 1));
+	fd = open("cmdline", O_RDONLY);
+	n = read(fd, tmp, 200);
+	tmp[n] = '\0';
+	if (n)
 	{
-		tmp[i] = (char *)malloc(sizeof(char) * (200 + 1));
-		name[7] = i + 48;
-		fd[i] = open(name, O_RDONLY);
-		n[i] = read(fd[i], tmp[i], 200);
-		tmp[i][n[i]] = '\0';
-		cmdline = ft_strtrim(tmp[i], "\a\b\t\n\v\f\r ");
-		printf("%s\n", cmdline);
-	//ft_minishell_parsing(&strs);
-		free(cmdline);
-		cmdline = NULL;
+		printf("%s\n", tmp);
+		cmdline = ft_strtrim(tmp, "\a\b\t\n\v\f\r ");
+		free(tmp);
+		ft_layers_init(&strs, cmdline);
+		ft_minishell_parsing(&strs);
 	}
-	while (--i >= 0)
-	{
-		free(tmp[i]);
-		tmp[i] = NULL;
-		close(fd[i]);
-	}
-	free(name);
-	name = NULL;
-	free(tmp);
-	tmp = NULL;
-	close(0);
-	close(1);
-	close(2);
+	close(fd);
 	return (0);
 }
+
+/*
+cat<lol>filex|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*/
