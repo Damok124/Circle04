@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/05 01:49:57 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/05 11:18:52 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@
 #define STDIN 0
 #define STDOUT 1
 #define STDERR 2
+#define	SIMPLE 0
+#define	DOUBLE 1
 /*
 typedef struct s_size {
 	int	second;
@@ -445,7 +447,7 @@ char	*ft_strtrim(char const *s1, char const *set)
 	str[0] = '\0';
 	return (str);
 }
-/*
+
 int	ft_strslen(char **strs)
 {
 	int	i;
@@ -456,6 +458,7 @@ int	ft_strslen(char **strs)
 	return (i);
 }
 
+/*
 void	ft_destroy_layers(t_layers **strs)
 {
 	(*strs)->src = NULL;//tofree
@@ -787,28 +790,6 @@ char	**ft_get_wrong_angl_brackets(void)
 	return (needle);
 }
 
-int	ft_check_format_quotes(t_layers *strs)
-{
-	int		i;
-	int		sq;
-	int		dq;
-
-	i = 0;
-	sq = 0;
-	dq = 0;
-	while (strs->src_trans && strs->src_trans[i])
-	{
-		if (strs->src_trans[i] == '\"' && (sq % 2) == 0)
-			dq += 1;
-		else if (strs->src_trans[i] == '\'' && (dq % 2) == 0)
-			sq += 1;
-		i++;
-	}
-	if ((sq % 2) != 0 || (dq % 2) != 0)
-		return (0);
-	return (1);
-}
-
 int	ft_check_format_angl_brackets(t_layers *strs)
 {
 	char	**needle;
@@ -832,6 +813,29 @@ int	ft_check_format_angl_brackets(t_layers *strs)
 		return (0);
 	return (1);
 }
+
+int	ft_check_format_quotes(t_layers *strs)
+{
+	int		i;
+	int		sq;
+	int		dq;
+
+	i = 0;
+	sq = 0;
+	dq = 0;
+	while (strs->src_trans && strs->src_trans[i])
+	{
+		if (strs->src_trans[i] == '\"' && (sq % 2) == 0)
+			dq += 1;
+		else if (strs->src_trans[i] == '\'' && (dq % 2) == 0)
+			sq += 1;
+		i++;
+	}
+	if ((sq % 2) != 0 || (dq % 2) != 0)
+		return (0);
+	return (1);
+}
+
 
 int	ft_check_format_pipes(t_layers *strs)
 {
@@ -1010,7 +1014,7 @@ void	ft_translate_all(t_layers *strs)
 		ft_rename_angl_brackets(strs);
 	}
 }
-
+*/
 ////////////////////////////////////////////////////////////////////////
 
 void	ft_show_duo_strs(char **strs1, char **strs2)
@@ -1018,7 +1022,7 @@ void	ft_show_duo_strs(char **strs1, char **strs2)
 	int	i;
 
 	i = 0;
-	printf(">src         :");
+	printf(">src  :");
 	while (strs1 && strs1[i])
 	{
 		printf("%s", strs1[i]);
@@ -1027,7 +1031,7 @@ void	ft_show_duo_strs(char **strs1, char **strs2)
 	}
 	i = 0;
 	printf("\n");
-	printf(">src_trans   :");
+	printf(">trans :");
 	while (strs2 && strs2[i])
 	{
 		printf("%s", strs2[i]);
@@ -1037,6 +1041,7 @@ void	ft_show_duo_strs(char **strs1, char **strs2)
 	printf("\n");
 }
 
+/*
 char	**ft_strsdup(char **src)
 {
 	char	**dest;
@@ -1490,43 +1495,6 @@ void	ft_layers_init(t_layers *strs, char *cmdline)
 }
 */
 
-int	ft_check_quotes(char **src, char **trans)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	j = 0;
-	(void)src;
-	ft_show_strs(src);
-	ft_show_strs(trans);
-	while (trans && trans[i])
-	{
-		while (trans[i][j])
-		{
-			trans[i][j] = 'X';
-			j++;
-		}
-		j = 0;
-		i++;
-	}
-	// int		i;
-	// int		sq;
-	// int		dq;
-
-	// i = 0;
-	// sq = 0;
-	// dq = 0;
-	// while (src && src[i])
-	// 	ft_quotes_focus(strs, i++, &sq, &dq);
-	// if (!ft_check_format_quotes(strs))
-	// {
-	// 	ft_destroy_layers(&strs);
-	// 	return (0);
-	// }
-	return (1);
-}
-
 /*
 int	ft_check_angl_brackets(char **src, char **trans)
 {
@@ -1575,10 +1543,108 @@ int	ft_check_pipes(char **src, char **trans)
 	return (1);
 }
 */
+
+
+
+void	ft_quotes_focus(char **src, char **trans, int i, int *quotes)//done
+{
+	if (src[0][i] == '\'' && (quotes[DOUBLE] % 2) == 0)
+	{
+		trans[0][i] = '\'';
+		quotes[SIMPLE] += 1;
+	}
+	else if (src[0][i] == '\"' && (quotes[SIMPLE] % 2) == 0)
+	{
+		trans[0][i] = '\"';
+		quotes[DOUBLE] += 1;
+	}
+}
+
+int	ft_check_format_quotes(int *quotes)//done
+{
+	if ((quotes[SIMPLE] % 2) != 0 || (quotes[DOUBLE] % 2) != 0)
+		return (0);
+	return (1);
+}
+
+void	ft_angled_brackets_focus(char **src, char **trans, int i, int *quotes)
+{
+	if ((src[0][i] == '<' || src[0][i] == '>') && ft_check_format_quotes(quotes))
+		trans[0][i] = src[0][i];
+}
+
+
+char	**ft_get_wrong_angl_brackets(void)
+{
+	char	**needle;
+
+	needle = (char **)malloc(sizeof(char *) * 5);
+	if (!needle)
+		return (NULL);
+	needle[0] = ft_strdup("<<<");
+	needle[1] = ft_strdup(">>>");
+	needle[2] = ft_strdup("><");
+	needle[3] = ft_strdup("<>");
+	needle[4] = NULL;
+	return (needle);
+}
+
+int	ft_check_format_angl_brackets(char *src, char *trans)
+{
+	char	**needle;///reduire
+	int		i;
+
+	i = -1;
+	needle = ft_get_wrong_angl_brackets();
+	while (needle[++i])
+	{
+		if (ft_strnstr(trans, needle[i], ft_strlen(trans)))
+		{
+			ft_full_free((void **)needle);
+			return (0);
+		}
+	}
+	i = ft_strlen(trans);
+	if (i >= 2 && trans[i - 2] && ft_strchr("<>", trans[i - 2]))
+		if (ft_strchr("\t\n \"\'#&*./|~<>", src[i - 1]) \
+			|| (!ft_isprint(src[i - 1])))
+			{
+				ft_full_free((void **)needle);
+				return (0);
+			}
+	if (i >= 1 && trans[i - 1] && ft_strchr("<>", trans[i - 1]))
+		{
+			ft_full_free((void **)needle);
+			return (0);
+		}
+		ft_full_free((void **)needle);
+	return (1);
+}
+
+int	ft_check_quotes(char **src, char **trans)
+{
+	int	i;
+	int	quotes[2];
+
+	i = 0;
+	quotes[SIMPLE] = 0;
+	quotes[DOUBLE] = 0;
+	while (src[0] && src[0][i])
+	{
+		ft_quotes_focus(src, trans, i, quotes);
+		ft_angled_brackets_focus(src, trans, i, quotes);
+		i++;
+	}
+	if (!ft_check_format_quotes(quotes) \
+		|| !ft_check_format_angl_brackets(src[0], trans[0]))
+		return (0);
+	return (1);
+}
+
 int	ft_check_syntax(t_twins *origin)
 {
-	//ft_check_quotes(origin->src, origin->trans);
-	(void)origin;
+	if (!ft_check_quotes(origin->src, origin->trans))
+		return (0);
 	return (1);
 }
 
@@ -1649,6 +1715,12 @@ void	ft_free_parsed(t_parsed *lst)//done
 	}
 }
 
+void	ft_show_twins(t_twins *twins)
+{
+	printf("%d\n", twins->len);
+	ft_show_duo_strs(twins->src, twins->trans);
+}
+
 t_parsed	*ft_minishell_parsing(char *str1)
 {
 	t_parsed	*lst;
@@ -1661,12 +1733,14 @@ t_parsed	*ft_minishell_parsing(char *str1)
 	origin = NULL;
 	origin = ft_init_origin(origin, str1);
 	//book = NULL;
+	ft_show_twins(origin);
 	if (ft_check_syntax(origin))
 	{
 	//	twins = ft_split_on_pipes(origin);
 	//	book = ft_split_whithin_pipes(twins);
 	//	lst = ft_book_translation(book);
 	}
+	ft_show_twins(origin);
 	ft_free_twins(origin);
 	return (lst);
 }
@@ -1710,7 +1784,7 @@ int	main(void)
 		tmp[n] = '\0';
 		cmdline = ft_strtrim(tmp, "\a\b\t\n\v\f\r ");
 		ft_true_free((void **)&tmp);
-		lst = ft_minishell_parsing(cmdline);
+		lst = ft_minishell_parsing(cmdline);//////en cours
 		//printer le contenu de la lst;
 		ft_true_free((void **)&lst);
 		printf("\n\n=====================================================\n\n");

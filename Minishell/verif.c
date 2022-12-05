@@ -35,6 +35,7 @@ void	ft_trafic(t_lst *lst)
 int	main(void)
 {
 	t_lst *lst;
+	int	tab[2];
 
 	lst = (t_lst *)malloc(sizeof(t_lst));
 	lst->str = (char *)malloc(sizeof(char) * 8);
@@ -50,6 +51,9 @@ int	main(void)
 	ft_trafic(lst);
 	printf("%d, %s\n", lst->n, lst->str);
 	printf("%d, %s\n", lst->next->n, lst->next->str);
+	tab[0] = 5;
+	tab[1] = tab[0] * 5;
+	printf("%d %d\n", tab[0], tab[1]);
 	//verif si transmettre un lst** est nécessaire
 	//verif si un str déplacé permet toujours de le free ou non
 	return (0);
