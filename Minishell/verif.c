@@ -23,6 +23,7 @@ void	ft_modif(t_lst *lst)
 	lst->next = new;
 }
 
+
 void	ft_trafic(t_lst *lst)
 {
 	while (lst)
