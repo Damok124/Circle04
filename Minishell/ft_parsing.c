@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/03 11:22:39 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/05 01:49:57 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,9 @@
 
 #define SRC 0
 #define TRANS 1
+#define STDIN 0
+#define STDOUT 1
+#define STDERR 2
 /*
 typedef struct s_size {
 	int	second;
@@ -55,20 +58,18 @@ typedef struct s_quantity {
 }		t_quantity;///////////a eviter si possible
 
 typedef struct s_parsed {
-	int		empty;
-	char	**cmds;
-	char	**redirections;
-	int		heredocs;
-}	t_parsed;
+	int				empty;
+	char			**cmds;
+	char			**redirections;
+	int				heredocs;
+	struct s_parsed	*next;
+}					t_parsed;
 
 typedef struct s_book {
 	char			*src;
 	char			*s_trans;
 	char			**dest;
 	char			**d_trans;
-	char			**cmds;
-	char			**redirections;
-	int				empty;
 	struct s_book	*next;
 }					t_book;
 
@@ -77,6 +78,33 @@ typedef struct s_twins {
 	char	**trans;
 	int		len;
 }			t_twins;
+
+void	ft_close_stdfds(void)
+{
+	close(STDIN);
+	close(STDOUT);
+	close(STDERR);
+}
+
+void	ft_true_free(void **ptr)
+{
+	if (*ptr)
+	{
+		free(*ptr);
+		*ptr = NULL;
+	}
+}
+
+void ft_full_free(void **tobefreed)
+{
+	int i;
+
+	i = -1;
+	while (tobefreed && tobefreed[++i])
+		ft_true_free(&tobefreed[i]);
+	free(tobefreed);
+	tobefreed = NULL;
+}
 
 void	*ft_memset(void *s, int c, size_t n)
 {
@@ -1451,27 +1479,8 @@ t_pages	*ft_fill_book(t_blocks *blocks)
 	}
 	return (first);
 }
-
-void ft_minishell_parsing(t_layers *strs)
-{
-	t_blocks	*blocks;
-	t_pages		*book;
-
-	//ft_layers_visualizer(strs);
-	ft_translate_all(strs);
-	//ft_layers_visualizer(strs);
-	if (strs && strs->src[0])
-	{
-		blocks = ft_layers_pipe_split(strs);
-		//ft_show_duo_strs(blocks->src, blocks->src_trans);
-		book = ft_fill_book(blocks);
-	}
-
-	//ft_show_book(book);
-	(void)blocks;
-	(void)book;
-}
-
+*/
+/*
 void	ft_layers_init(t_layers *strs, char *cmdline)
 {
 	strs->src = ft_strdup(cmdline);
@@ -1480,45 +1489,233 @@ void	ft_layers_init(t_layers *strs, char *cmdline)
 	strs->src_trans = (char *)ft_memset(strs->src_trans, '0', strs->src_len);
 }
 */
+
+int	ft_check_quotes(char **src, char **trans)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	(void)src;
+	ft_show_strs(src);
+	ft_show_strs(trans);
+	while (trans && trans[i])
+	{
+		while (trans[i][j])
+		{
+			trans[i][j] = 'X';
+			j++;
+		}
+		j = 0;
+		i++;
+	}
+	// int		i;
+	// int		sq;
+	// int		dq;
+
+	// i = 0;
+	// sq = 0;
+	// dq = 0;
+	// while (src && src[i])
+	// 	ft_quotes_focus(strs, i++, &sq, &dq);
+	// if (!ft_check_format_quotes(strs))
+	// {
+	// 	ft_destroy_layers(&strs);
+	// 	return (0);
+	// }
+	return (1);
+}
+
+/*
+int	ft_check_angl_brackets(char **src, char **trans)
+{
+	int		i;
+	int		sq;
+	int		dq;
+
+	i = 0;
+	sq = 0;
+	dq = 0;
+	while (src && src[i])
+	{
+		ft_quotes_focus(strs, i, &sq, &dq);
+		ft_angled_brackets_focus(strs, i, &sq, &dq);
+		i++;
+	}
+	if (!ft_check_format_angl_brackets(strs))
+	{
+		ft_destroy_layers(&strs);
+		return (0);
+	}
+	return (1);
+}
+
+int	ft_check_pipes(char **src, char **trans)
+{
+	int		i;
+	int		sq;
+	int		dq;
+
+	i = 0;
+	sq = 0;
+	dq = 0;
+	while (src && src[i])
+	{
+		ft_quotes_focus(strs, i, &sq, &dq);
+		ft_angled_brackets_focus(strs, i, &sq, &dq);
+		ft_pipes_focus(strs, i, &sq, &dq);
+		i++;
+	}
+	if (!ft_check_format_pipes(strs))
+	{
+		ft_destroy_layers(&strs);
+		return (0);
+	}
+	return (1);
+}
+*/
+int	ft_check_syntax(t_twins *origin)
+{
+	//ft_check_quotes(origin->src, origin->trans);
+	(void)origin;
+	return (1);
+}
+
+char	*ft_twin_str(char *str1)//done
+{
+	char *str2;
+
+	str2 = ft_strdup(str1);
+	if (str2)
+		str2 = ft_memset(str2, '0', ft_strlen(str1));
+	else
+		str2 = NULL;
+	return (str2);
+}
+
+t_twins	*ft_init_origin(t_twins *origin, char *str1)//done
+{
+	origin = (t_twins *)malloc(sizeof(t_twins));
+	if (!origin)
+		return (NULL);
+	origin->src = (char **)malloc(sizeof(char *) * 2);
+	if (!origin->src)
+	{
+		ft_true_free((void **)&origin);
+		return (NULL);
+	}
+	origin->trans = (char **)malloc(sizeof(char *) * 2);
+	if (!origin->trans)
+	{
+		ft_full_free((void **)origin->src);
+		ft_true_free((void **)&origin);
+		return (NULL);
+	}
+	origin->src[0] = str1;
+	origin->src[1] = NULL;
+	origin->trans[0] = ft_twin_str(str1);
+	origin->trans[1] = NULL;
+	origin->len = ft_strlen(origin->src[0]);
+	return (origin);
+}
+
+void	ft_free_twins(t_twins *lst)//done
+{
+	if (lst)
+	{
+		if (lst->src)
+			ft_full_free((void **)lst->src);
+		if (lst->trans)
+			ft_full_free((void **)lst->trans);
+		ft_true_free((void **)&lst);
+	}
+}
+
+void	ft_free_parsed(t_parsed *lst)//done
+{
+	t_parsed *tmp;
+
+	tmp = lst;
+	while (tmp)
+	{
+		if (tmp->cmds)
+			ft_full_free((void **)tmp->cmds);
+		if (tmp->redirections)
+			ft_full_free((void **)tmp->redirections);
+		lst = lst->next;
+		ft_true_free((void **)&tmp);
+		tmp = lst;
+	}
+}
+
+t_parsed	*ft_minishell_parsing(char *str1)
+{
+	t_parsed	*lst;
+	t_twins		*origin;
+	//t_twins		twins;
+	//t_book		*book;
+
+	lst = NULL;//a suppr
+	//lst = ft_init_new_elem(NULL, NULL, 0, 0);
+	origin = NULL;
+	origin = ft_init_origin(origin, str1);
+	//book = NULL;
+	if (ft_check_syntax(origin))
+	{
+	//	twins = ft_split_on_pipes(origin);
+	//	book = ft_split_whithin_pipes(twins);
+	//	lst = ft_book_translation(book);
+	}
+	ft_free_twins(origin);
+	return (lst);
+}
+
+t_parsed	*ft_init_new_elem(char **cmds, char **redir, int hdocs, int	empty)//done
+{
+	t_parsed	*lst;
+
+	lst = (t_parsed *)malloc(sizeof(t_parsed));
+	if (!lst)
+		return (NULL);
+	lst->empty = empty;
+	lst->cmds = cmds;
+	lst->redirections = redir;
+	lst->heredocs = hdocs;
+	lst->next = NULL;
+	return (lst);
+}
+
 //test multi cmdline
 int	main(void)
 {
-	char	*name;
-	char	*cmdline;
-	char	**tmp;
-	int		fd[5];
-	int		i;
-	int		n[5] = {0, 0, 0, 0, 0};
+	t_parsed	*lst;
+	char		*name;
+	char		*cmdline;
+	char		*tmp;
+	int			fd;
+	int			i;
+	int			n;
 
-	tmp = (char **)malloc(sizeof(char *) * 6);
-	tmp[5] = NULL;
+	tmp = NULL;
 	name = ft_strdup("cmdline0");
 	i = -1;
 	while (++i < 5)
 	{
-		tmp[i] = (char *)malloc(sizeof(char) * (200 + 1));
+		tmp = (char *)malloc(sizeof(char) * (200 + 1));
 		name[7] = i + 48;
-		fd[i] = open(name, O_RDONLY);
-		n[i] = read(fd[i], tmp[i], 200);
-		tmp[i][n[i]] = '\0';
-		cmdline = ft_strtrim(tmp[i], "\a\b\t\n\v\f\r ");
-		printf("%s\n", cmdline);
-	//ft_minishell_parsing(&strs);
-		free(cmdline);
-		cmdline = NULL;
+		fd = open(name, O_RDONLY);
+		n = read(fd, tmp, 200);
+		close(fd);
+		tmp[n] = '\0';
+		cmdline = ft_strtrim(tmp, "\a\b\t\n\v\f\r ");
+		ft_true_free((void **)&tmp);
+		lst = ft_minishell_parsing(cmdline);
+		//printer le contenu de la lst;
+		ft_true_free((void **)&lst);
+		printf("\n\n=====================================================\n\n");
 	}
-	while (--i >= 0)
-	{
-		free(tmp[i]);
-		tmp[i] = NULL;
-		close(fd[i]);
-	}
-	free(name);
-	name = NULL;
-	free(tmp);
-	tmp = NULL;
-	close(0);
-	close(1);
-	close(2);
+	ft_true_free((void **)&name);
+	ft_close_stdfds();
 	return (0);
 }
