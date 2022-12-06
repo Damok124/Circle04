@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/05 20:49:28 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/06 16:04:58 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@
 #define STDIN 0
 #define STDOUT 1
 #define STDERR 2
-#define	SIMPLE 0
-#define	DOUBLE 1
+#define SIMPLE 0
+#define DOUBLE 1
 /*
 typedef struct s_size {
 	int	second;
@@ -458,21 +458,6 @@ int	ft_strslen(char **strs)
 	return (i);
 }
 
-/*
-void	ft_destroy_layers(t_layers **strs)
-{
-	(*strs)->src = NULL;//tofree
-	(*strs)->src_trans = NULL;//tofree
-	*strs = NULL;
-}
-
-void	ft_layers_visualizer(t_layers *strs)
-{
-	printf(">src         :%s\n>", strs->src);
-	printf("src_trans   :%s\n>", strs->src_trans);
-	printf("src_len     :%d\n", strs->src_len);
-}
-
 int	ft_isspace(int c)
 {
 	if ((c > 8 && c < 17) || c == 32)
@@ -520,6 +505,21 @@ int	ft_isinfile(char *str)
 			return (2);
 	}
 	return (0);
+}
+
+/*
+void	ft_destroy_layers(t_layers **strs)
+{
+	(*strs)->src = NULL;//tofree
+	(*strs)->src_trans = NULL;//tofree
+	*strs = NULL;
+}
+
+void	ft_layers_visualizer(t_layers *strs)
+{
+	printf(">src         :%s\n>", strs->src);
+	printf("src_trans   :%s\n>", strs->src_trans);
+	printf("src_len     :%d\n", strs->src_len);
 }
 
 char	*ft_get_var_env_val(t_layers *strs, int i)
@@ -1022,7 +1022,7 @@ void	ft_show_duo_strs(char **strs1, char **strs2)
 	int	i;
 
 	i = 0;
-	printf(">src  :");
+	printf(">src   :");
 	while (strs1 && strs1[i])
 	{
 		printf("%s", strs1[i]);
@@ -1041,7 +1041,6 @@ void	ft_show_duo_strs(char **strs1, char **strs2)
 	printf("\n");
 }
 
-/*
 char	**ft_strsdup(char **src)
 {
 	char	**dest;
@@ -1057,6 +1056,7 @@ char	**ft_strsdup(char **src)
 	return (dest);
 }
 
+/*
 char	**ft_parallel_split(char **model, char *to_split)
 {
 	int		i;
@@ -1485,65 +1485,6 @@ t_pages	*ft_fill_book(t_blocks *blocks)
 	return (first);
 }
 */
-/*
-void	ft_layers_init(t_layers *strs, char *cmdline)
-{
-	strs->src = ft_strdup(cmdline);
-	strs->src_len = ft_strlen(strs->src);
-	strs->src_trans = ft_strdup(strs->src);
-	strs->src_trans = (char *)ft_memset(strs->src_trans, '0', strs->src_len);
-}
-*/
-
-/*
-int	ft_check_angl_brackets(char **src, char **trans)
-{
-	int		i;
-	int		sq;
-	int		dq;
-
-	i = 0;
-	sq = 0;
-	dq = 0;
-	while (src && src[i])
-	{
-		ft_quotes_focus(strs, i, &sq, &dq);
-		ft_angled_brackets_focus(strs, i, &sq, &dq);
-		i++;
-	}
-	if (!ft_check_format_angl_brackets(strs))
-	{
-		ft_destroy_layers(&strs);
-		return (0);
-	}
-	return (1);
-}
-
-int	ft_check_pipes(char **src, char **trans)
-{
-	int		i;
-	int		sq;
-	int		dq;
-
-	i = 0;
-	sq = 0;
-	dq = 0;
-	while (src && src[i])
-	{
-		ft_quotes_focus(strs, i, &sq, &dq);
-		ft_angled_brackets_focus(strs, i, &sq, &dq);
-		ft_pipes_focus(strs, i, &sq, &dq);
-		i++;
-	}
-	if (!ft_check_format_pipes(strs))
-	{
-		ft_destroy_layers(&strs);
-		return (0);
-	}
-	return (1);
-}
-*/
-
 
 
 void	ft_quotes_focus(char **src, char **trans, int i, int *quotes)//done
@@ -1634,6 +1575,93 @@ int	ft_check_format_pipes(char *trans)//done
 		if (i > 0 && trans[i - 1] && trans[i] == '|' && trans[i - 1] == '|')
 			return (0);
 	return (1);
+}
+
+void	ft_replace_spaces(char **trans)//done
+{
+	int	i;
+
+	i = 0;
+	while (trans && trans[0] && trans[0][i])
+	{
+		if (ft_strchr("<>", trans[0][i]) && trans[0][i + 1] == ' ')
+		{
+			while (trans[0][i + 1] && trans[0][i + 1] == ' ')
+			{
+				trans[0][i + 1] = '0';
+				i++;
+			}
+			i -= 1;
+		}
+		i++;
+	}
+}
+
+void	ft_rename_angl_brackets(char **trans)//done
+{
+	int	i;
+
+	i = 0;
+	while (trans && trans[0] && trans[0][i] && trans[0][i + 1])
+	{
+		if (trans[0][i] == '<' && trans[0][i + 1] == '<')
+		{
+			trans[0][i] = 'H';
+			trans[0][i + 1] = '0';
+			i++;
+		}
+		else if (trans[0][i] == '>' && trans[0][i + 1] == '>')
+		{
+			trans[0][i] = 'A';
+			trans[0][i + 1] = '0';
+			i++;
+		}
+		i++;
+	}
+}
+
+void	ft_spaces_focus(char **src, char **trans, int i, int *quotes)//done
+{
+	if (ft_isspace(src[0][i]) && !(quotes[SIMPLE] % 2) && !(quotes[DOUBLE] % 2))
+		trans[0][i] = ' ';
+}
+
+void	ft_var_env_focus(char **src, char **trans, int i, int s_quotes)//done
+{
+	int	len;
+
+	len = ft_strlen(src[0]);
+	if ((i == 0 && src[0][i] == '$' && len > 1) \
+		|| (i != (len - 1) && src[0][i] == '$' && (s_quotes % 2) == 0))
+	{
+		if (i > 0 && trans[0][i - 1] && trans[0][i - 1] == '$' \
+			&& src[0][i] == '$')
+			trans[0][i - 1] = '0';
+		trans[0][i] = src[0][i];
+	}
+}
+
+void	ft_translation(char **src, char **trans)
+{
+	int	i;
+	int	quotes[2];
+
+	i = 0;
+	quotes[SIMPLE] = 0;
+	quotes[DOUBLE] = 0;
+	while (src[0] && src[0][i])
+	{
+		ft_quotes_focus(src, trans, i, quotes);
+		ft_angled_brackets_focus(src, trans, i, quotes);
+		ft_pipes_focus(src, trans, i, quotes);
+		ft_var_env_focus(src, trans, i, quotes[SIMPLE]);
+		ft_spaces_focus(src, trans, i, quotes);
+		i++;
+	}
+	ft_replace_spaces(trans);
+	ft_rename_angl_brackets(trans);
+	//if (ft_strnstr(strs->src_trans, "H0", strs->src_len))////
+	//	ft_disable_var_env(strs);
 }
 
 int	ft_check_syntax(char **src, char **trans)//done
@@ -1743,15 +1771,17 @@ t_parsed	*ft_minishell_parsing(char *str1)
 	origin = NULL;
 	origin = ft_init_origin(origin, str1);
 	//book = NULL;
-	ft_show_twins(origin);
-	printf("\nreturn %d\n", ft_check_syntax(origin->src, origin->trans));
-	//if (ft_check_syntax(origin->src, origin->trans))
-	//{
+	ft_show_twins(origin);//first
+	if (ft_check_syntax(origin->src, origin->trans))
+	{
+		ft_translation(origin->src, origin->trans);
+		//var env
+		//spaces
 	//	twins = ft_split_on_pipes(origin);
 	//	book = ft_split_whithin_pipes(twins);
 	//	lst = ft_book_translation(book);
-	//}
-	ft_show_twins(origin);
+	}
+	ft_show_twins(origin);//last
 	ft_free_twins(origin);
 	return (lst);
 }
