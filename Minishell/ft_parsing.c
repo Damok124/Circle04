@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/06 16:04:58 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/06 19:25:34 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1184,7 +1184,7 @@ void	ft_pages_src_split(t_pages **page)
 		i++;
 	}
 }
-
+*/
 char **ft_split_at_index(char *str, int i)
 {
 	char	**final;
@@ -1206,7 +1206,7 @@ char **ft_split_at_index(char *str, int i)
 	}
 	return (final);
 }
-
+/*
 void	ft_include_spaces(t_pages **page)
 {
 	t_pages		*copy;
@@ -1641,6 +1641,60 @@ void	ft_var_env_focus(char **src, char **trans, int i, int s_quotes)//done
 	}
 }
 
+void	ft_include_spaces(t_pages *page)
+{
+	t_blocks	parts;
+	char		*buffer;
+	int			i;
+
+	i = 0;
+	while (page)
+	{
+		while (page->trans && page->trans[i])
+		{
+			if (i != 0 && ft_strchr("<>AH", page->trans[i]) && !ft_isspace(page->trans[i - 1]))
+			{
+				parts.src = ft_split_at_index(page->src, i);
+				parts.src_trans = ft_split_at_index(page->trans, i);
+				buffer = ft_strjoin(parts.src[0], " ");
+				page->src = ft_strjoin(buffer, parts.src[1]);
+				buffer = ft_strjoin(parts.src_trans[0], " ");
+				page->trans = ft_strjoin(buffer, parts.src_trans[1]);
+				i = -1;
+			}
+			i++;
+		}
+		page = page->next;
+	}
+}
+
+t_twins	*ft_init_twins(int size_src, int	size_trans, int len)
+{
+	t_twins *new;
+
+	new = (t_twins *)malloc(sizeof(t_twins));
+	if (!new)
+		return (NULL);
+}
+
+void	ft_add_spaces(char **src, char **trans, int *i)
+{
+	t_twins	*tmp;
+
+	tmp = ft_init_twins(3, 3, 0);
+	if ((*i) > 0 && trans && trans[0] && trans[0][(*i)] \
+		&& ft_strchr("<>AH", trans[0][(*i)]) && !ft_isspace(trans[0][(*i) - 1]))
+	{
+		parts.src = ft_split_at_index(src, (*i));
+		parts.src_trans = ft_split_at_index(trans[0], (*i));
+		buffer = ft_strjoin(parts.src[0], " ");
+		src = ft_strjoin(buffer, parts.src[1]);
+		buffer = ft_strjoin(parts.src_trans[0], " ");
+		trans[0] = ft_strjoin(buffer, parts.src_trans[1]);
+		(*i) = -1;
+	}
+}
+
 void	ft_translation(char **src, char **trans)
 {
 	int	i;
@@ -1660,6 +1714,7 @@ void	ft_translation(char **src, char **trans)
 	}
 	ft_replace_spaces(trans);
 	ft_rename_angl_brackets(trans);
+	ft_add_spaces(src, trans, &i);
 	//if (ft_strnstr(strs->src_trans, "H0", strs->src_len))////
 	//	ft_disable_var_env(strs);
 }
@@ -1703,13 +1758,13 @@ t_twins	*ft_init_origin(t_twins *origin, char *str1)//done
 	origin = (t_twins *)malloc(sizeof(t_twins));
 	if (!origin)
 		return (NULL);
-	origin->src = (char **)malloc(sizeof(char *) * 2);
+	origin->src = (char **)malloc(sizeof(char *) * 5);////c'était 2
 	if (!origin->src)
 	{
 		ft_true_free((void **)&origin);
 		return (NULL);
 	}
-	origin->trans = (char **)malloc(sizeof(char *) * 2);
+	origin->trans = (char **)malloc(sizeof(char *) * 5);////
 	if (!origin->trans)
 	{
 		ft_full_free((void **)origin->src);
