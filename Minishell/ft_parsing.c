@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/06 19:25:34 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/07 12:17:59 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1641,61 +1641,195 @@ void	ft_var_env_focus(char **src, char **trans, int i, int s_quotes)//done
 	}
 }
 
-void	ft_include_spaces(t_pages *page)
+void	ft_only_strs_free(char **tobefreed)//done
 {
-	t_blocks	parts;
-	char		*buffer;
-	int			i;
+	int	i;
+
+	i = -1;
+	while (tobefreed && tobefreed[++i])
+	{
+		free(tobefreed[i]);
+		tobefreed[i] = NULL;
+	}
+}
+
+void	ft_add_spaces(char **src, char **trans)//done
+{
+	int	i;
 
 	i = 0;
-	while (page)
+	while (trans && trans[0] && trans[0][i])
 	{
-		while (page->trans && page->trans[i])
+		if (i > 0 && ft_strchr("<>AH", trans[0][i]) \
+			&& !ft_isspace(trans[0][i - 1]))
 		{
-			if (i != 0 && ft_strchr("<>AH", page->trans[i]) && !ft_isspace(page->trans[i - 1]))
-			{
-				parts.src = ft_split_at_index(page->src, i);
-				parts.src_trans = ft_split_at_index(page->trans, i);
-				buffer = ft_strjoin(parts.src[0], " ");
-				page->src = ft_strjoin(buffer, parts.src[1]);
-				buffer = ft_strjoin(parts.src_trans[0], " ");
-				page->trans = ft_strjoin(buffer, parts.src_trans[1]);
-				i = -1;
-			}
+			src[1] = ft_substr(src[0], 0, i);
+			src[2] = ft_strdup(src[0] + i);
+			src[3] = ft_strjoin(src[1], " ");
+			src[4] = src[0];
+			src[0] = ft_strjoin(src[3], src[2]);
+			trans[1] = ft_substr(trans[0], 0, i);
+			trans[2] = ft_strdup(trans[0] + i);
+			trans[3] = ft_strjoin(trans[1], " ");
+			trans[4] = trans[0];
+			trans[0] = ft_strjoin(trans[3], trans[2]);
+			ft_only_strs_free(src + 1);
+			ft_only_strs_free(trans + 1);
+			i = 0;
+		}
+		i++;
+	}
+}
+
+int	ft_occurences_counter(char *big, char *little)//done
+{
+	int		i;
+	int		total;
+	int		big_len;
+	int		little_len;
+	char	*tmp;
+
+	tmp = NULL;
+	total = 0;
+	big_len = ft_strlen(big);
+	little_len = ft_strlen(little);
+	i = 0;
+	while (big && big[i] && little && big_len >= little_len)
+	{
+		tmp = ft_strnstr(big + i, little, little_len);
+		if (tmp)
+		{
+			i += little_len - 1;
+			tmp = NULL;
+			total++;
+		}
+		i++;
+	}
+	return (total);
+}
+
+void	ft_remove_symbol_var_env(char **src, char **trans, int i)//done
+{
+	while (src && src[0] && src[0][i] && ft_isspace(src[0][i]))
+		i++;
+	while (src && src[0] && src[0][i] && trans && trans[0] && trans[0][i] \
+		&& !ft_strchr("<>|$", trans[0][i]) && !ft_isspace(src[0][i]))
+	{
+		if (trans[0][i] == '\"')
+		{
+			i++;
+			while (trans[0][i] && trans[0][i] != '\"')
+				i++;
+		}
+		else if (trans[0][i] == '\'')
+		{
+			i++;
+			while (trans[0][i] && trans[0][i] != '\'')
+				i++;
+		}
+		i++;
+	}
+	if (src && src[0] && trans && trans[0] && src[0][i] && trans[0][i] == '$')
+		trans[0][i] = '0';
+}
+
+void	ft_disable_var_env(char **src, char **trans)//done
+{
+	char	*tmp;
+	int		heredocs;
+	int		i;
+	int		len;
+
+	i = 0;
+	tmp = NULL;
+	len = ft_strlen(trans[0]);
+	heredocs = ft_occurences_counter(trans[0], "H0");
+	while (trans && (len - i) >= 3 && heredocs)
+	{
+		tmp = ft_strnstr(trans[0] + i, "H0", 2);
+		if (tmp)
+		{
+			tmp = NULL;
+			heredocs -= 1;
+			if (ft_strnstr(trans[0] + i + 2, "$", len  - (i + 2)))
+				ft_remove_symbol_var_env(src, trans, i + 2);
 			i++;
 		}
-		page = page->next;
+		i++;
 	}
 }
 
-t_twins	*ft_init_twins(int size_src, int	size_trans, int len)
+char	*ft_get_var_env_val(char *src)//done
 {
-	t_twins *new;
+	char	*copy;
+	char	*ret;
+	int	i;
 
-	new = (t_twins *)malloc(sizeof(t_twins));
-	if (!new)
-		return (NULL);
-}
-
-void	ft_add_spaces(char **src, char **trans, int *i)
-{
-	t_twins	*tmp;
-
-	tmp = ft_init_twins(3, 3, 0);
-	if ((*i) > 0 && trans && trans[0] && trans[0][(*i)] \
-		&& ft_strchr("<>AH", trans[0][(*i)]) && !ft_isspace(trans[0][(*i) - 1]))
+	i = 0;
+	ret = NULL;
+	copy = NULL;
+	if (src)
 	{
-		parts.src = ft_split_at_index(src, (*i));
-		parts.src_trans = ft_split_at_index(trans[0], (*i));
-		buffer = ft_strjoin(parts.src[0], " ");
-		src = ft_strjoin(buffer, parts.src[1]);
-		buffer = ft_strjoin(parts.src_trans[0], " ");
-		trans[0] = ft_strjoin(buffer, parts.src_trans[1]);
-		(*i) = -1;
+		while (src[i] && ft_isalnum(src[i]))
+			i++;
+		copy = ft_substr(src, 0, i);
+		ret = getenv(copy);
+		ft_true_free((void **)&copy);
+		if (ret)
+			return (ret);
+	}
+	return ("");
+}
+
+void	ft_replace_with_val(char **src, char **trans, char *var, int i)//done
+{
+	int j;
+	int k;
+
+	j = 1;
+	k = -1;
+	if (src && src[0] && trans && trans[0] && var)
+	{
+		while (src[0][i] && src[0][i + j] && ft_isalnum(src[0][i + j]))
+			j++;
+		src[1] = ft_substr(src[0], 0, i);
+		src[2] = ft_strdup(src[0] + i + j);
+		src[3] = ft_strjoin(src[1], var);
+		src[4] = src[0];
+		src[0] = ft_strjoin(src[3], src[2]);
+		while (var[++k])
+			var[k] = '0';
+		trans[1] = ft_substr(trans[0], 0, i);
+		trans[2] = ft_strdup(trans[0] + i + j);
+		trans[3] = ft_strjoin(trans[1], var);
+		trans[4] = trans[0];
+		trans[0] = ft_strjoin(trans[3], trans[2]);
+		ft_only_strs_free(src + 1);
+		ft_only_strs_free(trans + 1);
 	}
 }
 
-void	ft_translation(char **src, char **trans)
+void	ft_include_var_env(char **src, char **trans)//done -> to improve
+{
+	int		i;
+	char	*var;
+
+	i = 0;
+	var = NULL;
+	while (src && src[0] && src[0][i] && trans && trans[0] && trans[0][i])
+	{
+		if (trans[0][i] == '$')
+		{
+			var = ft_get_var_env_val(src[0] + i + 1);
+			ft_replace_with_val(src, trans, var, i);
+			i = 0;
+		}
+		else
+			i++;
+	}
+}
+
+void	ft_translation(char **src, char **trans)//done?
 {
 	int	i;
 	int	quotes[2];
@@ -1714,9 +1848,9 @@ void	ft_translation(char **src, char **trans)
 	}
 	ft_replace_spaces(trans);
 	ft_rename_angl_brackets(trans);
-	ft_add_spaces(src, trans, &i);
-	//if (ft_strnstr(strs->src_trans, "H0", strs->src_len))////
-	//	ft_disable_var_env(strs);
+	ft_add_spaces(src, trans);
+	ft_disable_var_env(src, trans);
+	ft_include_var_env(src, trans);
 }
 
 int	ft_check_syntax(char **src, char **trans)//done
@@ -1758,13 +1892,13 @@ t_twins	*ft_init_origin(t_twins *origin, char *str1)//done
 	origin = (t_twins *)malloc(sizeof(t_twins));
 	if (!origin)
 		return (NULL);
-	origin->src = (char **)malloc(sizeof(char *) * 5);////c'était 2
+	origin->src = (char **)malloc(sizeof(char *) * 6);////c'était 2
 	if (!origin->src)
 	{
 		ft_true_free((void **)&origin);
 		return (NULL);
 	}
-	origin->trans = (char **)malloc(sizeof(char *) * 5);////
+	origin->trans = (char **)malloc(sizeof(char *) * 6);////
 	if (!origin->trans)
 	{
 		ft_full_free((void **)origin->src);
@@ -1773,8 +1907,10 @@ t_twins	*ft_init_origin(t_twins *origin, char *str1)//done
 	}
 	origin->src[0] = str1;
 	origin->src[1] = NULL;
+	origin->src[5] = NULL;
 	origin->trans[0] = ft_twin_str(str1);
 	origin->trans[1] = NULL;
+	origin->trans[5] = NULL;
 	origin->len = ft_strlen(origin->src[0]);
 	return (origin);
 }
