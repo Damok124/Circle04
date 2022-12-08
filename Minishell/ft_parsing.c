@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/08 18:44:19 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/08 19:52:34 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,40 +27,6 @@
 #define STDERR 2
 #define SIMPLE 0
 #define DOUBLE 1
-/*
-typedef struct s_size {
-	int	second;
-	int	third;
-}		t_size;///////revoir
-
-typedef struct s_blocks {
-	char	**src;
-	char	**src_trans;
-}			t_blocks;//////////inutile
-
-
-typedef struct s_layers {
-	char	*src;
-	char	*src_trans;
-	int		src_len;
-}			t_layers;////////doublon
-
-typedef struct s_sections {
-	char	*first;
-	char	*mid;
-	char	*new_mid;
-	char	*last;
-	int		*cut;
-}			t_sections;
-
-typedef struct s_book {
-	char			*src;
-	char			*s_trans;
-	char			**dest;
-	char			**d_trans;
-	struct s_book	*next;
-}					t_book;
-*/
 
 typedef struct s_parsed {
 	int				empty;
@@ -78,6 +44,9 @@ typedef struct s_twins {
 	struct s_twins	*next;
 }			t_twins;
 
+/////////////////////////////////////////////////////
+//ALREADY INCLUDED IN LIBFT
+
 void	ft_close_stdfds(void)
 {
 	close(STDIN);
@@ -94,9 +63,9 @@ void	ft_true_free(void **ptr)
 	}
 }
 
-void ft_full_free(void **tobefreed)
+void	ft_full_free(void **tobefreed)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	while (tobefreed && tobefreed[++i])
@@ -419,8 +388,9 @@ void	ft_show_strs(char **strs)
 }
 
 ////////////////////////////////////////////////////////
+//TO INCLUDE IN LIBFT
 
-char	*ft_strtrim(char const *s1, char const *set)
+char	*ft_strtrim(char const *s1, char const *set)//update libft
 {
 	char	*str;
 	ssize_t	i;
@@ -445,7 +415,7 @@ char	*ft_strtrim(char const *s1, char const *set)
 	return (str);
 }
 
-int	ft_strslen(char **strs)
+int	ft_strslen(char **strs)//done go to libft
 {
 	int	i;
 
@@ -455,7 +425,18 @@ int	ft_strslen(char **strs)
 	return (i);
 }
 
-int	ft_isspace(int c)
+char	**ft_alloc_strs(int size)//done go to libft
+{
+	char **strs;
+
+	strs = (char **)malloc(sizeof(char *) * (size + 1));
+	if (!strs)
+		return (NULL);
+	strs[size] = NULL;
+	return (strs);
+}
+
+int	ft_isspace(int c)//done go to libft
 {
 	if ((c > 8 && c < 17) || c == 32)
 		return (1);
@@ -463,21 +444,70 @@ int	ft_isspace(int c)
 		return (0);
 }
 
-int	ft_iscmd(char *str)
+char	**ft_strsdup(char **src)//done go to libft
+{
+	char	**dest;
+	int		i;
+
+	i = 0;
+	while (src && src[i])
+		i++;
+	dest = ft_alloc_strs(i);
+	while (--i >= 0)
+		dest[i] = ft_strdup(src[i]);
+	return (dest);
+}
+
+// char **ft_split_at_index(char *str, int i)//optionnal go to libft
+// {
+// 	char	**final;
+// 	char	*first;
+// 	char	*last;
+//
+// 	final = NULL;
+// 	if (str)
+// 	{
+// 		last = ft_strdup(str + i);
+// 		str[i] = '\0';
+// 		first = ft_strdup(str);
+// 		final = (char **)malloc(sizeof(char *) * 3);
+// 		if (!final)
+// 			return (NULL);
+// 		final[0] = first;
+// 		final[1] = last;
+// 		final[2] = NULL;
+// 	}
+// 	return (final);
+// }
+
+////////////////////////////////////////////////////////////////////////
+//TO PARSING.H
+
+int	ft_iscmd(char *str)//done
 {
 	if (str && str[0] && str[0] == '0')
 		return (1);
 	return (0);
 }
 
-int	ft_isquotes(char c)
+int	ft_isquotes(char c)//done
 {
 	if (c == '\'' || c == '\"')
 		return (1);
 	return (0);
 }
 
-int	ft_isoutfile(char *str)
+int	ft_isheredoc(char *str)//done
+{
+	if (str && str[0])
+	{
+		if(str[0] == 'H')
+			return (1);
+	}
+	return (0);
+}
+
+int	ft_isoutfile(char *str)//done
 {
 	if (str && str[0])
 	{
@@ -489,7 +519,7 @@ int	ft_isoutfile(char *str)
 	return (0);
 }
 
-int	ft_isambiguous(char *str)
+int	ft_isambiguous(char *str)//done
 {
 	if (str && str[0])
 	{
@@ -499,18 +529,7 @@ int	ft_isambiguous(char *str)
 	return (0);
 }
 
-
-int	ft_isheredoc(char *str)
-{
-	if (str && str[0])
-	{
-		if(str[0] == 'H')
-			return (1);
-	}
-	return (0);
-}
-
-int	ft_isinfile(char *str)
+int	ft_isinfile(char *str)//done
 {
 	if (str && str[0])
 	{
@@ -522,539 +541,28 @@ int	ft_isinfile(char *str)
 	return (0);
 }
 
-int	ft_isredirection(char *str)
+int	ft_isredirection(char *str)//done
 {
 	if (ft_isinfile(str) || ft_isoutfile(str) || ft_isambiguous(str))
 		return (1);
 	return (0);
 }
 
-int	ft_is_solo(char *str)
+int	ft_is_solo(char *str)//done
 {
 	if (str && str[0] && (str[0] == '<' || str[0] == '>' || str[0] == '?'))
 		return (1);
 	return (0);
 }
 
-int	ft_is_duo(char *str)
+int	ft_is_duo(char *str)//done
 {
 	if (str && str[0] && (str[0] == 'H' || str[0] == 'A' || str[0] == '@'))
 		return (1);
 	return (0);
 }
 
-
-/*
-void	ft_destroy_layers(t_layers **strs)
-{
-	(*strs)->src = NULL;//tofree
-	(*strs)->src_trans = NULL;//tofree
-	*strs = NULL;
-}
-
-void	ft_layers_visualizer(t_layers *strs)
-{
-	printf(">src         :%s\n>", strs->src);
-	printf("src_trans   :%s\n>", strs->src_trans);
-	printf("src_len     :%d\n", strs->src_len);
-}
-
-char	*ft_get_var_env_val(t_layers *strs, int i)
-{
-	char	*val;
-	char	*tmp;
-	int		j;
-
-	j = 0;
-	i++;
-	while (strs && strs->src && strs->src[i + j] \
-		&& ft_isalnum(strs->src[i + j]))
-		j++;
-	tmp = (char *)malloc(sizeof(char) * (j + 1));
-	if (!tmp)
-		return (NULL);
-	ft_strlcpy(tmp, strs->src + i, j + 1);
-	printf("tmp %ld:%s\n", ft_strlen(tmp), tmp);
-	val = getenv(tmp);
-	if (!val)
-		return ("");
-	printf("val %ld:%s\n", ft_strlen(val), val);
-	return (val);
-}
-
-char	*ft_get_mid_part(char *str)
-{
-	char	*tmp;
-	int		i;
-
-	i = 0;
-	tmp = NULL;
-	if (str && str[i] == '$')
-	{
-		i++;
-		while (str[i] && ft_isalnum(str[i]))
-			i++;
-		tmp = (char *)malloc(sizeof(char) * (i + 1));
-		if (!tmp)
-			return (NULL);
-		ft_strlcpy(tmp, str, i + 1);
-	}
-	return (tmp);
-}
-
-void	ft_get_parts_src(char *full, t_sections *parts, t_size *index)
-{
-	index->second = *parts->cut;
-	parts->mid = ft_get_mid_part(full + index->second);
-	index->third = index->second + ft_strlen(parts->mid);
-	parts->last = ft_strdup(full + index->third);
-	full[index->second] = '\0';
-	parts->first = ft_strdup(full);
-}
-
-void	ft_get_parts_trans(char *trans, t_sections *parts, t_size *index)
-{
-	parts->last = ft_strdup(trans + index->third);
-	trans[index->second] = '\0';
-	parts->first = ft_strdup(trans);
-}
-
-void	ft_join_parts_to_layers(t_layers *strs, t_sections **parts)
-{
-	char	*tmp;
-
-	tmp = ft_strjoin(parts[SRC]->new_mid, parts[SRC]->last);
-	strs->src = ft_strjoin(parts[SRC]->first, tmp);
-	tmp = ft_strjoin(parts[TRANS]->new_mid, parts[TRANS]->last);
-	strs->src_trans = ft_strjoin(parts[TRANS]->first, tmp);
-}
-
-t_sections	*ft_init_t_sections(void)
-{
-	t_sections *part;
-
-	part = (t_sections *)malloc(sizeof(t_sections));
-	part->first = NULL;
-	part->mid = NULL;
-	part->new_mid = NULL;
-	part->last = NULL;
-	part->cut = NULL;
-	return (part);
-}
-
-void	ft_var_env_to_layers(t_layers *strs, char *val, int *i)
-{
-	t_sections	**parts;
-	t_size		index;
-	char		*copy;
-
-	copy = ft_strdup(val);
-	ft_layers_visualizer(strs);
-	parts = (t_sections **)malloc(sizeof(t_sections *) * 2);
-	parts[SRC] = ft_init_t_sections();
-	parts[TRANS] = ft_init_t_sections();
-	index.second = 0;
-	index.third = 0;
-	parts[SRC]->new_mid = ft_strdup(val);
-	copy = ft_memset(copy, '0', ft_strlen(copy));
-	parts[TRANS]->new_mid = ft_strdup(copy);
-	parts[SRC]->cut = i;
-	parts[TRANS]->cut = i;
-	ft_get_parts_src(strs->src, parts[SRC], &index);
-	parts[TRANS]->mid = ft_memset(parts[SRC]->mid, '0', \
-		ft_strlen(parts[SRC]->mid));
-	ft_get_parts_trans(strs->src_trans, parts[TRANS], &index);
-	ft_join_parts_to_layers(strs, parts);
-}
-
-void	ft_renew_with_vars_env(t_layers *strs)
-{
-	int		i;
-	char	*val;
-
-	i = 0;
-	val = NULL;
-	while (strs->src_trans && strs->src_trans[i])
-	{
-		if (strs->src_trans[i] == '$')
-		{
-			val = ft_get_var_env_val(strs, i);
-			printf("test val :%s\n", val);
-			ft_var_env_to_layers(strs, val, &i);
-			i = 0;
-		}
-		else
-			i++;
-	}
-}
-
-void	ft_quotes_focus(t_layers *strs, int i, int *sq, int *dq)
-{
-	if (strs->src[i] == '\"' && (*sq % 2) == 0)
-	{
-		strs->src_trans[i] = '\"';
-		*dq += 1;
-	}
-	else if (strs->src[i] == '\'' && (*dq % 2) == 0)
-	{
-		strs->src_trans[i] = '\'';
-		*sq += 1;
-	}
-}
-
-void	ft_angled_brackets_focus(t_layers *strs, int i, int *sq, int *dq)
-{
-	if ((strs->src[i] == '<' || strs->src[i] == '>') \
-		&& (*sq % 2) == 0 && (*dq % 2) == 0)
-		strs->src_trans[i] = strs->src[i];
-}
-
-void	ft_pipes_focus(t_layers *strs, int i, int *sq, int *dq)
-{
-	if (strs->src[i] == '|' && (*sq % 2) == 0 && (*dq % 2) == 0)
-		strs->src_trans[i] = strs->src[i];
-}
-
-void	ft_var_env_focus(t_layers *strs, int i, int *sq)
-{
-	if ((i == 0 && strs->src[i] == '$' && strs->src_len > 1) \
-		|| (i != (strs->src_len - 1) && strs->src[i] == '$' && (*sq % 2) == 0))
-	{
-		if (i > 0 && strs->src_trans[i - 1] \
-			&& strs->src_trans[i - 1] == '$' && strs->src[i] == '$')
-			strs->src_trans[i - 1] = '0';
-		strs->src_trans[i] = strs->src[i];
-	}
-}
-
-void	ft_spaces_focus(t_layers *strs, int i, int *sq, int *dq)
-{
-	if (ft_isspace(strs->src[i]) && (*sq % 2) == 0 && (*dq % 2) == 0)
-		strs->src_trans[i] = ' ';
-}
-
-int	ft_occurences_counter(char *big, char *little)
-{
-	int		i;
-	int		total;
-	int		big_len;
-	int		little_len;
-	char	*tmp;
-
-	tmp = NULL;
-	total = 0;
-	big_len = ft_strlen(big);
-	little_len = ft_strlen(little);
-	i = -1;
-	if (big && little && big_len >= little_len)
-	{
-		while (big[++i])
-		{
-			tmp = ft_strnstr(big + i, little, little_len);
-			if (tmp)
-			{
-				i += little_len - 1;
-				tmp = NULL;
-				total++;
-			}
-		}
-	}
-	return (total);
-}
-
-void	ft_remove_symbol_var_env(t_layers *strs, int i)
-{
-	while (strs->src && strs->src[i] && ft_isspace(strs->src[i]))
-		i++;
-	while (strs->src && strs->src[i] && !ft_strchr("<>|$", strs->src_trans[i]) \
-		&& !ft_isspace(strs->src[i]))
-	{
-		if (strs->src_trans[i] == '\"')
-		{
-			i++;
-			while (strs->src_trans[i] && strs->src_trans[i] != '\"')
-				i++;
-		}
-		else if (strs->src_trans[i] == '\'')
-		{
-			i++;
-			while (strs->src_trans[i] && strs->src_trans[i] != '\'')
-				i++;
-		}
-		i++;
-	}
-	if (strs->src && strs->src[i] && strs->src_trans[i] == '$')
-		strs->src_trans[i] = '0';
-}
-
-void	ft_disable_var_env(t_layers *strs)
-{
-	char	*tmp;
-	int		heredocs;
-	int		i;
-
-	i = 0;
-	tmp = NULL;
-	heredocs = ft_occurences_counter(strs->src_trans, "<<");
-	while (strs->src_trans && strs->src_trans[i] && heredocs)
-	{
-		tmp = ft_strnstr(strs->src_trans + i, "<<", 2);
-		if (tmp)
-		{
-			i += 1;
-			tmp = NULL;
-			heredocs -= 1;
-			if (ft_strnstr(strs->src_trans + i + 1, \
-				"$", strs->src_len  - (i + 1)))
-				ft_remove_symbol_var_env(strs, i + 1);
-		}
-		i++;
-	}
-}
-
-char	**ft_get_wrong_angl_brackets(void)
-{
-	char	**needle;
-
-	needle = (char **)malloc(sizeof(char *) * 5);
-	if (!needle)
-		return (NULL);
-	needle[0] = ft_strdup("<<<");
-	needle[1] = ft_strdup(">>>");
-	needle[2] = ft_strdup("><");
-	needle[3] = ft_strdup("<>");
-	needle[4] = NULL;
-	return (needle);
-}
-
-int	ft_check_format_angl_brackets(t_layers *strs)
-{
-	char	**needle;
-	char	*tmp;
-	int		i;
-
-	i = -1;
-	tmp = strs->src_trans;
-	needle = ft_get_wrong_angl_brackets();
-	while (needle[++i])
-	{
-		if (ft_strnstr(tmp, needle[i], strs->src_len))
-			return (0);
-	}
-	i = strs->src_len;
-	if (i >= 2 && tmp[i - 2] && ft_strchr("<>", tmp[i - 2]))
-		if (ft_strchr("\t\n \"\'#&*./|~<>", strs->src[i - 1]) \
-			|| (!ft_isprint(strs->src[i - 1])))
-			return (0);
-	if (i >= 1 && tmp[i - 1] && ft_strchr("<>", tmp[i - 1]))
-		return (0);
-	return (1);
-}
-
-int	ft_check_format_quotes(t_layers *strs)
-{
-	int		i;
-	int		sq;
-	int		dq;
-
-	i = 0;
-	sq = 0;
-	dq = 0;
-	while (strs->src_trans && strs->src_trans[i])
-	{
-		if (strs->src_trans[i] == '\"' && (sq % 2) == 0)
-			dq += 1;
-		else if (strs->src_trans[i] == '\'' && (dq % 2) == 0)
-			sq += 1;
-		i++;
-	}
-	if ((sq % 2) != 0 || (dq % 2) != 0)
-		return (0);
-	return (1);
-}
-
-
-int	ft_check_format_pipes(t_layers *strs)
-{
-	char	*tmp;
-	int		i;
-
-	i = -1;
-	tmp = strs->src_trans;
-	if (tmp[0] == '|' || tmp[strs->src_len - 1] == '|')
-			return (0);
-	while (tmp && tmp[++i])
-		if (i > 0 && tmp[i - 1] && tmp[i] == '|' && tmp[i - 1] == '|')
-			return (0);
-	return (1);
-}
-
-int	ft_check_quotes(t_layers *strs)
-{
-	int		i;
-	int		sq;
-	int		dq;
-
-	i = 0;
-	sq = 0;
-	dq = 0;
-	while (strs->src && strs->src[i])
-		ft_quotes_focus(strs, i++, &sq, &dq);
-	if (!ft_check_format_quotes(strs))
-	{
-		ft_destroy_layers(&strs);
-		return (0);
-	}
-	return (1);
-}
-
-int	ft_check_angl_brackets(t_layers *strs)
-{
-	int		i;
-	int		sq;
-	int		dq;
-
-	i = 0;
-	sq = 0;
-	dq = 0;
-	while (strs->src && strs->src[i])
-	{
-		ft_quotes_focus(strs, i, &sq, &dq);
-		ft_angled_brackets_focus(strs, i, &sq, &dq);
-		i++;
-	}
-	if (!ft_check_format_angl_brackets(strs))
-	{
-		ft_destroy_layers(&strs);
-		return (0);
-	}
-	return (1);
-}
-
-int	ft_check_pipes(t_layers *strs)
-{
-	int		i;
-	int		sq;
-	int		dq;
-
-	i = 0;
-	sq = 0;
-	dq = 0;
-	while (strs->src && strs->src[i])
-	{
-		ft_quotes_focus(strs, i, &sq, &dq);
-		ft_angled_brackets_focus(strs, i, &sq, &dq);
-		ft_pipes_focus(strs, i, &sq, &dq);
-		i++;
-	}
-	if (!ft_check_format_pipes(strs))
-	{
-		ft_destroy_layers(&strs);
-		return (0);
-	}
-	return (1);
-}
-
-int	ft_check_var_env(t_layers *strs)
-{
-	int		i;
-	int		sq;
-	int		dq;
-
-	i = 0;
-	sq = 0;
-	dq = 0;
-	while (strs->src && strs->src[i])
-	{
-		ft_quotes_focus(strs, i, &sq, &dq);
-		ft_angled_brackets_focus(strs, i, &sq, &dq);
-		ft_pipes_focus(strs, i, &sq, &dq);
-		ft_var_env_focus(strs, i, &sq);
-		i++;
-	}
-	if (ft_strnstr(strs->src_trans, "<<", strs->src_len))
-		ft_disable_var_env(strs);
-	return (1);
-}
-
-int	ft_check_spaces(t_layers *strs)
-{
-	int		i;
-	int		sq;
-	int		dq;
-
-	i = 0;
-	sq = 0;
-	dq = 0;
-	while (strs->src && strs->src[i])
-	{
-		ft_quotes_focus(strs, i, &sq, &dq);
-		ft_spaces_focus(strs, i, &sq, &dq);
-		i++;
-	}
-	return (1);
-}
-
-void	ft_replace_spaces(t_layers *strs)
-{
-	int	i;
-
-	i = 0;
-	while (strs && strs->src_trans && strs->src_trans[i])
-	{
-		if (ft_strchr("<>", strs->src_trans[i]) && strs->src_trans[i + 1] == ' ')
-		{
-			while (strs->src_trans[i + 1] && strs->src_trans[i + 1] == ' ')
-			{
-				strs->src_trans[i + 1] = '0';
-				i++;
-			}
-			i -= 1;
-		}
-		i++;
-	}
-}
-
-void	ft_rename_angl_brackets(t_layers *strs)
-{
-	int	i;
-
-	i = 0;
-	while (strs && strs->src_trans && strs->src_trans[i] && strs->src_trans[i + 1])
-	{
-		if (strs->src_trans[i] == '<' && strs->src_trans[i + 1] == '<')
-		{
-			strs->src_trans[i] = 'H';
-			strs->src_trans[i + 1] = '0';
-			i++;
-		}
-		else if (strs->src_trans[i] == '>' && strs->src_trans[i + 1] == '>')
-		{
-			strs->src_trans[i] = 'A';
-			strs->src_trans[i + 1] = '0';
-			i++;
-		}
-		i++;
-	}
-}
-
-void	ft_translate_all(t_layers *strs)
-{
-	if (ft_check_quotes(strs) && ft_check_angl_brackets(strs) \
-		&& ft_check_pipes(strs))
-	{
-		ft_check_var_env(strs);
-		if (ft_strchr(strs->src_trans, '$'))
-			ft_renew_with_vars_env(strs);
-		ft_check_spaces(strs);/////////////////
-		ft_replace_spaces(strs);
-		ft_rename_angl_brackets(strs);
-	}
-}
-*/
-////////////////////////////////////////////////////////////////////////
-
-void	ft_show_duo_strs(char **strs1, char **strs2)
+void	ft_show_duo_strs(char **strs1, char **strs2)//optionnal
 {
 	int	i;
 
@@ -1077,452 +585,6 @@ void	ft_show_duo_strs(char **strs1, char **strs2)
 	}
 	printf("\n");
 }
-
-char	**ft_strsdup(char **src)
-{
-	char	**dest;
-	int		i;
-
-	i = 0;
-	while (src && src[i])
-		i++;
-	dest = (char **)malloc(sizeof(char *) * (i + 1));
-	dest[i] = NULL;
-	while (--i >= 0)
-		dest[i] = ft_strdup(src[i]);
-	return (dest);
-}
-
-/*
-char	**ft_parallel_split(char **model, char *to_split)
-{
-	int		i;
-	int		j;
-	char	**dest;
-
-	i = 0;
-	j = 0;
-	dest = ft_strsdup(model);
-	while (model && model[i])
-	{
-		ft_strlcpy(dest[i], to_split + j, ft_strlen(dest[i]) + 1);
-		j += ft_strlen(dest[i]) + 1;
-		i++;
-	}
-	ft_show_duo_strs(dest, model);
-	return (dest);
-}
-
-char	*ft_index_trim(char *str, int begin, int end)
-{
-	char	*ret;
-	int		len;
-
-	if (!str || (begin + end) > (int)ft_strlen(str))
-		return (NULL);
-	ret = NULL;
-	len = ft_strlen(str);
-	str[len - end] = '\0';
-	ret = ft_strdup(str + begin);
-	return (ret);
-}
-
-char	*ft_strtrim_index_to_blocks(char *src, char *trans, char *set)
-{
-	char	*ret;
-	int		begin;
-	int		end;
-	int		i;
-
-	begin = 0;
-	end = 0;
-	i = -1;
-	ret = NULL;
-	if (src && src[0] && set)
-	{
-		while (ft_strchr(set, src[++i]))
-			begin++;
-		i = ft_strlen(src);
-		while (i >= 0 && ft_strchr(set, src[--i]))
-			end++;
-		ret = ft_index_trim(trans, begin, end);
-	}
-	return (ret);
-}
-
-void	ft_strstrim_to_blocks(t_blocks **block, char *set)
-{
-	int	i;
-
-	i = 0;
-	if (block && *block && set)
-	{
-		while ((*block)->src_trans && (*block)->src && (*block)->src_trans[i] \
-			&& (*block)->src[i] && (*block)->src[0][0])
-		{
-			(*block)->src_trans[i] = ft_strtrim_index_to_blocks
-				((*block)->src[i], (*block)->src_trans[i], set);
-			(*block)->src[i] = ft_strtrim((*block)->src[i], set);
-			i++;
-		}
-	}
-}
-
-t_blocks	*ft_layers_pipe_split(t_layers *strs)
-{
-	t_blocks	*block;
-
-	block = (t_blocks *)malloc(sizeof(t_blocks) * 1);
-	if (strs->src_trans && strs->src_trans[0])
-	{
-		block->src_trans = ft_split(strs->src_trans, '|');
-		block->src = ft_parallel_split(block->src_trans, strs->src);
-	}
-	else if (strs->src_trans && strs->src_trans[0] == '\0')
-	{
-		block->src_trans = (char **)malloc(sizeof(char *) * 2);
-		block->src = (char **)malloc(sizeof(char *) * 2);
-		if (!block->src || !block->src_trans)
-			return (NULL);
-		block->src[0] = strs->src;
-		block->src_trans[0] = "0";
-		block->src[1] = NULL;
-		block->src_trans[1] = NULL;
-	}
-	ft_strstrim_to_blocks(&block, "\a\b\t\n\v\f\r ");
-	ft_show_duo_strs(block->src, block->src_trans);
-	return (block);
-}
-
-void	ft_pages_src_split(t_pages **page)
-{
-	int		i;
-	int		j;
-	int		k;
-	char	*copy;
-	t_pages *tmp;
-
-	i = 0;
-	j = 0;
-	k = 0;
-	tmp = *page;
-	copy = tmp->src;
-	tmp->tmp_trans = ft_split(tmp->trans, ' ');
-	tmp->tmp = ft_strsdup(tmp->tmp_trans);
-	while (tmp->tmp[i])
-	{
-		j = ft_strlen(tmp->tmp_trans[i]);
-		ft_strlcpy(tmp->tmp[i], copy, j + 1);
-		copy += j;
-		while (copy && copy[k] && ft_isspace(copy[k]))
-			k++;
-		copy += k;
-		k = 0;
-		i++;
-	}
-}
-*/
-char **ft_split_at_index(char *str, int i)
-{
-	char	**final;
-	char	*first;
-	char	*last;
-
-	final = NULL;
-	if (str)
-	{
-		last = ft_strdup(str + i);
-		str[i] = '\0';
-		first = ft_strdup(str);
-		final = (char **)malloc(sizeof(char *) * 3);
-		if (!final)
-			return (NULL);
-		final[0] = first;
-		final[1] = last;
-		final[2] = NULL;
-	}
-	return (final);
-}
-/*
-void	ft_include_spaces(t_pages **page)
-{
-	t_pages		*copy;
-	t_blocks	parts;
-	char		*buffer;
-	int			i;
-
-	i = 0;
-	copy = *page;
-	while (copy)
-	{
-		while (copy->trans && copy->trans[i])
-		{
-			if (i != 0 && ft_strchr("<>AH", copy->trans[i]) && !ft_isspace(copy->trans[i - 1]))
-			{
-				parts.src = ft_split_at_index(copy->src, i);
-				parts.src_trans = ft_split_at_index(copy->trans, i);
-				buffer = ft_strjoin(parts.src[0], " ");
-				copy->src = ft_strjoin(buffer, parts.src[1]);
-				buffer = ft_strjoin(parts.src_trans[0], " ");
-				copy->trans = ft_strjoin(buffer, parts.src_trans[1]);
-				i = -1;
-			}
-			i++;
-		}
-		copy = copy->next;
-	}
-}
-
-void	ft_init_page(t_pages **page)
-{
-	(*page)->src = NULL;
-	(*page)->trans = NULL;
-	(*page)->cmds = NULL;
-	(*page)->redirections = NULL;
-	//(*page)->outfiles = NULL;
-	(*page)->tmp = NULL;
-	(*page)->tmp_trans = NULL;
-	(*page)->next = NULL;
-}
-
-void	ft_pages_clean_quotes(t_pages **pages)
-{
-	t_pages	*copy;
-	int		i;
-
-	i = 0;
-	copy = *pages;
-	while (copy && copy->src && copy->trans)
-	{
-		while (copy->trans[i])
-		{
-			if (ft_strchr("\'\"", copy->trans[i]))
-			{
-				while (copy->trans[i + 1])
-				{
-					copy->trans[i] = copy->trans[i + 1];
-					copy->src[i] = copy->src[i + 1];
-					i++;
-				}
-				copy->trans[i] = '\0';
-				copy->src[i] = '\0';
-				i = -1;
-			}
-			i++;
-		}
-		copy = copy->next;
-	}
-}
-
-void	ft_show_book(t_pages *book)
-{
-	t_pages	*tmp;
-	int		i;
-
-	tmp = book;
-	i = 0;
-	while (tmp)
-	{
-		printf("\nsrc  %d____:%s\n", i, tmp->src);
-		printf("\ntrans%d____:%s\n", i, tmp->trans);
-		printf("\ncmds_____ :");
-		ft_show_strs(tmp->cmds);
-		printf("\nredirect_ :");
-		ft_show_strs(tmp->redirections);
-		//printf("\noutfiles_ :");
-		//ft_show_strs(tmp->outfiles);
-		printf("\ntmp______ :");
-		ft_show_strs(tmp->tmp);
-		printf("\ntmp_trans :");
-		ft_show_strs(tmp->tmp_trans);
-		printf("\n________________________________________________________\n");
-		tmp = tmp->next;
-		i++;
-	}
-}
-
-void	ft_pages_clean_redirection(t_pages **page)
-{
-	t_pages	*tmp;
-	int	i;
-
-	i = 0;
-	tmp = *page;
-	while (tmp)
-	{
-		while (tmp->tmp_trans && tmp->tmp_trans[i])
-		{
-			tmp->tmp_trans[i][1] = '\0';
-			if (tmp->tmp_trans[i][0] == 'A' || tmp->tmp_trans[i][0] == 'H')
-			{
-				tmp->tmp[i][0] = ' ';
-				tmp->tmp[i][1] = ' ';
-			}
-			else if (tmp->tmp_trans[i][0] == '<' || tmp->tmp_trans[i][0] == '>')
-				tmp->tmp[i][0] = ' ';
-			tmp->tmp[i] = ft_strtrim(tmp->tmp[i], "\a\b\t\n\v\f\r ");
-			if (tmp->tmp_trans[i][0] == '<' || tmp->tmp_trans[i][0] == '>' \
-			|| tmp->tmp_trans[i][0] == 'A' || tmp->tmp_trans[i][0] == 'H')
-				tmp->tmp[i] = ft_strjoin(tmp->tmp_trans[i], tmp->tmp[i]);
-			i++;
-		}
-		i = 0;
-		tmp = tmp->next;
-	}
-}
-
-t_quantity	ft_quantity_counter(char **trans)
-{
-	t_quantity	count;
-	int			i;
-
-	i = 0;
-	count.cmds = 0;
-	count.redirections = 0;
-	count.heredocs = 0;
-	while (trans && trans[i])
-	{
-		if (ft_iscmd(trans[i]))
-			count.cmds++;
-		else if (ft_isinfile(trans[i]) || ft_isoutfile(trans[i]))
-			count.redirections++;
-		if (ft_isheredoc(trans[i]))
-			count.heredocs++;
-		//else if (ft_isoutfile(trans[i]))
-		//	count.outfile++;
-		i++;
-	}
-	return (count);
-}
-
-void	ft_pages_alloc(t_pages **page, t_quantity count)
-{
-	(*page)->cmds = (char **)malloc(sizeof(char *) * (count.cmds + 1));
-	(*page)->redirections = (char **)malloc(sizeof(char *) * (count.redirections + 1));
-	//(*page)->heredocs = (char **)malloc(sizeof(char *) * (count.outfile + 1));
-	/////a securiser
-	(*page)->cmds[count.cmds] = NULL;
-	(*page)->redirections[count.redirections] = NULL;
-	//(*page)->outfiles[count.outfile] = NULL;
-}
-
-t_quantity	ft_init_quantity(int n)
-{
-	t_quantity q;
-
-	q.cmds = n;
-	q.redirections = n;
-	q.heredocs = n + 1;
-	return (q);
-}
-
-void	ft_pages_dispatch_units(t_pages **page)
-{
-	t_pages *copy;
-	t_quantity count;
-	t_quantity index;
-
-	int	i;
-	i = 0;
-	copy = *page;
-	index = ft_init_quantity(-1);
-	while (copy)
-	{
-		count = ft_quantity_counter(copy->tmp_trans);
-		ft_pages_alloc(&copy, count);
-		while (copy->tmp_trans[i])
-		{
-			if (ft_iscmd(copy->tmp_trans[i]))
-				copy->cmds[++index.cmds] = ft_strdup(copy->tmp[i]);
-			else if (ft_isinfile(copy->tmp_trans[i]) || ft_isoutfile(copy->tmp_trans[i]))
-				copy->redirections[++index.redirections] = ft_strdup(copy->tmp[i]);
-			if (ft_isheredoc(copy->tmp_trans[i]))
-				index.heredocs++;
-			//else if (ft_isoutfile(copy->tmp_trans[i]))
-			//	copy->outfiles[++index.outfile] = ft_strdup(copy->tmp[i]);
-			i++;
-		}
-		i = 0;
-		copy = copy->next;
-	}
-}
-
-void	ft_pages_dispatch_units(t_pages **page)
-{
-	t_pages *copy;
-	t_quantity count;
-	t_quantity index;
-
-	int	i;
-	i = 0;
-	copy = *page;
-	index = ft_init_quantity(-1);
-	while (copy)
-	{
-		count = ft_quantity_counter(copy->tmp_trans);
-		ft_pages_alloc(&copy, count);
-		while (copy->tmp_trans[i])
-		{
-			if (ft_iscmd(copy->tmp_trans[i]))
-				copy->cmds[++index.cmd] = ft_strdup(copy->tmp[i]);
-			else if (ft_isinfile(copy->tmp_trans[i]))
-				copy->infiles[++index.infile] = ft_strdup(copy->tmp[i]);
-			else if (ft_isoutfile(copy->tmp_trans[i]))
-				copy->outfiles[++index.outfile] = ft_strdup(copy->tmp[i]);
-			i++;
-		}
-		i = 0;
-		copy = copy->next;
-	}
-}
-
-t_pages	*ft_fill_pages(char *src, char *src_trans)
-{
-	t_pages	*page;
-
-	page = (t_pages *)malloc(sizeof(t_pages));
-	if (!page)
-		return (NULL);
-	ft_init_page(&page);
-	page->src = src;
-	page->trans = src_trans;
-	ft_include_spaces(&page);
-	ft_pages_clean_quotes(&page);
-	ft_pages_src_split(&page);
-	//ft_show_book(page);
-	ft_pages_clean_redirection(&page);
-	ft_pages_dispatch_units(&page);
-	ft_show_book(page);
-
-	return (page);
-}
-
-t_pages	*ft_fill_book(t_blocks *blocks)
-{
-	t_pages	*book;
-	t_pages	*first;
-	int		i;
-
-	i = 0;
-	book = NULL;
-	while (blocks && blocks->src && blocks->src[i])
-	{
-		if (!book)
-		{
-			book = ft_fill_pages(blocks->src[i], blocks->src_trans[i]);
-			first = book;
-		}
-		else
-		{
-			book->next = ft_fill_pages(blocks->src[i], blocks->src_trans[i]);
-			book = book->next;
-		}
-		i++;
-	}
-	return (first);
-}
-*/
-
 
 void	ft_quotes_focus(char **src, char **trans, int i, int *quotes)//done
 {
@@ -1851,7 +913,7 @@ void	ft_replace_with_val(char **src, char **trans, char *var, int i)//done
 	}
 }
 
-void	ft_include_var_env(char **src, char **trans)//done -> to improve
+void	ft_include_var_env(char **src, char **trans)//done -> to change
 {
 	int		i;
 	char	*var;
@@ -2044,15 +1106,6 @@ char	**ft_parallel_split(char **model, char *to_split)//done
 	}
 	ft_show_duo_strs(dest, model);
 	return (dest);
-}
-
-void	ft_null_them(void **tobenulled, int times)//optionnal go libft
-{
-	int	i;
-
-	i = 0;
-	while (tobenulled && i < times)
-		tobenulled[i] = NULL;
 }
 
 int	ft_sum_strlen(char **strs)//done go libft
@@ -2336,17 +1389,6 @@ int	ft_count_heredocs(char **trans)//done
 	return (total);
 }
 
-char	**ft_alloc_strs(int size)//done go to libft
-{
-	char **strs;
-
-	strs = (char **)malloc(sizeof(char *) * (size + 1));
-	if (!strs)
-		return (NULL);
-	strs[size] = NULL;
-	return (strs);
-}
-
 void	ft_final_get_cmds(char **cmds, char **src, char **trans)//done
 {
 	int	i;
@@ -2379,6 +1421,8 @@ void	ft_final_get_redir(char **redir, char **src, char **trans)//done
 		if (ft_isredirection(trans[i]))
 		{
 			tmp = ft_strtrim(src[i], "\a\b\t\n\v\f\r ");
+			if (trans[i][0] && trans[i][0] == '@')
+				trans[i][0] = '?';
 			redir[j] = ft_strjoin(trans[i], tmp);
 			j++;
 			if (tmp)
@@ -2482,7 +1526,7 @@ t_parsed	*ft_minishell_parsing(char *str1)
 		ft_lst_clean_redirections(lst);
 		ft_lst_to_final(lst, final);
 	}
-	//ft_show_twins(origin);//last
+	//ft_show_twins(origin);
 	//ft_show_lst_twins(lst);
 	//ft_show_lst_parsed(final);
 	ft_free_twins(origin);
