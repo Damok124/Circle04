@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/07 12:17:59 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/08 18:44:19 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ typedef struct s_layers {
 	char	*src_trans;
 	int		src_len;
 }			t_layers;////////doublon
-*/
 
 typedef struct s_sections {
 	char	*first;
@@ -54,19 +53,6 @@ typedef struct s_sections {
 	int		*cut;
 }			t_sections;
 
-typedef struct s_quantity {
-	int	cmds;
-	int	redirections;
-}		t_quantity;///////////a eviter si possible
-
-typedef struct s_parsed {
-	int				empty;
-	char			**cmds;
-	char			**redirections;
-	int				heredocs;
-	struct s_parsed	*next;
-}					t_parsed;
-
 typedef struct s_book {
 	char			*src;
 	char			*s_trans;
@@ -74,11 +60,22 @@ typedef struct s_book {
 	char			**d_trans;
 	struct s_book	*next;
 }					t_book;
+*/
+
+typedef struct s_parsed {
+	int				empty;
+	char			**cmds;
+	char			**redirections;
+	int				cmds_quant;
+	int				redir_quant;
+	int				hdocs_quant;
+	struct s_parsed	*next;
+}					t_parsed;
 
 typedef struct s_twins {
-	char	**src;
-	char	**trans;
-	int		len;
+	char			**src;
+	char			**trans;
+	struct s_twins	*next;
 }			t_twins;
 
 void	ft_close_stdfds(void)
@@ -473,6 +470,13 @@ int	ft_iscmd(char *str)
 	return (0);
 }
 
+int	ft_isquotes(char c)
+{
+	if (c == '\'' || c == '\"')
+		return (1);
+	return (0);
+}
+
 int	ft_isoutfile(char *str)
 {
 	if (str && str[0])
@@ -485,11 +489,22 @@ int	ft_isoutfile(char *str)
 	return (0);
 }
 
+int	ft_isambiguous(char *str)
+{
+	if (str && str[0])
+	{
+		if(str[0] == '?' || str[0] == '@')
+			return (1);
+	}
+	return (0);
+}
+
+
 int	ft_isheredoc(char *str)
 {
 	if (str && str[0])
 	{
-		if(str[0] == 'A')
+		if(str[0] == 'H')
 			return (1);
 	}
 	return (0);
@@ -506,6 +521,28 @@ int	ft_isinfile(char *str)
 	}
 	return (0);
 }
+
+int	ft_isredirection(char *str)
+{
+	if (ft_isinfile(str) || ft_isoutfile(str) || ft_isambiguous(str))
+		return (1);
+	return (0);
+}
+
+int	ft_is_solo(char *str)
+{
+	if (str && str[0] && (str[0] == '<' || str[0] == '>' || str[0] == '?'))
+		return (1);
+	return (0);
+}
+
+int	ft_is_duo(char *str)
+{
+	if (str && str[0] && (str[0] == 'H' || str[0] == 'A' || str[0] == '@'))
+		return (1);
+	return (0);
+}
+
 
 /*
 void	ft_destroy_layers(t_layers **strs)
@@ -1781,29 +1818,34 @@ char	*ft_get_var_env_val(char *src)//done
 	return ("");
 }
 
+void	ft_compile_with_val(char **strs, char *var, int i, int j)//done
+{
+	strs[1] = ft_substr(strs[0], 0, i);
+	strs[2] = ft_strdup(strs[0] + i + j);
+	strs[3] = ft_strjoin(strs[1], var);
+	strs[4] = strs[0];
+	strs[0] = ft_strjoin(strs[3], strs[2]);
+}
+
 void	ft_replace_with_val(char **src, char **trans, char *var, int i)//done
 {
-	int j;
-	int k;
+	char	*tmp;
+	int		j;
+	int 	k;
 
 	j = 1;
 	k = -1;
+	tmp = NULL;
 	if (src && src[0] && trans && trans[0] && var)
 	{
 		while (src[0][i] && src[0][i + j] && ft_isalnum(src[0][i + j]))
 			j++;
-		src[1] = ft_substr(src[0], 0, i);
-		src[2] = ft_strdup(src[0] + i + j);
-		src[3] = ft_strjoin(src[1], var);
-		src[4] = src[0];
-		src[0] = ft_strjoin(src[3], src[2]);
-		while (var[++k])
-			var[k] = '0';
-		trans[1] = ft_substr(trans[0], 0, i);
-		trans[2] = ft_strdup(trans[0] + i + j);
-		trans[3] = ft_strjoin(trans[1], var);
-		trans[4] = trans[0];
-		trans[0] = ft_strjoin(trans[3], trans[2]);
+		ft_compile_with_val(src, var, i, j);
+		tmp = ft_strdup(var);
+		while (tmp[++k])
+			tmp[k] = '0';
+		ft_compile_with_val(trans, tmp, i, j);
+		ft_true_free((void **)&tmp);
 		ft_only_strs_free(src + 1);
 		ft_only_strs_free(trans + 1);
 	}
@@ -1829,7 +1871,42 @@ void	ft_include_var_env(char **src, char **trans)//done -> to improve
 	}
 }
 
-void	ft_translation(char **src, char **trans)//done?
+char	ft_ambiguous_type(char c)//done
+{
+	if (ft_strchr("<>", c))
+		return ('@');
+	return ('?');
+}
+
+void	ft_reveal_ambi_redirect(char **src, char **trans)//done
+{
+	int	j;
+	int	i;
+
+	i = 0;
+	j = 0;
+	while (src && trans && src[0] && trans[0] && src[0][i] && trans[0][i])
+	{
+		if (ft_strchr("<>", trans[0][i]))
+			j = 1;
+		else if (trans[0][i] == 'A')
+			j = 2;
+		if (j)
+		{
+			while (src[0][i + j] && ft_isspace(src[0][i + j]))
+				j++;
+			if (trans[0][i + j] && trans[0][i + j] == '$')
+			{
+				trans[0][i + j] = '0';
+				trans[0][i] = ft_ambiguous_type(src[0][i + 1]);
+			}
+			j = 0;
+		}
+		i++;
+	}
+}
+
+void	ft_translation(char **src, char **trans)
 {
 	int	i;
 	int	quotes[2];
@@ -1846,10 +1923,23 @@ void	ft_translation(char **src, char **trans)//done?
 		ft_spaces_focus(src, trans, i, quotes);
 		i++;
 	}
+	// printf("after spaces focus\n");
+	// ft_show_duo_strs(src, trans);
 	ft_replace_spaces(trans);
-	ft_rename_angl_brackets(trans);
+	// printf("after replace spaces\n");
+	// ft_show_duo_strs(src, trans);
+	ft_rename_angl_brackets(trans);///coder ambiguous
+	// printf("after rename angl brackets\n");
+	// ft_show_duo_strs(src, trans);
+	ft_reveal_ambi_redirect(src, trans);
+	// printf("after ambiguous\n");
+	// ft_show_duo_strs(src, trans);
 	ft_add_spaces(src, trans);
-	ft_disable_var_env(src, trans);
+	// printf("after add spaces\n");
+	// ft_show_duo_strs(src, trans);
+	ft_disable_var_env(src, trans);///disable ambiguous
+	// printf("after disable var env\n");
+	// ft_show_duo_strs(src, trans);
 	ft_include_var_env(src, trans);
 }
 
@@ -1892,13 +1982,13 @@ t_twins	*ft_init_origin(t_twins *origin, char *str1)//done
 	origin = (t_twins *)malloc(sizeof(t_twins));
 	if (!origin)
 		return (NULL);
-	origin->src = (char **)malloc(sizeof(char *) * 6);////c'était 2
+	origin->src = (char **)malloc(sizeof(char *) * 6);
 	if (!origin->src)
 	{
 		ft_true_free((void **)&origin);
 		return (NULL);
 	}
-	origin->trans = (char **)malloc(sizeof(char *) * 6);////
+	origin->trans = (char **)malloc(sizeof(char *) * 6);
 	if (!origin->trans)
 	{
 		ft_full_free((void **)origin->src);
@@ -1911,19 +2001,253 @@ t_twins	*ft_init_origin(t_twins *origin, char *str1)//done
 	origin->trans[0] = ft_twin_str(str1);
 	origin->trans[1] = NULL;
 	origin->trans[5] = NULL;
-	origin->len = ft_strlen(origin->src[0]);
+	origin->next = NULL;
 	return (origin);
 }
 
 void	ft_free_twins(t_twins *lst)//done
 {
-	if (lst)
+	t_twins	*tmp;
+
+	tmp = NULL;
+	while (lst)
 	{
 		if (lst->src)
 			ft_full_free((void **)lst->src);
 		if (lst->trans)
 			ft_full_free((void **)lst->trans);
-		ft_true_free((void **)&lst);
+		tmp = lst;
+		lst = lst->next;
+		ft_true_free((void **)&tmp);
+	}
+}
+
+void	ft_show_twins(t_twins *twins)//optionnal
+{
+	ft_show_duo_strs(twins->src, twins->trans);
+}
+
+char	**ft_parallel_split(char **model, char *to_split)//done
+{
+	int		i;
+	int		j;
+	char	**dest;
+
+	i = 0;
+	j = 0;
+	dest = ft_strsdup(model);
+	while (model && model[i])
+	{
+		ft_strlcpy(dest[i], to_split + j, ft_strlen(dest[i]) + 1);
+		j += ft_strlen(dest[i]) + 1;
+		i++;
+	}
+	ft_show_duo_strs(dest, model);
+	return (dest);
+}
+
+void	ft_null_them(void **tobenulled, int times)//optionnal go libft
+{
+	int	i;
+
+	i = 0;
+	while (tobenulled && i < times)
+		tobenulled[i] = NULL;
+}
+
+int	ft_sum_strlen(char **strs)//done go libft
+{
+	int	i;
+	int	j;
+	int	sum;
+
+	i = 0;
+	j = 0;
+	sum = 0;
+	while (strs && strs[i])
+	{
+		while (strs[i][j])
+			j++;
+		sum += j;
+		j = 0;
+		i++;
+	}
+	return (sum);
+}
+
+char	**ft_mirror_split(char *src, char **trans)//done
+{
+	char	**dest;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	dest = NULL;
+	if (((ft_strslen(trans) - 1) + ft_sum_strlen(trans)) == (int)ft_strlen(src))
+	{
+		dest = ft_strsdup(trans);
+		while (trans && trans[i])
+		{
+			while (trans[i][j])
+			{
+				dest[i][j] = src[j];
+				j++;
+			}
+			src += j + 1;
+			j = 0;
+			i++;
+		}
+	}
+	return (dest);
+}
+
+void	ft_split_on_pipes(t_twins *origin)//done
+{
+
+	char *src;
+	char *trans;
+
+	src = ft_strdup(origin->src[0]);
+	trans = ft_strdup(origin->trans[0]);
+	ft_full_free((void **)origin->src);
+	ft_full_free((void **)origin->trans);
+	origin->trans = ft_split(trans, '|');
+	origin->src = ft_mirror_split(src, origin->trans);
+	ft_true_free((void **)&src);
+	ft_true_free((void **)&trans);
+}
+
+t_twins	*ft_init_lst_twins(int size)//done
+{
+	t_twins	*elem;
+
+	if (size)
+	{
+		elem = (t_twins *)malloc(sizeof(t_twins));
+		if (!elem)
+			return (NULL);
+		elem->src = NULL;
+		elem->trans = NULL;
+		elem->next = ft_init_lst_twins(size -1);
+		return (elem);
+	}
+	return (NULL);
+}
+
+void	ft_copy_without_spaces(char **src, char *base, char *alt)//done
+{
+	int	i;
+	int	j;
+	int	k;
+
+	i = 0;
+	j = 0;
+	k = 0;
+	while (src && src[i] && base && alt)
+	{
+		while (alt[j] && ft_isspace(alt[j]))
+			j++;
+		while (alt[j] && !ft_isspace(alt[j]))
+			src[i][k++] = base[j++];
+		k = 0;
+		i++;
+	}
+}
+
+void	ft_split_on_spaces(t_twins *lst, char **src, char **trans)//done
+{
+	int	i;
+
+	i = 0;
+	while (lst && src && trans && src[i] && trans[i])
+	{
+		lst->trans = ft_split(trans[i], ' ');
+		lst->src = ft_strsdup(lst->trans);
+		ft_copy_without_spaces(lst->src, src[i], trans[i]);
+		lst = lst->next;
+		i++;
+	}
+}
+
+void	ft_show_lst_twins(t_twins *lst)//done
+{
+	int	i;
+
+	i = 0;
+	while (lst)
+	{
+		printf("index lst %d :\n", i);
+		ft_show_duo_strs(lst->src, lst->trans);
+		lst = lst->next;
+		i++;
+	}
+}
+
+void	ft_lst_remove_quotes(char **src, char **trans, int i)//done
+{
+	int	j;
+
+	j = 0;
+	while (trans[i][j])
+	{
+		if (ft_isquotes(trans[i][j]))
+		{
+			while (trans[i][j])
+			{
+				trans[i][j] = trans[i][j + 1];
+				src[i][j] = src[i][j + 1];
+				j++;
+			}
+			j = -1;
+		}
+		j++;
+	}
+}
+
+void	ft_lst_clean_quotes(t_twins *lst)//done
+{
+	int		i;
+
+	i = 0;
+	while (lst)
+	{
+		while (lst->trans[i])
+		{
+			ft_lst_remove_quotes(lst->src, lst->trans, i);
+			i++;
+		}
+		i = 0;
+		lst = lst->next;
+	}
+}
+
+void	ft_lst_clean_redirections(t_twins *lst)//done
+{
+	char	*tmp;
+	int		i;
+
+	i = 0;
+	tmp = NULL;
+	while (lst)
+	{
+		while (lst->trans && lst->trans[i])
+		{
+			lst->trans[i][1] = '\0';
+			if (ft_is_duo(lst->trans[i]))
+			{
+				lst->src[i][0] = ' ';
+				lst->src[i][1] = ' ';
+			}
+			else if (ft_is_solo(lst->trans[i]))
+				lst->src[i][0] = ' ';
+			tmp = lst->src[i];
+			lst->src[i] = ft_strtrim(tmp, "\a\b\t\n\v\f\r ");
+			ft_true_free((void **)&tmp);
+			i++;
+		}
+		i = 0;
+		lst = lst->next;
 	}
 }
 
@@ -1931,65 +2255,239 @@ void	ft_free_parsed(t_parsed *lst)//done
 {
 	t_parsed *tmp;
 
-	tmp = lst;
-	while (tmp)
+	while (lst)
 	{
-		if (tmp->cmds)
-			ft_full_free((void **)tmp->cmds);
-		if (tmp->redirections)
-			ft_full_free((void **)tmp->redirections);
+		if (lst->cmds)
+			ft_full_free((void **)lst->cmds);
+		if (lst->redirections)
+			ft_full_free((void **)lst->redirections);
+		tmp = lst;
 		lst = lst->next;
 		ft_true_free((void **)&tmp);
-		tmp = lst;
 	}
 }
 
-void	ft_show_twins(t_twins *twins)
+t_parsed	*ft_init_lst_parsed(int size)//done
 {
-	printf("%d\n", twins->len);
-	ft_show_duo_strs(twins->src, twins->trans);
+	t_parsed	*elem;
+
+	if (size)
+	{
+		elem = (t_parsed *)malloc(sizeof(t_parsed));
+		if (!elem)
+			return (NULL);
+		elem->empty = 1;
+		elem->cmds = NULL;
+		elem->redirections = NULL;
+		elem->cmds_quant = 0;
+		elem->redir_quant = 0;
+		elem->hdocs_quant = 0;
+		elem->next = ft_init_lst_parsed(size -1);
+		return (elem);
+	}
+	return (NULL);
+}
+
+int	ft_count_cmds(char **trans)//done
+{
+	int	i;
+	int	total;
+
+	i = 0;
+	total = 0;
+	while (trans && trans[i])
+	{
+		if (ft_iscmd(trans[i]))
+			total++;
+		i++;
+	}
+	return (total);
+}
+
+int	ft_count_redirections(char **trans)//done
+{
+	int	i;
+	int	total;
+
+	i = 0;
+	total = 0;
+	while (trans && trans[i])
+	{
+		if (ft_isredirection(trans[i]))
+			total++;
+		i++;
+	}
+	return (total);
+}
+
+int	ft_count_heredocs(char **trans)//done
+{
+	int	i;
+	int	total;
+
+	i = 0;
+	total = 0;
+	while (trans && trans[i])
+	{
+		if (ft_isheredoc(trans[i]))
+			total++;
+		i++;
+	}
+	return (total);
+}
+
+char	**ft_alloc_strs(int size)//done go to libft
+{
+	char **strs;
+
+	strs = (char **)malloc(sizeof(char *) * (size + 1));
+	if (!strs)
+		return (NULL);
+	strs[size] = NULL;
+	return (strs);
+}
+
+void	ft_final_get_cmds(char **cmds, char **src, char **trans)//done
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while (src && trans && src[i] && trans[i])
+	{
+		if (ft_iscmd(trans[i]))
+		{
+			cmds[j] = ft_strdup(src[i]);
+			j++;
+		}
+		i++;
+	}
+}
+
+void	ft_final_get_redir(char **redir, char **src, char **trans)//done
+{
+	char	*tmp;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	tmp = NULL;
+	while (src && trans && src[i] && trans[i])
+	{
+		if (ft_isredirection(trans[i]))
+		{
+			tmp = ft_strtrim(src[i], "\a\b\t\n\v\f\r ");
+			redir[j] = ft_strjoin(trans[i], tmp);
+			j++;
+			if (tmp)
+				ft_true_free((void **)&tmp);
+		}
+		i++;
+	}
+}
+
+int	ft_check_if_empty(t_parsed *final)//done
+{
+	int	test;
+	int	i;
+
+	i = 0;
+	test = 0;
+	if (final->cmds || final->redirections)
+	{
+		while (final->cmds && final->cmds[i])
+		{
+			if (final->cmds[i][0])
+				test++;
+			i++;
+		}
+		i = 0;
+		while (final->redirections && final->redirections[i])
+		{
+			if (final->redirections[i][1])
+				test++;
+			i++;
+		}
+	}
+	if (!test)
+		return (1);
+	return (0);
+}
+
+void	ft_lst_to_final(t_twins *lst, t_parsed *final)//done
+{
+	while (lst && final)
+	{
+		final->cmds_quant = ft_count_cmds(lst->trans);
+		final->redir_quant = ft_count_redirections(lst->trans);
+		final->hdocs_quant = ft_count_heredocs(lst->trans);
+		if (final->cmds_quant)
+		{
+			final->cmds = ft_alloc_strs(final->cmds_quant);
+			if (final->cmds)
+				ft_final_get_cmds(final->cmds, lst->src, lst->trans);
+		}
+		if (final->redir_quant)
+		{
+			final->redirections = ft_alloc_strs(final->redir_quant);
+			if (final->redirections)
+				ft_final_get_redir(final->redirections, lst->src, lst->trans);
+		}
+		final->empty = ft_check_if_empty(final);
+		lst = lst->next;
+		final = final->next;
+	}
+}
+
+void	ft_show_lst_parsed(t_parsed *lst)//done
+{
+	int	i;
+
+	i = 0;
+	while (lst)
+	{
+		printf("\nindex parsed %d:\n", i);
+		printf("cmds  :");
+		ft_show_strs(lst->cmds);
+		printf("\n");
+		printf("redir :");
+		ft_show_strs(lst->redirections);
+		printf("\n");
+		printf("empty :%d; cmds_quant :%d; redir_quant :%d; hdoc_quant :%d\n", \
+		lst->empty, lst->cmds_quant, lst->redir_quant, lst->hdocs_quant);
+		lst = lst->next;
+		i++;
+	}
 }
 
 t_parsed	*ft_minishell_parsing(char *str1)
 {
-	t_parsed	*lst;
+	t_parsed	*final;
 	t_twins		*origin;
-	//t_twins		twins;
-	//t_book		*book;
+	t_twins		*lst;
 
-	lst = NULL;//a suppr
-	//lst = ft_init_new_elem(NULL, NULL, 0, 0);
-	origin = NULL;
-	origin = ft_init_origin(origin, str1);
-	//book = NULL;
-	ft_show_twins(origin);//first
+	final = NULL;
+	origin = ft_init_origin(NULL, str1);
+	lst = NULL;
 	if (ft_check_syntax(origin->src, origin->trans))
 	{
 		ft_translation(origin->src, origin->trans);
-		//var env
-		//spaces
-	//	twins = ft_split_on_pipes(origin);
-	//	book = ft_split_whithin_pipes(twins);
-	//	lst = ft_book_translation(book);
+		ft_split_on_pipes(origin);
+		lst = ft_init_lst_twins((int)ft_strslen(origin->trans));
+		final = ft_init_lst_parsed((int)ft_strslen(origin->trans));
+		ft_split_on_spaces(lst, origin->src, origin->trans);
+		ft_lst_clean_quotes(lst);
+		ft_lst_clean_redirections(lst);
+		ft_lst_to_final(lst, final);
 	}
-	ft_show_twins(origin);//last
+	//ft_show_twins(origin);//last
+	//ft_show_lst_twins(lst);
+	//ft_show_lst_parsed(final);
 	ft_free_twins(origin);
-	return (lst);
-}
-
-t_parsed	*ft_init_new_elem(char **cmds, char **redir, int hdocs, int	empty)//done
-{
-	t_parsed	*lst;
-
-	lst = (t_parsed *)malloc(sizeof(t_parsed));
-	if (!lst)
-		return (NULL);
-	lst->empty = empty;
-	lst->cmds = cmds;
-	lst->redirections = redir;
-	lst->heredocs = hdocs;
-	lst->next = NULL;
-	return (lst);
+	ft_free_twins(lst);
+	return (final);
 }
 
 //test multi cmdline
@@ -2016,9 +2514,9 @@ int	main(void)
 		tmp[n] = '\0';
 		cmdline = ft_strtrim(tmp, "\a\b\t\n\v\f\r ");
 		ft_true_free((void **)&tmp);
-		lst = ft_minishell_parsing(cmdline);//////en cours
-		//printer le contenu de la lst;
-		ft_true_free((void **)&lst);
+		lst = ft_minishell_parsing(cmdline);
+		ft_show_lst_parsed(lst);
+		ft_free_parsed(lst);
 		printf("\n\n=====================================================\n\n");
 	}
 	ft_true_free((void **)&name);
