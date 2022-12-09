@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/08 19:52:34 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/08 22:52:55 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -985,24 +985,26 @@ void	ft_translation(char **src, char **trans)
 		ft_spaces_focus(src, trans, i, quotes);
 		i++;
 	}
-	// printf("after spaces focus\n");
-	// ft_show_duo_strs(src, trans);
+	printf("after spaces focus\n");
+	ft_show_duo_strs(src, trans);
 	ft_replace_spaces(trans);
-	// printf("after replace spaces\n");
-	// ft_show_duo_strs(src, trans);
+	printf("after replace spaces\n");
+	ft_show_duo_strs(src, trans);
 	ft_rename_angl_brackets(trans);///coder ambiguous
-	// printf("after rename angl brackets\n");
-	// ft_show_duo_strs(src, trans);
+	printf("after rename angl brackets\n");
+	ft_show_duo_strs(src, trans);
 	ft_reveal_ambi_redirect(src, trans);
-	// printf("after ambiguous\n");
-	// ft_show_duo_strs(src, trans);
+	printf("after ambiguous\n");
+	ft_show_duo_strs(src, trans);
 	ft_add_spaces(src, trans);
-	// printf("after add spaces\n");
-	// ft_show_duo_strs(src, trans);
+	printf("after add spaces\n");
+	ft_show_duo_strs(src, trans);
 	ft_disable_var_env(src, trans);///disable ambiguous
-	// printf("after disable var env\n");
-	// ft_show_duo_strs(src, trans);
+	printf("after disable var env\n");
+	ft_show_duo_strs(src, trans);
 	ft_include_var_env(src, trans);
+	printf("after include var env\n");
+	ft_show_duo_strs(src, trans);
 }
 
 int	ft_check_syntax(char **src, char **trans)//done
