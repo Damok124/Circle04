@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/10 00:36:26 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/10 08:41:44 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -616,7 +616,7 @@ int	ft_is_solo(char *str)//done
 	return (0);
 }
 
-int	ft_is_duo(char *str)
+int	ft_is_duo(char *str)//done
 {
 	if (str && str[0] && (str[0] == 'H' || str[0] == 'A'))
 		return (1);
@@ -799,6 +799,23 @@ void	ft_replace_spaces(char **trans)//done
 				i++;
 			}
 			i -= 1;
+		}
+		i++;
+	}
+}
+
+void	ft_rename_ambiguous_tag(char **trans)/////////////////////////////
+{
+	int	i;
+
+	i = 0;
+	while (trans && trans[i])
+	{
+		if (trans[i][0] == '?')
+		{
+			if (trans[i][2] && trans[i][2] == '>')
+				trans[i][1] = 'A';
+			trans[i][2] = '\0';
 		}
 		i++;
 	}
@@ -1041,13 +1058,6 @@ void	ft_include_var_env(char **src, char **trans)//done -> to change
 	}
 }
 
-char	ft_ambiguous_type(char c)//optionnal ?////////////////////////////////////////////
-{
-	if (ft_strchr("<>", c))
-		return ('@');
-	return ('?');
-}
-
 void	ft_reveal_ambi_redirect(char **src, char **trans)
 {
 	int	j;
@@ -1055,6 +1065,7 @@ void	ft_reveal_ambi_redirect(char **src, char **trans)
 
 	i = 0;
 	j = 0;
+	printf("\nTEST POWERRRRRRRR\n\n");
 	while (src && trans && src[0] && trans[0] && src[0][i] && trans[0][i])
 	{
 		if (ft_strchr("<>", trans[0][i]))
@@ -1064,6 +1075,8 @@ void	ft_reveal_ambi_redirect(char **src, char **trans)
 		if (j)
 		{
 			while (src[0][i + j] && ft_isspace(src[0][i + j]))
+				j++;
+			while (trans[0][i + j] && ft_strchr("0\"\'", trans[0][i + j]))
 				j++;
 			if (trans[0][i + j] && trans[0][i + j] == '$')
 			{
@@ -1079,21 +1092,6 @@ void	ft_reveal_ambi_redirect(char **src, char **trans)
 
 void	ft_translation(char **src, char **trans)
 {
-	// int	i;
-	// int	quotes[2];
-
-	// i = 0;
-	// quotes[SIMPLE] = 0;
-	// quotes[DOUBLE] = 0;
-	// while (src[0] && src[0][i])
-	// {
-	// 	ft_quotes_focus(src, trans, i, quotes);
-	// 	ft_angled_brackets_focus(src, trans, i);
-	// 	ft_pipes_focus(src, trans, i, quotes);
-	// 	ft_var_env_focus(src, trans, i, quotes[SIMPLE]);
-	// 	ft_spaces_focus(src, trans, i, quotes);
-	// 	i++;
-	// }
 	printf("after spaces focus\n");
 	ft_show_duo_strs(src, trans);
 	ft_replace_spaces(trans);
@@ -1403,6 +1401,7 @@ void	ft_trim_trans(char **src, char **trans)
 		j = 0;
 		i++;
 	}
+	ft_rename_ambiguous_tag(trans);
 }
 
 void	ft_lst_clean_redirections(t_twins *lst)
@@ -1537,7 +1536,7 @@ void	ft_final_get_cmds(char **cmds, char **src, char **trans)//done
 	}
 }
 
-void	ft_final_get_redir(char **redir, char **src, char **trans)//done
+void	ft_final_get_redir(char **redir, char **src, char **trans)
 {
 	char	*tmp;
 	int		i;
@@ -1551,8 +1550,6 @@ void	ft_final_get_redir(char **redir, char **src, char **trans)//done
 		if (ft_isredirection(trans[i]))
 		{
 			tmp = ft_strtrim(src[i], "\a\b\t\n\v\f\r ");
-			//if (trans[i][0] && trans[i][0] == '@')
-			//	trans[i][0] = '?';
 			redir[j] = ft_strjoin(trans[i], tmp);
 			j++;
 			if (tmp)
