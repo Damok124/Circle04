@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 08:01:28 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/10 08:41:44 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/10 10:25:13 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1065,7 +1065,6 @@ void	ft_reveal_ambi_redirect(char **src, char **trans)
 
 	i = 0;
 	j = 0;
-	printf("\nTEST POWERRRRRRRR\n\n");
 	while (src && trans && src[0] && trans[0] && src[0][i] && trans[0][i])
 	{
 		if (ft_strchr("<>", trans[0][i]))
@@ -1081,7 +1080,6 @@ void	ft_reveal_ambi_redirect(char **src, char **trans)
 			if (trans[0][i + j] && trans[0][i + j] == '$')
 			{
 				trans[0][i + j] = '0';
-				//trans[0][i] = ft_ambiguous_type(src[0][i + 1]);
 				trans[0][i] = '?';
 			}
 			j = 0;
@@ -1097,7 +1095,7 @@ void	ft_translation(char **src, char **trans)
 	ft_replace_spaces(trans);
 	printf("after replace spaces\n");
 	ft_show_duo_strs(src, trans);
-	ft_rename_angl_brackets(trans);///coder ambiguous
+	ft_rename_angl_brackets(trans);
 	printf("after rename angl brackets\n");
 	ft_show_duo_strs(src, trans);
 	ft_reveal_ambi_redirect(src, trans);
@@ -1106,7 +1104,7 @@ void	ft_translation(char **src, char **trans)
 	ft_add_spaces(src, trans);
 	printf("after add spaces\n");
 	ft_show_duo_strs(src, trans);
-	ft_disable_var_env(src, trans);///disable ambiguous
+	ft_disable_var_env(src, trans);
 	printf("after disable var env\n");
 	ft_show_duo_strs(src, trans);
 	ft_include_var_env(src, trans);
@@ -1121,10 +1119,6 @@ int	ft_check_syntax(char **src, char **trans)////////////////////////////////
 			|| !ft_check_format_pipes(trans[0]))
 		return (0);
 	return (1);
-
-	// if (!ft_check_format_quotes(trans[0], ft_strlen(trans[0])) || !ft_check_format_angl_brackets(src[0], trans[0]) || !ft_check_format_pipes(trans[0]))
-	// 	return (0);
-	// return (1);
 }
 
 char	*ft_twin_str(char *str1)//done
@@ -1413,16 +1407,9 @@ void	ft_lst_clean_redirections(t_twins *lst)
 	tmp = NULL;
 	while (lst)
 	{
-		ft_trim_trans(lst->src, lst->trans);//nouveau
+		ft_trim_trans(lst->src, lst->trans);
 		while (lst->trans && lst->trans[i])
 		{
-			// if (ft_is_duo(lst->trans[i]))
-			// {
-			// 	lst->src[i][0] = ' ';
-			// 	lst->src[i][1] = ' ';
-			// }
-			// else if (ft_is_solo(lst->trans[i]))////////////////////////////////////////////////////
-			// 	lst->src[i][0] = ' ';
 			tmp = lst->src[i];
 			lst->src[i] = ft_strtrim(tmp, "\a\b\t\n\v\f\r ");
 			ft_true_free((void **)&tmp);
