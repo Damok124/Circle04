@@ -1,21 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   verif.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/12 15:32:29 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/11 19:46:36 by zharzi           ###   ########.fr       */
+/*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
+/*   Updated: 2022/12/11 22:25:30 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+# include <string.h>
+# include <stdio.h>
+# include <stdarg.h>
+# include <stddef.h>
+# include <limits.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <sys/time.h>
+# include <pthread.h>
 
-//number_of_philosophers time_to_die time_to_eat time_to_sleep
+//number_of_philosophers
+//time_to_die
+//time_to_eat
+//time_to_sleep
 //[number_of_times_each_philosopher_must_eat]
 
-/*
+int	ft_isdigit(int c)
+{
+	if (c >= '0' && c <= '9')
+		return (1);
+	return (0);
+}
+
 int ft_atoi_safe(const char *nptr, int *check)
 {
 	long int i;
@@ -44,6 +61,9 @@ int ft_atoi_safe(const char *nptr, int *check)
 	}
 	return (i * k);
 }
+
+////////////////////////////////////////////////////////////////////
+
 int	ft_check_if_pos_int(char **argv)
 {
 	int	i;
@@ -53,13 +73,16 @@ int	ft_check_if_pos_int(char **argv)
 	j = 0;
 	while (argv && argv[i])
 	{
-		if (argv[i][0] == '+')
+		if (argv[i][j] == '+')
 			j++;
-		while (ft_isalnum(argv[i][j]))
+		if (!ft_isdigit(argv[i][j]))
+			return (0);
+		while (ft_isdigit(argv[i][j]))
 			j++;
 		if (argv[i][j])
 			return (0);
 		i++;
+		j = 0;
 	}
 	return (1);
 }
@@ -81,29 +104,28 @@ int	ft_check_if_overflow(char **argv)
 	return (1);
 }
 
-int	ft_check_quantity(char **argv, int n)
+int	ft_check_args(int ac, char **argv)
 {
-	int	i;
-
-	i = 0;
-	while (argv && argv[i])
-		i++;
-	if (i != n)
+	if (ac != 4 || !ft_check_if_pos_int(argv) || !ft_check_if_overflow(argv))
 		return (0);
 	return (1);
 }
-
-int	ft_check_args(char **argv)
+/*
+void	ft_routine()
 {
-	if (!ft_check_quantity(argv, 4) || !ft_check_if_pos_int(argv) \
-		|| !ft_check_if_overflow(argv))
-		return (0);
-	return (1);
+	//prends les deux fourchettes
+	//mange
+	//dort
+	//pense;
 }
-
+*/
 void	ft_philo(int philo, int	lifetime, int eat_time, int	sleep_time)
 {
-	;
+	(void)philo;
+	(void)lifetime;
+	(void)eat_time;
+	(void)sleep_time;
+	//nombre de fourchettes = nombre de philo
 }
 
 int	main(int ac, char **argv)
@@ -114,50 +136,19 @@ int	main(int ac, char **argv)
 
 	i = 0;
 	check = 1;
-	if (ft_check_args(argv + 1))
+	if (ft_check_args(ac - 1, argv + 1))//ajouter le dernier arg au parsing
 	{
 		while (i < 4)
-			tab[i] = ft_atoi_safe(argv[i + 1], check);
-		ft_philo(tab[0], tab[1], tab[2], tab[3]);
+		{
+			tab[i] = ft_atoi_safe(argv[i + 1], &check);
+			i++;
+		}
+		if (ft_atoi_safe(argv[1], &check) >= 1)
+			ft_philo(tab[0], tab[1], tab[2], tab[3]);
+		else
+			printf("Bring more philosophers!\n");
 	}
 	else
-		printf("Wrong number of arguments.\n");
+		printf("Wrong arguments.\n");
 	return (0);
 }
-
-*/
-
-
-
-
-int	main(int argc, char **argv, char **env)
-{
-	struct timeval initial_time;
-	struct timeval current_time;
-
-	gettimeofday(&initial_time, NULL);
-	usleep(1000000);
-	gettimeofday(&current_time, NULL);
-	printf("sec : %ld, microsec : %ld\n", current_time.tv_sec - initial_time.tv_sec, current_time.tv_usec - initial_time.tv_usec);
-	(void)argc;
-	(void)argv;
-	(void)env;
-	return (0);
-}
-
-/*
-	memset
-	printf
-	malloc
-	free
-	write
-	usleep
-	gettimeofday
-pthread_create
-pthread_detach
-pthread_join
-pthread_mutex_init
-pthread_mutex_destroy
-pthread_mutex_locK
-pthread_mutex_unlock
-*/
