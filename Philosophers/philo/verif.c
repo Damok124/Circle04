@@ -6,19 +6,19 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/11 22:25:30 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/12 11:03:02 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <string.h>
-# include <stdio.h>
-# include <stdarg.h>
-# include <stddef.h>
-# include <limits.h>
-# include <stdlib.h>
-# include <unistd.h>
-# include <sys/time.h>
-# include <pthread.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <stddef.h>
+#include <limits.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/time.h>
+#include <pthread.h>
 
 //number_of_philosophers
 //time_to_die
@@ -33,7 +33,7 @@ int	ft_isdigit(int c)
 	return (0);
 }
 
-int ft_atoi_safe(const char *nptr, int *check)
+int	ft_atoi_safe(const char *nptr, int *check)
 {
 	long int i;
 	int k;
@@ -64,50 +64,50 @@ int ft_atoi_safe(const char *nptr, int *check)
 
 ////////////////////////////////////////////////////////////////////
 
-int	ft_check_if_pos_int(char **argv)
+int	ft_check_arg_positive(char *arg)
 {
 	int	i;
-	int	j;
 
 	i = 0;
-	j = 0;
-	while (argv && argv[i])
-	{
-		if (argv[i][j] == '+')
-			j++;
-		if (!ft_isdigit(argv[i][j]))
-			return (0);
-		while (ft_isdigit(argv[i][j]))
-			j++;
-		if (argv[i][j])
-			return (0);
+	if (arg[i] == '+')
 		i++;
-		j = 0;
-	}
+	if (!ft_isdigit(arg[i]))
+		return (0);
+	while (ft_isdigit(arg[i]))
+		i++;
+	if (arg[i])
+		return (0);
 	return (1);
 }
 
-int	ft_check_if_overflow(char **argv)
+int	ft_check_arg_overflow(char *arg)
 {
 	int	check;
-	int	i;
 
-	i = 0;
 	check = 1;
-	while (argv && argv[i])
-	{
-		ft_atoi_safe(argv[i], &check);
-		if (!check)
-			return (0);
-		i++;
-	}
+	ft_atoi_safe(arg, &check);
+	if (!check)
+		return (0);
 	return (1);
 }
 
 int	ft_check_args(int ac, char **argv)
 {
-	if (ac != 4 || !ft_check_if_pos_int(argv) || !ft_check_if_overflow(argv))
+	int	check;
+	int	i;
+
+	check = 1;
+	i = 0;
+	if (ac < 4 || ac > 5)
 		return (0);
+	while (argv && argv[i])
+	{
+		if (!ft_check_arg_positive(argv[i]) || !ft_check_arg_overflow(argv[i]))
+			return (0);
+		if (ft_atoi_safe(argv[0], &check) < 1)
+			return (0);
+		i++;
+	}
 	return (1);
 }
 /*
@@ -117,36 +117,31 @@ void	ft_routine()
 	//mange
 	//dort
 	//pense;
+	//meurt si sort de la boucle
 }
 */
-void	ft_philo(int philo, int	lifetime, int eat_time, int	sleep_time)
+void	ft_philo(int *values)
 {
-	(void)philo;
-	(void)lifetime;
-	(void)eat_time;
-	(void)sleep_time;
+	(void)values;
 	//nombre de fourchettes = nombre de philo
 }
 
 int	main(int ac, char **argv)
 {
 	int	check;
-	int	tab[4];
+	int	tab[ac - 1];
 	int	i;
 
 	i = 0;
 	check = 1;
 	if (ft_check_args(ac - 1, argv + 1))//ajouter le dernier arg au parsing
 	{
-		while (i < 4)
+		while (i < (ac - 1))
 		{
 			tab[i] = ft_atoi_safe(argv[i + 1], &check);
 			i++;
 		}
-		if (ft_atoi_safe(argv[1], &check) >= 1)
-			ft_philo(tab[0], tab[1], tab[2], tab[3]);
-		else
-			printf("Bring more philosophers!\n");
+		ft_philo(tab);
 	}
 	else
 		printf("Wrong arguments.\n");
