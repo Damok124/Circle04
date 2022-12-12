@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/12 11:03:02 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/12 19:05:54 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,47 @@
 #include <sys/time.h>
 #include <pthread.h>
 
+#define PHILOSOPHERS 0
+#define LIFETIME 1
+#define EATING 2
+#define SLEEPING 3
+#define LUNCHES 4
+
 //number_of_philosophers
 //time_to_die
 //time_to_eat
 //time_to_sleep
 //[number_of_times_each_philosopher_must_eat]
+
+void	ft_to_del(void)
+{
+	(void)NULL;
+}
+
+void	ft_to_dele(void)
+{
+	(void)NULL;
+}
+
+void	ft_to_delet(void)
+{
+	(void)NULL;
+}
+
+void	ft_to_delete(void)
+{
+	(void)NULL;
+}
+
+void	ft_to_dell(void)
+{
+	(void)NULL;
+}
+
+void	ft_to_delll(void)
+{
+	(void)NULL;
+}
 
 int	ft_isdigit(int c)
 {
@@ -35,8 +71,8 @@ int	ft_isdigit(int c)
 
 int	ft_atoi_safe(const char *nptr, int *check)
 {
-	long int i;
-	int k;
+	long int	i;
+	int			k;
 
 	i = 0;
 	k = 0;
@@ -110,20 +146,29 @@ int	ft_check_args(int ac, char **argv)
 	}
 	return (1);
 }
-/*
-void	ft_routine()
+
+void	*ft_routine(void * arg)
 {
 	//prends les deux fourchettes
 	//mange
 	//dort
 	//pense;
 	//meurt si sort de la boucle
+	(void)arg;
+	printf("Nous sommes dans le thread.\n");
+	return (NULL);
 }
-*/
-void	ft_philo(int *values)
+
+void	ft_philo(int *values, int ac)
 {
 	(void)values;
-	//nombre de fourchettes = nombre de philo
+	(void)ac;
+	pthread_t	t1;
+
+	printf("Avant la création du thread.\n");
+	pthread_create(&t1, NULL, ft_routine, NULL);//le dernier arg devra etre la struct fourre-tout
+	pthread_join(t1, NULL);
+	printf("Après la création du thread.\n");
 }
 
 int	main(int ac, char **argv)
@@ -134,16 +179,16 @@ int	main(int ac, char **argv)
 
 	i = 0;
 	check = 1;
-	if (ft_check_args(ac - 1, argv + 1))//ajouter le dernier arg au parsing
+	if (ft_check_args(ac - 1, argv + 1))
 	{
 		while (i < (ac - 1))
 		{
 			tab[i] = ft_atoi_safe(argv[i + 1], &check);
 			i++;
 		}
-		ft_philo(tab);
+		ft_philo(tab, ac - 1);
 	}
 	else
 		printf("Wrong arguments.\n");
-	return (0);
+	return (EXIT_SUCCESS);
 }

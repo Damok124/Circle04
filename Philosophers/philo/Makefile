@@ -6,7 +6,7 @@
 #    By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/31 13:40:41 by zharzi            #+#    #+#              #
-#    Updated: 2022/11/12 15:36:34 by zharzi           ###   ########.fr        #
+#    Updated: 2022/12/12 15:31:11 by zharzi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,10 +32,10 @@ FLAGS = -Wall -Wextra -Werror -g3
 IFLAG = -I$(HEADERDIR)
 
 all : libphilo.a
-	$(CC) $(FLAGS) main.c $(IFLAG) -L. -lphilo -o $(BINARY)
+	$(CC) $(FLAGS) main.c $(IFLAG) -L. -lphilo -o $(BINARY) -lpthread
 
 %.o : %.c
-	$(CC) $(FLAGS) $(IFLAG) -o $@ -c $^
+	$(CC) $(FLAGS) $(IFLAG) -o $@ -c $^  -lpthread
 
 libphilo.a : $(OBJ) $(HEADERDIR)$(HEADER)
 	ar -rcs $(NAME) $^
