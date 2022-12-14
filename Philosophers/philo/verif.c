@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/14 01:36:51 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/14 19:29:07 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,21 @@
 #define SLEEPING 3
 #define MEALS 4
 
-//number_of_philosophers
-//time_to_die
-//time_to_eat
-//time_to_sleep
-//[number_of_times_each_philosopher_must_eat]
+typedef struct s_context {
+	int				life_time;
+	int				meal_time;
+	int				rest_time;
+	int				meals_max;
+	int				members;
+}					t_context;
+
+typedef struct s_philo {
+	pthread_t		philo;
+	int				id;
+	int				alive;
+	pthread_mutex_t	*left;
+	pthread_mutex_t	right;
+}					t_philo;
 
 void	ft_to_del(void)
 {
@@ -152,11 +162,103 @@ int	ft_check_args(int ac, char **argv)
 
 void	*ft_routine(void *arg)
 {
-	//prends les deux fourchettes
-	//mange
-	//dort
-	//pense;
-	//meurt si sort de la boucle
+	(void)arg;
+
+	return (NULL);
+}
+
+/*
+void	*ft_routine(void *arg)
+{
+	pthread_mutex_lock((pthread_mutex_t *)arg);
+	printf("lol%ld\n", pthread_self());
+	pthread_mutex_unlock((pthread_mutex_t *)arg);
+	(void)arg;
+
+	return (NULL);
+}
+*/
+
+// number_of_philosophers
+// time_to_die
+// time_to_eat
+// time_to_sleep
+// [number_of_times_each_philosopher_must_eat]
+
+typedef struct s_context {
+	int				life_time;
+	int				meal_time;
+	int				rest_time;
+	int				meals_max;
+	int				members;
+	t_philo			*philos;
+}					t_context;
+
+typedef struct s_philo {
+	pthread_t		philo;
+	int				id;
+	int				alive;
+	pthread_mutex_t	*left;
+	pthread_mutex_t	right;
+	t_context		context;
+}					t_philo;
+
+t_context ft_init_context(int ac, char *argv)
+{
+	t_context	context;
+	int			check;
+
+	check = 1;
+	context.life_time = ft_atoi_safe(argv[1], &check);
+	context.meal_time = ft_atoi_safe(argv[2], &check);
+	context.rest_time = ft_atoi_safe(argv[3], &check);
+	if (ac == 5)
+		context.meals_max = ft_atoi_safe(argv[4], &check);
+	else
+		context.meals_max = -1;
+	//reste à initialiser les philos
+}
+
+t_philo	ft_set_philo(int *tab, int ac, int i)
+{
+	t_philo			philo;
+
+	philo.id = i;
+	philo.alive = 1;
+	pthread_mutex_init(&philo.right, NULL);
+	///incomplet
+	return (philo);
+}
+
+void	ft_philo(int *values, int ac)
+{
+	t_philo	philo[values[PHILOSOPHERS]];
+	int		i;
+
+	i = - 1;
+	while (++i < values[PHILOSOPHERS])
+	{
+		philo[i] = ft_set_philo(values, ac, i);
+		ft_left_fork(values, ac, i, philo);
+	}
+	/*
+	i = -1;
+	pthread_mutex_init(&forks, NULL);
+	while (++i < values[PHILOSOPHERS])
+	{
+		pthread_create(&philosophers[i], NULL, ft_routine, &forks);
+	}
+	i = values[FORKS];
+	while (--i >= 0)
+		pthread_join(philosophers[i], NULL);
+	i = values[FORKS];
+	pthread_mutex_destroy(&forks);
+	*/
+}
+
+/*
+void	*ft_routine(void *arg)
+{
 	pthread_mutex_lock((pthread_mutex_t *)arg);
 	printf("lol%ld\n", pthread_self());
 	pthread_mutex_unlock((pthread_mutex_t *)arg);
@@ -168,28 +270,28 @@ void	*ft_routine(void *arg)
 void	ft_philo(int *values, int ac)
 {
 	int	i;
-	pthread_mutex_t	forks[values[FORKS]];
+	pthread_mutex_t	forks;
 	pthread_t		philosophers[values[PHILOSOPHERS]];
 	(void)values;
 	(void)ac;
 
-	i = values[FORKS];
-	while (--i >= 0)
-		pthread_mutex_init(&forks[i], NULL);
+	i = -1;
+	pthread_mutex_init(&forks, NULL);
 	while (++i < values[PHILOSOPHERS])
 	{
-		pthread_create(&philosophers[i], NULL, ft_routine, &forks[i]);
+		pthread_create(&philosophers[i], NULL, ft_routine, &forks);
 	}
 	i = values[FORKS];
 	while (--i >= 0)
 		pthread_join(philosophers[i], NULL);
 	i = values[FORKS];
-	while (--i >= 0)
-		pthread_mutex_destroy(&forks[i]);
+	pthread_mutex_destroy(&forks);
 }
+*/
 
 int	main(int ac, char **argv)
 {
+	t_context	context;
 	int	check;
 	int	tab[ac - 1];
 	int	i;
