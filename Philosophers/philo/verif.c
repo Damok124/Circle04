@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/15 11:06:46 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/15 20:56:49 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ typedef struct s_philo {
 	int				alive;
 	pthread_mutex_t	left;
 	pthread_mutex_t	*right;
+	pthread_t		*next;
 }					t_philo;
 
 void	ft_to_del(void)
@@ -244,11 +245,52 @@ void	ft_unset_philo(t_philo *philo, int	n)
 	i = 0;
 	while (i < n)
 	{
-		philo->right = NULL;/////////probleme ici
+		pthread_mutex_destroy(&philo[i].left);
+		philo->right = NULL;
 		i++;
 	}
-	while (--i >= 0)
-		pthread_mutex_destroy(&philo->left);
+}
+
+t_philo	*ft_init_lst_philo(int size)
+{
+	t_philo	*elem;
+
+	if (size)
+	{
+		elem = (t_philo *)malloc(sizeof(t_philo));
+		if (!elem)
+			return (NULL);
+		elem->next = ft_init_lst_philo(size -1);
+		return (elem);
+	}
+	return (NULL);
+}
+
+t_philo	*ft_set_philo(int *values, int ac)
+{
+	t_philo			*philo;
+	pthread_mutex_t *prev;
+	int		i;
+
+	i = - 1;
+	prev = NULL;
+	philo =
+
+	while (++i < values[PHILOSOPHERS])
+	{
+		philo[i].id = i;
+		philo[i].alive = 1;
+		pthread_mutex_init(&philo[i].left, NULL);
+		philo.right = &prev->left;
+		/*if (i < 1)
+			philo[i] = ft_set_philo(values, ac, i++, NULL);
+		philo[i] = ft_set_philo(values, ac, i, &philo[i - 1]);*/
+		// if (i < 1)
+		// 	philo[i] = ft_set_philo(values, ac, i, NULL);
+		// else
+		// 	philo[i] = ft_set_philo(values, ac, i, &philo[i - 1]);
+	}
+	philo[0].right = &philo[values[PHILOSOPHERS]].left;
 }
 
 void	ft_philo(int *values, int ac)
@@ -263,8 +305,6 @@ void	ft_philo(int *values, int ac)
 			philo[i] = ft_set_philo(values, ac, i, NULL);
 		else
 			philo[i] = ft_set_philo(values, ac, i, &philo[i - 1]);
-		printf("left %d, %p\n", i, &philo[i].left);
-		printf("right%d, %p\n", i, philo[i].right);
 	}
 	philo[0].right = &philo[values[PHILOSOPHERS]].left;
 	ft_unset_philo(philo, values[PHILOSOPHERS]);
