@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/15 20:56:49 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/16 10:48:10 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <stddef.h>
+#include <stdlib.h>
 #include <limits.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -39,9 +40,9 @@ typedef struct s_philo {
 	pthread_t		philo;
 	int				id;
 	int				alive;
-	pthread_mutex_t	left;
-	pthread_mutex_t	*right;
-	pthread_t		*next;
+	pthread_mutex_t	*left;
+	pthread_mutex_t	right;
+	struct s_philo	*next;
 }					t_philo;
 
 void	ft_to_del(void)
@@ -110,6 +111,15 @@ int	ft_atoi_safe(const char *nptr, int *check)
 		}
 	}
 	return (i * k);
+}
+
+void	ft_true_free(void **ptr)
+{
+	if (*ptr)
+	{
+		free(*ptr);
+		*ptr = NULL;
+	}
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -221,14 +231,14 @@ void	*ft_routine(void *arg)
 // 		context.meals_max = -1;
 // 	//reste à initialiser les philos
 // }
-
+/*
 t_philo	ft_set_philo(int *tab, int ac, int i, t_philo *prev)
 {
 	t_philo			philo;
 
 	philo.id = i;
 	philo.alive = 1;
-	pthread_mutex_init(&philo.left, NULL);
+	pthread_mutex_init(&philo.right, NULL);
 	philo.right = &prev->left;
 	// printf("left %d, %p\n", i, &philo.left);
 	// printf("right%d, %p\n", i, philo.right);
@@ -237,21 +247,23 @@ t_philo	ft_set_philo(int *tab, int ac, int i, t_philo *prev)
 	(void)ac;//voir si nombre de repas
 	return (philo);
 }
-
-void	ft_unset_philo(t_philo *philo, int	n)
+*/
+void	ft_unset_philos(t_philo *lst)//done
 {
-	int	i;
+	t_philo	*tmp;
 
-	i = 0;
-	while (i < n)
+	tmp = NULL;
+	while (lst)
 	{
-		pthread_mutex_destroy(&philo[i].left);
-		philo->right = NULL;
-		i++;
+		tmp = lst;
+		pthread_mutex_destroy(&lst->right);
+		lst->left = NULL;
+		lst = lst->next;
+		ft_true_free((void **)&tmp);
 	}
 }
 
-t_philo	*ft_init_lst_philo(int size)
+t_philo	*ft_init_lst_philo(int size)//done
 {
 	t_philo	*elem;
 
@@ -266,48 +278,47 @@ t_philo	*ft_init_lst_philo(int size)
 	return (NULL);
 }
 
-t_philo	*ft_set_philo(int *values, int ac)
+void	ft_init_forks(t_philo *lst)//done
 {
-	t_philo			*philo;
-	pthread_mutex_t *prev;
-	int		i;
-
-	i = - 1;
-	prev = NULL;
-	philo =
-
-	while (++i < values[PHILOSOPHERS])
+	while (lst)
 	{
-		philo[i].id = i;
-		philo[i].alive = 1;
-		pthread_mutex_init(&philo[i].left, NULL);
-		philo.right = &prev->left;
-		/*if (i < 1)
-			philo[i] = ft_set_philo(values, ac, i++, NULL);
-		philo[i] = ft_set_philo(values, ac, i, &philo[i - 1]);*/
-		// if (i < 1)
-		// 	philo[i] = ft_set_philo(values, ac, i, NULL);
-		// else
-		// 	philo[i] = ft_set_philo(values, ac, i, &philo[i - 1]);
+		pthread_mutex_init(&lst->right, NULL);
+		lst->left = NULL;
+		lst = lst->next;
 	}
-	philo[0].right = &philo[values[PHILOSOPHERS]].left;
 }
 
-void	ft_philo(int *values, int ac)
+void	ft_init_philos(t_philo *lst, int *values, int ac)//to complete
 {
-	t_philo	philo[values[PHILOSOPHERS]];
-	int		i;
+	t_philo	*first;
+	int	i;
 
-	i = - 1;
-	while (++i < values[PHILOSOPHERS])
+	first = lst;
+	i = 0;
+	while (lst)
 	{
-		if (i < 1)
-			philo[i] = ft_set_philo(values, ac, i, NULL);
-		else
-			philo[i] = ft_set_philo(values, ac, i, &philo[i - 1]);
+		i++;
+		lst->id	= i;
+		lst->alive = 1;
+		if (lst->next)
+			lst->left = &lst->next->right;
+		else if (values[PHILOSOPHERS] > 1)
+			lst->left = &first->right;
+		lst = lst->next;
 	}
-	philo[0].right = &philo[values[PHILOSOPHERS]].left;
-	ft_unset_philo(philo, values[PHILOSOPHERS]);
+	(void)ac;//pour plus tard
+}
+
+void	ft_set_philos(t_philo *philos, int *values, int ac)
+{
+	ft_init_forks(philos);
+	ft_init_philos(philos, values, ac);
+}
+
+void	ft_philo(t_philo *philos, int *values, int ac)
+{
+	ft_set_philos(philos, values, ac);
+	ft_unset_philos(philos);
 
 
 	/*
@@ -361,12 +372,14 @@ void	ft_philo(int *values, int ac)
 int	main(int ac, char **argv)
 {
 	//t_context	context;
+	t_philo	*philos;
 	int	check;
 	int	tab[ac - 1];
 	int	i;
 
 	i = 0;
 	check = 1;
+	philos = NULL;
 	if (ft_check_args(ac - 1, argv + 1))
 	{
 		while (i < (ac - 1))
@@ -374,7 +387,11 @@ int	main(int ac, char **argv)
 			tab[i] = ft_atoi_safe(argv[i + 1], &check);
 			i++;
 		}
-		ft_philo(tab, ac - 1);
+		philos = ft_init_lst_philo(tab[PHILOSOPHERS]);
+		if (philos)
+			ft_philo(philos, tab, ac - 1);
+		else
+			printf("FAILURE\n");
 	}
 	else
 		printf("Wrong arguments.\n");
