@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/16 10:48:10 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/16 20:39:39 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 #define EATING 2
 #define SLEEPING 3
 #define MEALS 4
+#define MUTEX pthread_mutex_t
 
 typedef struct s_context {
 	int				life_time;
@@ -40,8 +41,12 @@ typedef struct s_philo {
 	pthread_t		philo;
 	int				id;
 	int				alive;
-	pthread_mutex_t	*left;
-	pthread_mutex_t	right;
+	struct timeval	start_time;
+	MUTEX			*left;
+	MUTEX			right;
+	MUTEX			*first;
+	MUTEX			*last;
+	MUTEX			*mut_printf;
 	struct s_philo	*next;
 }					t_philo;
 
@@ -173,24 +178,49 @@ int	ft_check_args(int ac, char **argv)
 
 ////////////////////////////////////////////////////////////////////
 
-void	*ft_routine(void *arg)
+int	ft_get_time(struct timeval start)
 {
-	(void)arg;
+	struct timeval	result;
+	struct timeval	actual;
+	int				time;
 
-	return (NULL);
+	time = 0;
+	gettimeofday(&actual, NULL);
+	result.tv_sec = actual.tv_sec - start.tv_sec;
+	result.tv_usec = actual.tv_usec - start.tv_usec;
+	time = (result.tv_sec * 1000) + (result.tv_usec / 1000);
+	//calcule de la différence de temps entre tv et start_time
+	return (time);
 }
 
-/*
+void	ft_print_msg(t_philo *philo, char *msg)
+{
+	int	time;
+
+	pthread_mutex_lock(philo->mut_printf);
+	time = ft_get_time(philo->start_time);
+	printf("%07i %3i %s\n", time, philo->id, msg);
+	pthread_mutex_unlock(philo->mut_printf);
+}
+
 void	*ft_routine(void *arg)
 {
-	pthread_mutex_lock((pthread_mutex_t *)arg);
-	printf("lol%ld\n", pthread_self());
-	pthread_mutex_unlock((pthread_mutex_t *)arg);
-	(void)arg;
+	t_philo	*philo;
 
+	philo = (t_philo *)arg;
+	while (1)
+	{
+		usleep(100000);
+		pthread_mutex_lock(philo->first);
+		ft_print_msg(philo, "has taken a fork");
+		pthread_mutex_lock(philo->last);
+		ft_print_msg(philo, "has taken a fork");
+		ft_print_msg(philo, "is eating");
+		pthread_mutex_unlock(philo->last);
+		pthread_mutex_unlock(philo->first);
+	}
 	return (NULL);
 }
-*/
 
 // number_of_philosophers
 // time_to_die
@@ -198,56 +228,15 @@ void	*ft_routine(void *arg)
 // time_to_sleep
 // [number_of_times_each_philosopher_must_eat]
 
-// typedef struct s_context {
-// 	int				life_time;
-// 	int				meal_time;
-// 	int				rest_time;
-// 	int				meals_max;
-// 	int				members;
-// 	t_philo			*philos;
-// }					t_context;
-
-// typedef struct s_philo {
-// 	pthread_t		philo;
-// 	int				id;
-// 	int				alive;
-// 	pthread_mutex_t	*left;
-// 	pthread_mutex_t	right;
-// 	t_context		context;
-// }					t_philo;
-
-// t_context ft_init_context(int ac, char *argv)
-// {
-// 	t_context	context;
-// 	int			check;
-
-// 	check = 1;
-// 	context.life_time = ft_atoi_safe(argv[1], &check);
-// 	context.meal_time = ft_atoi_safe(argv[2], &check);
-// 	context.rest_time = ft_atoi_safe(argv[3], &check);
-// 	if (ac == 5)
-// 		context.meals_max = ft_atoi_safe(argv[4], &check);
-// 	else
-// 		context.meals_max = -1;
-// 	//reste à initialiser les philos
-// }
-/*
-t_philo	ft_set_philo(int *tab, int ac, int i, t_philo *prev)
+void	ft_join_them_all(t_philo *lst)//done
 {
-	t_philo			philo;
-
-	philo.id = i;
-	philo.alive = 1;
-	pthread_mutex_init(&philo.right, NULL);
-	philo.right = &prev->left;
-	// printf("left %d, %p\n", i, &philo.left);
-	// printf("right%d, %p\n", i, philo.right);
-	///incomplet
-	(void)tab;//valeurs
-	(void)ac;//voir si nombre de repas
-	return (philo);
+	while (lst)
+	{
+		pthread_join(lst->philo, NULL);
+		lst = lst->next;
+	}
 }
-*/
+
 void	ft_unset_philos(t_philo *lst)//done
 {
 	t_philo	*tmp;
@@ -288,12 +277,30 @@ void	ft_init_forks(t_philo *lst)//done
 	}
 }
 
-void	ft_init_philos(t_philo *lst, int *values, int ac)//to complete
+void	ft_set_handedness(t_philo *lst)//done
 {
-	t_philo	*first;
+	while (lst)
+	{
+		if (lst->id % 2 == 0)
+		{
+			lst->first = &lst->right;
+			lst->last = lst->left;
+		}
+		else
+		{
+			lst->first = lst->left;
+			lst->last = &lst->right;
+		}
+		lst = lst->next;
+	}
+}
+
+void	ft_init_philos(t_philo *lst, int *values, int ac, MUTEX *mut_printf)
+{
+	t_philo	*tmp;
 	int	i;
 
-	first = lst;
+	tmp = lst;
 	i = 0;
 	while (lst)
 	{
@@ -303,69 +310,60 @@ void	ft_init_philos(t_philo *lst, int *values, int ac)//to complete
 		if (lst->next)
 			lst->left = &lst->next->right;
 		else if (values[PHILOSOPHERS] > 1)
-			lst->left = &first->right;
+			lst->left = &tmp->right;
+		lst->mut_printf = mut_printf;
 		lst = lst->next;
 	}
 	(void)ac;//pour plus tard
 }
 
-void	ft_set_philos(t_philo *philos, int *values, int ac)
+void	ft_set_philos(t_philo *philos, int *values, int ac, MUTEX *mut_printf)
 {
 	ft_init_forks(philos);
-	ft_init_philos(philos, values, ac);
+	ft_init_philos(philos, values, ac, mut_printf);
+	ft_set_handedness(philos);
+}
+
+void	ft_put_thread_on_routine(t_philo *lst)
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	while (lst)
+	{
+		lst->start_time = tv;
+		pthread_create(&lst->philo, NULL, ft_routine, (void *)lst);
+		lst = lst->next;
+	}
 }
 
 void	ft_philo(t_philo *philos, int *values, int ac)
 {
-	ft_set_philos(philos, values, ac);
+	MUTEX	mut_printf;
+
+	pthread_mutex_init(&mut_printf, NULL);
+	ft_set_philos(philos, values, ac, &mut_printf);
+	ft_put_thread_on_routine(philos);
+
+
+
+
+	ft_join_them_all(philos);
+	pthread_mutex_destroy(&mut_printf);
 	ft_unset_philos(philos);
-
-
-	/*
-	i = -1;
-	pthread_mutex_init(&forks, NULL);
-	while (++i < values[PHILOSOPHERS])
-	{
-		pthread_create(&philosophers[i], NULL, ft_routine, &forks);
-	}
-	i = values[FORKS];
-	while (--i >= 0)
-		pthread_join(philosophers[i], NULL);
-	i = values[FORKS];
-	pthread_mutex_destroy(&forks);
-	*/
 }
 
 /*
-void	*ft_routine(void *arg)
+int	ft_get_time(struct timeval start_time)
 {
-	pthread_mutex_lock((pthread_mutex_t *)arg);
-	printf("lol%ld\n", pthread_self());
-	pthread_mutex_unlock((pthread_mutex_t *)arg);
-	(void)arg;
+	struct timeval	tv;
+	int				time;
 
-	return (NULL);
-}
+	time = 0;
+	gettimeofday(&tv, NULL);
 
-void	ft_philo(int *values, int ac)
-{
-	int	i;
-	pthread_mutex_t	forks;
-	pthread_t		philosophers[values[PHILOSOPHERS]];
-	(void)values;
-	(void)ac;
-
-	i = -1;
-	pthread_mutex_init(&forks, NULL);
-	while (++i < values[PHILOSOPHERS])
-	{
-		pthread_create(&philosophers[i], NULL, ft_routine, &forks);
-	}
-	i = values[FORKS];
-	while (--i >= 0)
-		pthread_join(philosophers[i], NULL);
-	i = values[FORKS];
-	pthread_mutex_destroy(&forks);
+	//calcule de la différence de temps entre tv et start_time
+	return (time);
 }
 */
 
@@ -397,89 +395,3 @@ int	main(int ac, char **argv)
 		printf("Wrong arguments.\n");
 	return (EXIT_SUCCESS);
 }
-
-/*
-// Chaque thread comptera TIMES_TO_COUNT fois
-#define TIMES_TO_COUNT 21000
-
-#define NC	"\e[0m"
-#define YELLOW	"\e[33m"
-#define BYELLOW	"\e[1;33m"
-#define RED	"\e[31m"
-#define GREEN	"\e[32m"
-
-// Structure pour contenir le compte ainsi que le mutex qui
-// protegera l'accès à cette variable.
-typedef	struct s_counter
-{
-	pthread_mutex_t	count_mutex;
-	unsigned int	count;
-} t_counter;
-
-void	*thread_routine(void *data)
-{
-	// Chaque thread commence ici
-	pthread_t	tid;
-	t_counter	*counter; // pointeur vers la structure dans le main
-	unsigned int	i;
-
-	tid = pthread_self();
-	counter = (t_counter *)data;
-	// On imprime le compte avant que ce thread commence
-	// a itérer. Pour lire la valeur de count, on verrouille le
-	// mutex.
-	pthread_mutex_lock(&counter->count_mutex);
-	printf("%sThread [%ld]: compte au depart = %u.%s\n", YELLOW, tid, counter->count, NC);
-	pthread_mutex_unlock(&counter->count_mutex);
-	i = 0;
-	while (i < TIMES_TO_COUNT)
-	{
-		// On itere TIMES_TO_COUNT fois
-		// On verouille le mutex le temps
-		// d'incrementer le compte
-		pthread_mutex_lock(&counter->count_mutex);
-		counter->count++;
-		pthread_mutex_unlock(&counter->count_mutex);
-		i++;
-	}
-	// On imprime le compte final au moment ou ce thread
-	// a termine son propre compte en verouillant le mutex
-	pthread_mutex_lock(&counter->count_mutex);
-	printf("%sThread [%ld]: Compte final = %u.%s\n", BYELLOW, tid, counter->count, NC);
-	pthread_mutex_unlock(&counter->count_mutex);
-	return (NULL); // Thread termine ici.
-}
-
-int	main(void)
-{
-	pthread_t	tid1;
-	pthread_t	tid2;
-	t_counter	counter;
-
-	counter.count = 0;
-	pthread_mutex_init(&counter.count_mutex, NULL);
-	printf("Main: Le compte attendu est de %s%u%s\n", GREEN, 2 * TIMES_TO_COUNT, NC);
-	pthread_create(&tid1, NULL, thread_routine, &counter);
-	printf("Main: Creation du premier thread [%ld]\n", tid1);
-	pthread_create(&tid2, NULL, thread_routine, &counter);
-	printf("Main: Creation du second thread [%ld]\n", tid2);
-
-	pthread_join(tid1, NULL);
-	printf("Main: Union du premier thread [%ld]\n", tid1);
-	pthread_join(tid2, NULL);
-	printf("Main: Union du second thread [%ld]\n", tid2);
-
-
-
-
-	if (counter.count != (2 * TIMES_TO_COUNT))
-		printf("%sMain: ERREUR ! Le compte est de %u%s\n",
-					RED, counter.count, NC);
-	else
-		printf("%sMain: OK. Le compte est de %u%s\n",
-					GREEN, counter.count, NC);
-
-	pthread_mutex_destroy(&counter.count_mutex);
-	return (0);
-}
-*/
