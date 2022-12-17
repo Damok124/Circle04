@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/16 20:39:39 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/17 21:20:50 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,26 +27,29 @@
 #define EATING 2
 #define SLEEPING 3
 #define MEALS 4
-#define MUTEX pthread_mutex_t
 
 typedef struct s_context {
+	int				members;
 	int				life_time;
 	int				meal_time;
 	int				rest_time;
 	int				meals_max;
-	int				members;
 }					t_context;
 
 typedef struct s_philo {
 	pthread_t		philo;
 	int				id;
+	pthread_mutex_t	life;//////////
 	int				alive;
+	int				meals;///////////
+	int				deadline;///////////
 	struct timeval	start_time;
-	MUTEX			*left;
-	MUTEX			right;
-	MUTEX			*first;
-	MUTEX			*last;
-	MUTEX			*mut_printf;
+	pthread_mutex_t	*left;
+	pthread_mutex_t	right;
+	pthread_mutex_t	*first;
+	pthread_mutex_t	*last;
+	pthread_mutex_t	*mut_printf;
+	t_context		*context;////////////nouveau
 	struct s_philo	*next;
 }					t_philo;
 
@@ -178,7 +181,11 @@ int	ft_check_args(int ac, char **argv)
 
 ////////////////////////////////////////////////////////////////////
 
-int	ft_get_time(struct timeval start)
+
+
+////////////////////////////////////////////////////////////////////
+
+int	ft_get_time(struct timeval start)//done
 {
 	struct timeval	result;
 	struct timeval	actual;
@@ -189,7 +196,6 @@ int	ft_get_time(struct timeval start)
 	result.tv_sec = actual.tv_sec - start.tv_sec;
 	result.tv_usec = actual.tv_usec - start.tv_usec;
 	time = (result.tv_sec * 1000) + (result.tv_usec / 1000);
-	//calcule de la différence de temps entre tv et start_time
 	return (time);
 }
 
@@ -208,7 +214,7 @@ void	*ft_routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	while (1)
+	while (1)//liberation des forks quand le philo dort
 	{
 		usleep(100000);
 		pthread_mutex_lock(philo->first);
@@ -246,31 +252,21 @@ void	ft_unset_philos(t_philo *lst)//done
 	{
 		tmp = lst;
 		pthread_mutex_destroy(&lst->right);
+		pthread_mutex_destroy(&lst->life);
 		lst->left = NULL;
+		lst->first = NULL;
+		lst->last = NULL;
 		lst = lst->next;
 		ft_true_free((void **)&tmp);
 	}
 }
 
-t_philo	*ft_init_lst_philo(int size)//done
-{
-	t_philo	*elem;
 
-	if (size)
-	{
-		elem = (t_philo *)malloc(sizeof(t_philo));
-		if (!elem)
-			return (NULL);
-		elem->next = ft_init_lst_philo(size -1);
-		return (elem);
-	}
-	return (NULL);
-}
-
-void	ft_init_forks(t_philo *lst)//done
+void	ft_init_mutexes(t_philo *lst)//done
 {
 	while (lst)
 	{
+		pthread_mutex_init(&lst->life, NULL);
 		pthread_mutex_init(&lst->right, NULL);
 		lst->left = NULL;
 		lst = lst->next;
@@ -295,7 +291,7 @@ void	ft_set_handedness(t_philo *lst)//done
 	}
 }
 
-void	ft_init_philos(t_philo *lst, int *values, int ac, MUTEX *mut_printf)
+void	ft_init_philos(t_philo *lst, t_context *context, pthread_mutex_t *mut_printf)
 {
 	t_philo	*tmp;
 	int	i;
@@ -309,18 +305,20 @@ void	ft_init_philos(t_philo *lst, int *values, int ac, MUTEX *mut_printf)
 		lst->alive = 1;
 		if (lst->next)
 			lst->left = &lst->next->right;
-		else if (values[PHILOSOPHERS] > 1)
+		else if (context->members > 1)
 			lst->left = &tmp->right;
 		lst->mut_printf = mut_printf;
+		lst->context = context;
+		lst->meals = 0;
+		lst->deadline = context->life_time;
 		lst = lst->next;
 	}
-	(void)ac;//pour plus tard
 }
 
-void	ft_set_philos(t_philo *philos, int *values, int ac, MUTEX *mut_printf)
+void	ft_set_philos(t_philo *philos, t_context *context, pthread_mutex_t *mut_printf)
 {
-	ft_init_forks(philos);
-	ft_init_philos(philos, values, ac, mut_printf);
+	ft_init_mutexes(philos);
+	ft_init_philos(philos, context, mut_printf);
 	ft_set_handedness(philos);
 }
 
@@ -337,57 +335,96 @@ void	ft_put_thread_on_routine(t_philo *lst)
 	}
 }
 
-void	ft_philo(t_philo *philos, int *values, int ac)
+void	*ft_soul_taking(void *arg)//pas mal
 {
-	MUTEX	mut_printf;
+	t_philo	*philo;
+	t_philo	*tmp;
+	int		taken;
+
+	philo = (t_philo *)arg;
+	tmp = philo;
+	taken = 0;
+	while (philo && taken != philo->context->members)
+	{
+		pthread_mutex_lock(&philo->life);
+		if (philo->alive && (taken/* \
+			|| (!taken && philo->deadline <= ft_get_time(philo->start_time))*/))
+		{
+			philo->alive--;
+			taken++;
+		}
+		pthread_mutex_unlock(&philo->life);
+		if (philo->next)
+			philo = philo->next;
+		else
+			philo = tmp;
+	}
+	return (NULL);
+}
+
+void	ft_philo(t_philo *philos, t_context *context)
+{
+	pthread_t		azrael;
+	pthread_mutex_t	mut_printf;
 
 	pthread_mutex_init(&mut_printf, NULL);
-	ft_set_philos(philos, values, ac, &mut_printf);
+	ft_set_philos(philos, context, &mut_printf);
+	pthread_create(&azrael, NULL, ft_soul_taking, philos);
 	ft_put_thread_on_routine(philos);
 
 
 
 
 	ft_join_them_all(philos);
+	pthread_join(azrael, NULL);
 	pthread_mutex_destroy(&mut_printf);
 	ft_unset_philos(philos);
 }
 
-/*
-int	ft_get_time(struct timeval start_time)
+t_philo	*ft_init_lst_philo(int size)//done
 {
-	struct timeval	tv;
-	int				time;
+	t_philo	*elem;
 
-	time = 0;
-	gettimeofday(&tv, NULL);
-
-	//calcule de la différence de temps entre tv et start_time
-	return (time);
+	if (size)
+	{
+		elem = (t_philo *)malloc(sizeof(t_philo));
+		if (!elem)
+			return (NULL);
+		elem->next = ft_init_lst_philo(size -1);
+		return (elem);
+	}
+	return (NULL);
 }
-*/
+
+t_context	ft_init_context(char **argv, int ac)//done
+{
+	t_context	context;
+	int			check;
+
+	check = 1;
+	context.members = ft_atoi_safe(argv[0], &check);
+	context.life_time = ft_atoi_safe(argv[1], &check);
+	context.meal_time = ft_atoi_safe(argv[2], &check);
+	context.rest_time = ft_atoi_safe(argv[3], &check);
+	if (ac == 5)
+		context.meals_max = ft_atoi_safe(argv[4], &check);
+	else
+		context.meals_max = -1;
+	return (context);
+}
 
 int	main(int ac, char **argv)
 {
-	//t_context	context;
-	t_philo	*philos;
-	int	check;
-	int	tab[ac - 1];
-	int	i;
+	t_context	context;
+	t_philo		*philos;
 
-	i = 0;
-	check = 1;
 	philos = NULL;
 	if (ft_check_args(ac - 1, argv + 1))
 	{
-		while (i < (ac - 1))
-		{
-			tab[i] = ft_atoi_safe(argv[i + 1], &check);
-			i++;
-		}
-		philos = ft_init_lst_philo(tab[PHILOSOPHERS]);
+		context = ft_init_context(argv + 1, ac -1);
+		philos = ft_init_lst_philo(context.members);
 		if (philos)
-			ft_philo(philos, tab, ac - 1);
+			ft_philo(philos, &context);
 		else
 			printf("FAILURE\n");
 	}
