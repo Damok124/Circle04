@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/17 21:20:50 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/18 01:16:01 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,6 +209,55 @@ void	ft_print_msg(t_philo *philo, char *msg)
 	pthread_mutex_unlock(philo->mut_printf);
 }
 
+void	ft_grab_first(t_philo *philo)
+{
+	pthread_mutex_lock(philo->first);
+	ft_print_msg(philo, "has taken a fork");
+}
+
+void	ft_grab_last(t_philo *philo)
+{
+	pthread_mutex_lock(philo->last);
+	ft_print_msg(philo, "has taken a fork");
+}
+
+void	ft_eating(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->life);
+	if (philo->alive)
+		ft_grab_first(philo);
+	pthread_mutex_unlock(&philo->life);
+	pthread_mutex_lock(&philo->life);
+	if (philo->alive)
+		ft_grab_last(philo);
+	pthread_mutex_unlock(&philo->life);
+	pthread_mutex_lock(&philo->life);
+	if (philo->alive)
+		ft_print_msg(philo, "is eating");
+	pthread_mutex_unlock(&philo->life);
+	usleep(philo->context->meal_time * 1000);
+}
+
+void	ft_sleeping(t_philo *philo)
+{
+	pthread_mutex_unlock(philo->first);
+	pthread_mutex_unlock(philo->last);
+	pthread_mutex_lock(&philo->life);
+	if (philo->alive)
+		ft_print_msg(philo, "is sleeping");
+	pthread_mutex_unlock(&philo->life);
+
+}
+
+void	ft_thinking(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->life);
+	if (philo->alive)
+		ft_print_msg(philo, "is thinking");
+	pthread_mutex_unlock(&philo->life);
+	usleep(philo->context->rest_time * 1000);
+}
+
 void	*ft_routine(void *arg)
 {
 	t_philo	*philo;
@@ -216,14 +265,19 @@ void	*ft_routine(void *arg)
 	philo = (t_philo *)arg;
 	while (1)//liberation des forks quand le philo dort
 	{
-		usleep(100000);
-		pthread_mutex_lock(philo->first);
-		ft_print_msg(philo, "has taken a fork");
-		pthread_mutex_lock(philo->last);
-		ft_print_msg(philo, "has taken a fork");
-		ft_print_msg(philo, "is eating");
-		pthread_mutex_unlock(philo->last);
-		pthread_mutex_unlock(philo->first);
+		ft_thinking(philo);
+		ft_eating(philo);
+		ft_sleeping(philo);
+		// pthread_mutex_lock(philo->first);
+		// ft_print_msg(philo, "has taken a fork");
+		// pthread_mutex_lock(philo->last);
+		// ft_print_msg(philo, "has taken a fork");
+		// ft_print_msg(philo, "is eating");
+		// usleep(philo->context->meal_time * 1000);
+		// ft_print_msg(philo, "is sleeping");
+		// pthread_mutex_unlock(philo->last);
+		// pthread_mutex_unlock(philo->first);
+		// usleep(philo->context->rest_time * 1000);
 	}
 	return (NULL);
 }
@@ -294,7 +348,7 @@ void	ft_set_handedness(t_philo *lst)//done
 void	ft_init_philos(t_philo *lst, t_context *context, pthread_mutex_t *mut_printf)
 {
 	t_philo	*tmp;
-	int	i;
+	int		i;
 
 	tmp = lst;
 	i = 0;
@@ -350,7 +404,7 @@ void	*ft_soul_taking(void *arg)//pas mal
 		if (philo->alive && (taken/* \
 			|| (!taken && philo->deadline <= ft_get_time(philo->start_time))*/))
 		{
-			philo->alive--;
+			philo->alive = 0;
 			taken++;
 		}
 		pthread_mutex_unlock(&philo->life);
@@ -369,14 +423,14 @@ void	ft_philo(t_philo *philos, t_context *context)
 
 	pthread_mutex_init(&mut_printf, NULL);
 	ft_set_philos(philos, context, &mut_printf);
-	pthread_create(&azrael, NULL, ft_soul_taking, philos);
 	ft_put_thread_on_routine(philos);
+	pthread_create(&azrael, NULL, ft_soul_taking, philos);
 
 
 
 
-	ft_join_them_all(philos);
 	pthread_join(azrael, NULL);
+	ft_join_them_all(philos);
 	pthread_mutex_destroy(&mut_printf);
 	ft_unset_philos(philos);
 }
