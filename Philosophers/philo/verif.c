@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/18 22:32:53 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/20 00:14:08 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,11 @@ typedef struct s_philo {
 	pthread_mutex_t	*first;
 	pthread_mutex_t	*last;
 	pthread_mutex_t	*mut_printf;
-	t_context		*context;////////////nouveau
-	struct s_philo	*next;
+	t_context		context;////////////nouveau
+	struct s_philo	*next;/////////////////////////////////si lst
 }					t_philo;
+
+////////////////////////////////////////////////////////////////////
 
 void	ft_to_del(void)
 {
@@ -131,6 +133,8 @@ void	ft_true_free(void **ptr)
 }
 
 ////////////////////////////////////////////////////////////////////
+//PARSING
+////////////////////////////////////////////////////////////////////
 
 int	ft_check_arg_positive(char *arg)
 {
@@ -181,327 +185,6 @@ int	ft_check_args(int ac, char **argv)
 
 ////////////////////////////////////////////////////////////////////
 
-
-
-////////////////////////////////////////////////////////////////////
-
-int	ft_get_time(struct timeval start)//done
-{
-	struct timeval	result;
-	struct timeval	actual;
-	int				time;
-
-	time = 0;
-	gettimeofday(&actual, NULL);
-	result.tv_sec = actual.tv_sec - start.tv_sec;
-	result.tv_usec = actual.tv_usec - start.tv_usec;
-	time = (result.tv_sec * 1000) + (result.tv_usec / 1000);
-	return (time);
-}
-
-void	ft_print_msg(t_philo *philo, char *msg)
-{
-	int	time;
-
-	pthread_mutex_lock(&philo->life);
-	if (philo->alive)
-	{
-		pthread_mutex_lock(philo->mut_printf);
-		time = ft_get_time(philo->start_time);
-		printf("%07i %3i %s\n", time, philo->id, msg);
-		pthread_mutex_unlock(philo->mut_printf);
-	}
-	pthread_mutex_unlock(&philo->life);
-}
-
-void	ft_grab_first(t_philo *philo)/////////////////
-{
-	pthread_mutex_lock(philo->first);
-	ft_print_msg(philo, "has taken a fork");
-}
-
-void	ft_grab_last(t_philo *philo)//////////////////
-{
-	pthread_mutex_lock(philo->last);
-	ft_print_msg(philo, "has taken a fork");
-}
-
-/*
-void	ft_eating(t_philo *philo)
-{
-	pthread_mutex_lock(&philo->life);
-	if (philo->alive)
-		ft_grab_first(philo);
-	pthread_mutex_unlock(&philo->life);
-	pthread_mutex_lock(&philo->life);
-	if (philo->alive)
-		ft_grab_last(philo);
-	pthread_mutex_unlock(&philo->life);
-	pthread_mutex_lock(&philo->life);
-	if (philo->alive)
-		ft_print_msg(philo, "is eating");
-	pthread_mutex_unlock(&philo->life);
-	usleep(philo->context->meal_time * 1000);
-}
-
-void	ft_sleeping(t_philo *philo)
-{
-	pthread_mutex_unlock(philo->first);
-	pthread_mutex_unlock(philo->last);
-	pthread_mutex_lock(&philo->life);
-	if (philo->alive)
-		ft_print_msg(philo, "is sleeping");
-	pthread_mutex_unlock(&philo->life);
-	usleep(philo->context->rest_time * 1000);
-}
-
-void	ft_thinking(t_philo *philo)
-{
-	pthread_mutex_lock(&philo->life);
-	if (philo->alive)
-		ft_print_msg(philo, "is thinking");
-	pthread_mutex_unlock(&philo->life);
-}
-*/
-
-int	ft_dead_or_alive(t_philo *philo)
-{
-	pthread_mutex_lock(&philo->life);
-	if (!philo->alive)
-	{
-		pthread_mutex_unlock(&philo->life);
-		return (0);
-	}
-	else if (philo->deadline <= ft_get_time(philo->start_time))
-	{
-		philo->alive = 0;
-		pthread_mutex_unlock(&philo->life);
-		ft_print_msg(philo, "died");
-		return (0);
-	}
-	pthread_mutex_unlock(&philo->life);
-	return (1);
-}
-
-void	*ft_soul_taking(void *arg)
-{
-	t_philo	*philo;
-	t_philo	*tmp;
-	int	judgement_day;
-
-	philo = (t_philo *)arg;
-	tmp = philo;
-	judgement_day = 0;
-	while (!judgement_day && philo)
-	{
-		if (!ft_dead_or_alive(philo))
-
-		if (philo->next)
-			philo = philo->next;
-		else
-			philo = tmp;
-	}
-
-	return (NULL);
-	// t_philo	*philo;
-	// t_philo	*tmp;
-	// int		taken;
-
-	// philo = (t_philo *)arg;
-	// tmp = philo;
-	// taken = 0;
-	// while (philo && taken != philo->context->members)
-	// {
-	// 	pthread_mutex_lock(&philo->life);
-	// 	if (philo->alive && (taken/* \
-	// 		|| (!taken && philo->deadline <= ft_get_time(philo->start_time))*/))
-	// 	{
-	// 		philo->alive = 0;
-	// 		taken++;
-	// 	}
-	// 	pthread_mutex_unlock(&philo->life);
-	// 	if (philo->next)
-	// 		philo = philo->next;
-	// 	else
-	// 		philo = tmp;
-	// }
-	// return (NULL);
-}
-
-void	*ft_routine(void *arg)
-{
-	t_philo	*philo;
-
-	philo = (t_philo *)arg;
-	while (ft_dead_or_alive(philo))
-	{
-		//ft_thinking(philo);
-		//ft_eating(philo);
-		//ft_sleeping(philo);
-		if (ft_dead_or_alive(philo))
-			ft_print_msg(philo, "is thinking");
-		pthread_mutex_lock(philo->first);
-		if (ft_dead_or_alive(philo))
-			ft_print_msg(philo, "has taken a fork");
-		pthread_mutex_lock(philo->last);
-		if (ft_dead_or_alive(philo))
-		{
-			ft_print_msg(philo, "has taken a fork");
-			ft_print_msg(philo, "is eating");
-			usleep(philo->context->meal_time * 1000);
-		}
-		pthread_mutex_unlock(philo->last);
-		pthread_mutex_unlock(philo->first);
-		if (ft_dead_or_alive(philo))
-		{
-			ft_print_msg(philo, "is sleeping");
-			usleep(philo->context->rest_time * 1000);
-		}
-	}
-	return (NULL);
-}
-
-// number_of_philosophers
-// time_to_die
-// time_to_eat
-// time_to_sleep
-// [number_of_times_each_philosopher_must_eat]
-
-void	ft_join_them_all(t_philo *lst)//done
-{
-	while (lst)
-	{
-		pthread_join(lst->philo, NULL);
-		lst = lst->next;
-	}
-}
-
-void	ft_unset_philos(t_philo *lst)//done
-{
-	t_philo	*tmp;
-
-	tmp = NULL;
-	while (lst)
-	{
-		tmp = lst;
-		pthread_mutex_destroy(&lst->right);
-		pthread_mutex_destroy(&lst->life);
-		lst->left = NULL;
-		lst->first = NULL;
-		lst->last = NULL;
-		lst = lst->next;
-		ft_true_free((void **)&tmp);
-	}
-}
-
-void	ft_init_mutexes(t_philo *lst)//done
-{
-	while (lst)
-	{
-		pthread_mutex_init(&lst->life, NULL);
-		pthread_mutex_init(&lst->right, NULL);
-		lst->left = NULL;
-		lst = lst->next;
-	}
-}
-
-void	ft_set_handedness(t_philo *lst)//done
-{
-	while (lst)
-	{
-		if (lst->id % 2 == 0)
-		{
-			lst->first = &lst->right;
-			lst->last = lst->left;
-		}
-		else
-		{
-			lst->first = lst->left;
-			lst->last = &lst->right;
-		}
-		lst = lst->next;
-	}
-}
-
-void	ft_init_philos(t_philo *lst, t_context *context, pthread_mutex_t *mut_printf)
-{
-	t_philo	*tmp;
-	int		i;
-
-	tmp = lst;
-	i = 0;
-	while (lst && i)
-	{
-		i++;
-		lst->id	= i;
-		lst->alive = 1;
-		if (lst->next)
-			lst->left = &lst->next->right;
-		else if (context->members > 1)
-			lst->left = &tmp->right;
-		lst->mut_printf = mut_printf;
-		lst->context = context;
-		lst->meals = 0;
-		lst->deadline = context->life_time;
-		lst = lst->next;
-	}
-}
-
-void	ft_set_philos(t_philo *philos, t_context *context, pthread_mutex_t *mut_printf)
-{
-	ft_init_mutexes(philos);
-	ft_init_philos(philos, context, mut_printf);
-	ft_set_handedness(philos);
-}
-
-void	ft_put_thread_on_routine(t_philo *lst)
-{
-	struct timeval	tv;
-
-	gettimeofday(&tv, NULL);
-	while (lst)
-	{
-		lst->start_time = tv;
-		pthread_create(&lst->philo, NULL, ft_routine, (void *)lst);
-		lst = lst->next;
-	}
-}
-
-
-void	ft_philo(t_philo *philos, t_context *context)
-{
-	pthread_t		azrael;
-	pthread_mutex_t	mut_printf;
-
-	pthread_mutex_init(&mut_printf, NULL);
-	ft_set_philos(philos, context, &mut_printf);
-	ft_put_thread_on_routine(philos);
-	pthread_create(&azrael, NULL, ft_soul_taking, &philos);
-
-
-
-
-	pthread_join(azrael, NULL);
-	ft_join_them_all(philos);
-	pthread_mutex_destroy(&mut_printf);
-	ft_unset_philos(philos);
-}
-
-t_philo	*ft_init_lst_philo(int size)//done
-{
-	t_philo	*elem;
-
-	if (size)
-	{
-		elem = (t_philo *)malloc(sizeof(t_philo));
-		if (!elem)
-			return (NULL);
-		elem->next = ft_init_lst_philo(size -1);
-		return (elem);
-	}
-	return (NULL);
-}
-
 t_context	ft_init_context(char **argv, int ac)//done
 {
 	t_context	context;
@@ -519,6 +202,325 @@ t_context	ft_init_context(char **argv, int ac)//done
 	return (context);
 }
 
+int	ft_get_chrono(struct timeval start)//done
+{
+	struct timeval	result;
+	struct timeval	actual;
+	int				time;
+
+	time = 0;
+	gettimeofday(&actual, NULL);
+	result.tv_sec = actual.tv_sec - start.tv_sec;
+	result.tv_usec = actual.tv_usec - start.tv_usec;
+	time = (result.tv_sec * 1000) + (result.tv_usec / 1000);
+	return (time);
+}
+
+int	ft_is_expired(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->life);
+	if (philo->deadline <= ft_get_chrono(philo->start_time))
+	{
+		//philo->alive = 0;(laisser la mort bosser)
+		pthread_mutex_unlock(&philo->life);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->life);
+	return (0);
+}
+
+int	ft_is_full_or_dead(t_philo *philo)//////////////////good?
+{
+	pthread_mutex_lock(&philo->life);
+	if (philo->alive && (philo->context.meals_max > 0 \
+		&& philo->meals >= philo->context.meals_max))
+	{
+		pthread_mutex_unlock(&philo->life);
+		return (2);
+	}
+	if (!philo->alive)
+	{
+		pthread_mutex_unlock(&philo->life);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->life);
+	if (ft_is_expired(philo))
+		return (1);
+	return (0);
+}
+
+////////////////////////////////////////////////////////////////////
+
+void	ft_print_msg(t_philo *philo, char *msg)
+{
+	int	time;
+
+	time = 0;
+	if (!ft_is_full_or_dead(philo))
+	{
+		pthread_mutex_lock(philo->mut_printf);
+		time = ft_get_chrono(philo->start_time);
+		printf("%7i %3i %s\n", time, philo->id, msg);
+		pthread_mutex_unlock(philo->mut_printf);
+	}
+}
+
+void	ft_print_last_msg(t_philo *philo, char *msg)
+{
+	int	time;
+
+	time = 0;
+	pthread_mutex_lock(philo->mut_printf);
+	time = ft_get_chrono(philo->start_time);
+	printf("%7i %3i %s\n", time, philo->id, msg);
+	pthread_mutex_unlock(philo->mut_printf);
+}
+
+void	ft_grab_first(t_philo *philo, int *forks)/////////////////
+{
+	pthread_mutex_lock(philo->first);
+	ft_print_msg(philo, "has taken a fork");
+	*forks += 1;
+}
+
+void	ft_grab_last(t_philo *philo, int *forks)//////////////////
+{
+	pthread_mutex_lock(philo->last);
+	ft_print_msg(philo, "has taken a fork");
+	*forks += 2;
+}
+
+void	ft_usleep(t_philo *philo, int timer)
+{
+	int rest;
+
+	rest = timer;
+	if (philo->deadline <= ft_get_chrono(philo->start_time) + rest)
+		rest = philo->deadline - ft_get_chrono(philo->start_time);
+	if (rest < 0)
+		rest = 0;
+	usleep(rest * 1000);
+}
+
+void	ft_sleeping(t_philo *philo, int *forks)
+{
+	if (*forks > 2)
+	{
+		pthread_mutex_unlock(philo->last);
+		*forks -= 2;
+	}
+	if (*forks > 0)
+	{
+		pthread_mutex_unlock(philo->first);
+		*forks -= 1;
+	}
+	if (!ft_is_full_or_dead(philo))
+	{
+		ft_print_msg(philo, "is sleeping");
+		ft_usleep(philo, philo->context.rest_time);
+	}
+}
+
+int	ft_eating(t_philo *philo)
+{
+	int	forks;
+
+	forks = 0;
+	if (!ft_is_full_or_dead(philo))
+		ft_grab_first(philo, &forks);
+	if (!ft_is_full_or_dead(philo))
+		ft_grab_last(philo, &forks);
+	if (!ft_is_full_or_dead(philo))
+	{
+		pthread_mutex_lock(&philo->life);
+		philo->deadline = ft_get_chrono(philo->start_time) + philo->context.life_time + 1;
+		pthread_mutex_unlock(&philo->life);
+		ft_print_msg(philo, "is eating");
+		ft_usleep(philo, philo->context.meal_time);
+		philo->meals++;
+	}
+	return (forks);
+}
+
+void	ft_thinking(t_philo *philo)
+{
+	ft_print_msg(philo, "is thinking");
+}
+
+void	*ft_routine(void *arg)
+{
+	t_philo	*philo;
+	int		forks;
+
+	forks = 0;
+	philo = (t_philo *)arg;
+	while (!ft_is_full_or_dead(philo))
+	{
+		ft_thinking(philo);
+		forks = ft_eating(philo);
+		ft_sleeping(philo, &forks);
+	}
+	return (NULL);
+}
+
+void	ft_join_them_all(t_philo *tab)
+{
+	int	i;
+
+	i = -1;
+	while (++i < tab->context.members)
+		pthread_join(tab[i].philo, NULL);
+}
+
+void	ft_unset_philos(t_philo *tab)
+{
+	int	i;
+
+	i = tab->context.members;
+	while (--i >= 0)
+	{
+		pthread_mutex_destroy(&tab[i].right);
+		pthread_mutex_destroy(&tab[i].life);
+		tab[i].left = NULL;
+		tab[i].first = NULL;
+		tab[i].last = NULL;
+	}
+	ft_true_free((void **)&tab);
+}
+
+void	ft_put_thread_on_routine(t_philo *tab)
+{
+	struct timeval	beginning;
+	int				i;
+
+	i = -1;
+	gettimeofday(&beginning, NULL);
+	while (++i < tab->context.members)
+	{
+		tab[i].start_time = beginning;
+		pthread_create(&tab[i].philo, NULL, ft_routine, (void *)&tab[i]);
+	}
+}
+
+void	ft_share_printf_mutex(t_philo *philos, pthread_mutex_t *mut_printf)
+{
+	int	i;
+
+	i = -1;
+	while (++i < philos->context.members)
+		philos[i].mut_printf = mut_printf;
+}
+
+void	*ft_soul_taking(void *arg)
+{
+	t_philo *philo;
+	int		body_count;
+	int		i;
+
+	i = 0;
+	philo = (t_philo *)arg;
+	while (!ft_is_full_or_dead(&philo[i]))
+		i = (i + 1) % philo->context.members;
+	body_count = 1;
+	if (body_count && ft_is_expired(&philo[i]))
+		ft_print_last_msg(&philo[i], "died");
+	else if (body_count)
+		ft_print_last_msg(&philo[i], "had enough meal");
+	while (body_count != philo->context.members)
+	{
+		pthread_mutex_lock(&philo[i].life);
+		if (philo[i].alive)
+		{
+			philo[i].alive = 0;
+			body_count++;
+		}
+		pthread_mutex_unlock(&philo[i].life);
+		i = (i + 1) % philo->context.members;
+	}
+	return (NULL);
+}
+
+void	ft_philo(t_philo *philos)
+{
+	pthread_t		azrael;
+	pthread_mutex_t	mut_printf;
+
+	pthread_mutex_init(&mut_printf, NULL);
+	ft_share_printf_mutex(philos, &mut_printf);
+	ft_put_thread_on_routine(philos);
+	pthread_create(&azrael, NULL, ft_soul_taking, philos);
+
+
+
+
+	ft_join_them_all(philos);
+	pthread_join(azrael, NULL);
+	pthread_mutex_destroy(&mut_printf);
+	ft_unset_philos(philos);
+}
+
+void	ft_set_handedness(t_philo *tab)
+{
+	int	i;
+
+	i = -1;
+	while (++i < tab->context.members)
+	{
+		if (tab[i].id % 2 == 0)
+		{
+			tab[i].first = &tab[i].right;
+			tab[i].last = tab[i].left;
+		}
+		else
+		{
+			tab[i].first = tab[i].left;
+			tab[i].last = &tab[i].right;
+		}
+	}
+}
+
+void	ft_init_mutexes(t_philo *tab)
+{
+	int	i;
+
+	i = -1;
+	while (tab && ++i < tab->context.members)
+	{
+		pthread_mutex_init(&tab[i].life, NULL);
+		pthread_mutex_init(&tab[i].right, NULL);
+		tab->left = NULL;
+	}
+}
+
+t_philo	*ft_init_tab_philo(t_context context)
+{
+	t_philo *tab;
+	int	i;
+
+	i = -1;
+	tab = (t_philo *)malloc(sizeof(t_philo) * context.members);
+	if (!tab)
+		return (NULL);
+	while (++i < context.members)
+	{
+		tab[i].id = i + 1;
+		tab[i].alive = 1;
+		tab[i].context = context;
+		tab[i].deadline = context.life_time;
+		tab[i].meals = 0;
+		tab[i].left = NULL;
+	}
+	ft_init_mutexes(tab);
+	if (context.members > 1)
+	{
+		tab[--i].left = &tab[0].right;
+		while (--i >= 0)
+			tab[i].left = &tab[i + 1].right;
+	}
+	ft_set_handedness(tab);
+	return (tab);
+}
+
 int	main(int ac, char **argv)
 {
 	t_context	context;
@@ -528,9 +530,9 @@ int	main(int ac, char **argv)
 	if (ft_check_args(ac - 1, argv + 1))
 	{
 		context = ft_init_context(argv + 1, ac -1);
-		philos = ft_init_lst_philo(context.members);
+		philos = ft_init_tab_philo(context);
 		if (philos)
-			ft_philo(philos, &context);
+			ft_philo(philos);
 		else
 			printf("FAILURE\n");
 	}
