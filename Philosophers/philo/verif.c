@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/20 00:14:08 by zharzi           ###   ########.fr       */
+/*   Updated: 2022/12/20 20:24:57 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,6 @@
 #include <sys/time.h>
 #include <pthread.h>
 
-#define PHILOSOPHERS 0
-#define FORKS 0
-#define LIFETIME 1
-#define EATING 2
-#define SLEEPING 3
-#define MEALS 4
-
 typedef struct s_context {
 	int				members;
 	int				life_time;
@@ -39,53 +32,16 @@ typedef struct s_context {
 typedef struct s_philo {
 	pthread_t		philo;
 	int				id;
-	pthread_mutex_t	life;//////////
+	pthread_mutex_t	life;
 	int				alive;
-	int				meals;///////////
-	int				deadline;///////////
+	int				meals;
+	long int		deadline;
 	struct timeval	start_time;
-	pthread_mutex_t	*left;
 	pthread_mutex_t	right;
-	pthread_mutex_t	*first;
-	pthread_mutex_t	*last;
+	pthread_mutex_t	*left;
 	pthread_mutex_t	*mut_printf;
-	t_context		context;////////////nouveau
-	struct s_philo	*next;/////////////////////////////////si lst
+	t_context		context;
 }					t_philo;
-
-////////////////////////////////////////////////////////////////////
-
-void	ft_to_del(void)
-{
-	(void)NULL;
-}
-
-void	ft_to_dele(void)
-{
-	(void)NULL;
-}
-
-void	ft_to_delet(void)
-{
-	(void)NULL;
-}
-
-void	ft_to_delete(void)
-{
-	(void)NULL;
-}
-
-void	ft_to_dell(void)
-{
-	(void)NULL;
-}
-
-void	ft_to_delll(void)
-{
-	(void)NULL;
-}
-
-////////////////////////////////////////////////////////////////////
 
 int	ft_isdigit(int c)
 {
@@ -131,10 +87,6 @@ void	ft_true_free(void **ptr)
 		*ptr = NULL;
 	}
 }
-
-////////////////////////////////////////////////////////////////////
-//PARSING
-////////////////////////////////////////////////////////////////////
 
 int	ft_check_arg_positive(char *arg)
 {
@@ -183,9 +135,7 @@ int	ft_check_args(int ac, char **argv)
 	return (1);
 }
 
-////////////////////////////////////////////////////////////////////
-
-t_context	ft_init_context(char **argv, int ac)//done
+t_context	ft_init_context(char **argv, int ac)
 {
 	t_context	context;
 	int			check;
@@ -202,7 +152,7 @@ t_context	ft_init_context(char **argv, int ac)//done
 	return (context);
 }
 
-int	ft_get_chrono(struct timeval start)//done
+int	ft_get_chrono(struct timeval start)
 {
 	struct timeval	result;
 	struct timeval	actual;
@@ -219,9 +169,8 @@ int	ft_get_chrono(struct timeval start)//done
 int	ft_is_expired(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->life);
-	if (philo->deadline <= ft_get_chrono(philo->start_time))
+	if (philo->deadline < ft_get_chrono(philo->start_time))
 	{
-		//philo->alive = 0;(laisser la mort bosser)
 		pthread_mutex_unlock(&philo->life);
 		return (1);
 	}
@@ -229,7 +178,7 @@ int	ft_is_expired(t_philo *philo)
 	return (0);
 }
 
-int	ft_is_full_or_dead(t_philo *philo)//////////////////good?
+int	ft_is_full_or_dead(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->life);
 	if (philo->alive && (philo->context.meals_max > 0 \
@@ -243,24 +192,24 @@ int	ft_is_full_or_dead(t_philo *philo)//////////////////good?
 		pthread_mutex_unlock(&philo->life);
 		return (1);
 	}
-	pthread_mutex_unlock(&philo->life);
-	if (ft_is_expired(philo))
+	if (philo->deadline < ft_get_chrono(philo->start_time))
+	{
+		pthread_mutex_unlock(&philo->life);
 		return (1);
+	}
+	pthread_mutex_unlock(&philo->life);
 	return (0);
 }
-
-////////////////////////////////////////////////////////////////////
 
 void	ft_print_msg(t_philo *philo, char *msg)
 {
 	int	time;
 
-	time = 0;
 	if (!ft_is_full_or_dead(philo))
 	{
 		pthread_mutex_lock(philo->mut_printf);
 		time = ft_get_chrono(philo->start_time);
-		printf("%7i %3i %s\n", time, philo->id, msg);
+		printf("%i %i %s\n", time, philo->id, msg);
 		pthread_mutex_unlock(philo->mut_printf);
 	}
 }
@@ -269,49 +218,48 @@ void	ft_print_last_msg(t_philo *philo, char *msg)
 {
 	int	time;
 
-	time = 0;
-	pthread_mutex_lock(philo->mut_printf);
 	time = ft_get_chrono(philo->start_time);
-	printf("%7i %3i %s\n", time, philo->id, msg);
+	pthread_mutex_lock(philo->mut_printf);
+	printf("%i %i %s\n", time, philo->id, msg);
 	pthread_mutex_unlock(philo->mut_printf);
 }
 
-void	ft_grab_first(t_philo *philo, int *forks)/////////////////
+void	ft_grab_right(t_philo *philo, int *forks)
 {
-	pthread_mutex_lock(philo->first);
+	pthread_mutex_lock(&philo->right);
 	ft_print_msg(philo, "has taken a fork");
 	*forks += 1;
 }
 
-void	ft_grab_last(t_philo *philo, int *forks)//////////////////
+void	ft_grab_left(t_philo *philo, int *forks)
 {
-	pthread_mutex_lock(philo->last);
+	pthread_mutex_lock(philo->left);
 	ft_print_msg(philo, "has taken a fork");
 	*forks += 2;
 }
 
 void	ft_usleep(t_philo *philo, int timer)
 {
-	int rest;
+	long int rest;
 
-	rest = timer;
-	if (philo->deadline <= ft_get_chrono(philo->start_time) + rest)
-		rest = philo->deadline - ft_get_chrono(philo->start_time);
+	rest = (long int)timer;
+	if ((long int)philo->deadline < (long int)ft_get_chrono(philo->start_time) + rest)
+		rest = (long int)philo->deadline - (long int)ft_get_chrono(philo->start_time);
 	if (rest < 0)
 		rest = 0;
-	usleep(rest * 1000);
+	usleep((rest + 1) * 1000);
 }
 
 void	ft_sleeping(t_philo *philo, int *forks)
 {
 	if (*forks > 2)
 	{
-		pthread_mutex_unlock(philo->last);
+		pthread_mutex_unlock(philo->left);
 		*forks -= 2;
 	}
 	if (*forks > 0)
 	{
-		pthread_mutex_unlock(philo->first);
+		pthread_mutex_unlock(&philo->right);
 		*forks -= 1;
 	}
 	if (!ft_is_full_or_dead(philo))
@@ -326,25 +274,31 @@ int	ft_eating(t_philo *philo)
 	int	forks;
 
 	forks = 0;
-	if (!ft_is_full_or_dead(philo))
-		ft_grab_first(philo, &forks);
-	if (!ft_is_full_or_dead(philo))
-		ft_grab_last(philo, &forks);
-	if (!ft_is_full_or_dead(philo))
+	ft_grab_right(philo, &forks);
+	if (philo->context.members > 1)
+		ft_grab_left(philo, &forks);
+	else
+		ft_usleep(philo, philo->context.life_time - ft_get_chrono(philo->start_time));
+	if (!ft_is_full_or_dead(philo) && philo->context.members > 1)
 	{
 		pthread_mutex_lock(&philo->life);
-		philo->deadline = ft_get_chrono(philo->start_time) + philo->context.life_time + 1;
+		philo->deadline = (long int)ft_get_chrono(philo->start_time) + (long int)philo->context.life_time + 1;
 		pthread_mutex_unlock(&philo->life);
 		ft_print_msg(philo, "is eating");
 		ft_usleep(philo, philo->context.meal_time);
+		pthread_mutex_lock(&philo->life);
 		philo->meals++;
+		pthread_mutex_unlock(&philo->life);
 	}
 	return (forks);
 }
 
 void	ft_thinking(t_philo *philo)
 {
-	ft_print_msg(philo, "is thinking");
+	if (!ft_is_full_or_dead(philo))
+	{
+		ft_print_msg(philo, "is thinking");
+	}
 }
 
 void	*ft_routine(void *arg)
@@ -354,11 +308,20 @@ void	*ft_routine(void *arg)
 
 	forks = 0;
 	philo = (t_philo *)arg;
+	if (philo->id % 2 == 0 || (philo->id % 2 != 0 && philo->id == (philo->context.members)))
+	{
+		ft_print_msg(philo, "is thinking");
+		usleep(6000);
+	}
 	while (!ft_is_full_or_dead(philo))
 	{
-		ft_thinking(philo);
 		forks = ft_eating(philo);
+		if (philo->context.members == 1)
+			usleep(1000);
 		ft_sleeping(philo, &forks);
+		if (philo->context.members == 1)
+			usleep(1000);
+		ft_thinking(philo);
 	}
 	return (NULL);
 }
@@ -382,8 +345,6 @@ void	ft_unset_philos(t_philo *tab)
 		pthread_mutex_destroy(&tab[i].right);
 		pthread_mutex_destroy(&tab[i].life);
 		tab[i].left = NULL;
-		tab[i].first = NULL;
-		tab[i].last = NULL;
 	}
 	ft_true_free((void **)&tab);
 }
@@ -414,69 +375,42 @@ void	ft_share_printf_mutex(t_philo *philos, pthread_mutex_t *mut_printf)
 void	*ft_soul_taking(void *arg)
 {
 	t_philo *philo;
-	int		body_count;
 	int		i;
 
 	i = 0;
 	philo = (t_philo *)arg;
 	while (!ft_is_full_or_dead(&philo[i]))
+	{
 		i = (i + 1) % philo->context.members;
-	body_count = 1;
-	if (body_count && ft_is_expired(&philo[i]))
+		usleep(10);
+	}
+	if (ft_is_expired(&philo[i]))
 		ft_print_last_msg(&philo[i], "died");
-	else if (body_count)
-		ft_print_last_msg(&philo[i], "had enough meal");
-	while (body_count != philo->context.members)
+	i = 0;
+	while (i < philo->context.members)
 	{
 		pthread_mutex_lock(&philo[i].life);
-		if (philo[i].alive)
-		{
 			philo[i].alive = 0;
-			body_count++;
-		}
 		pthread_mutex_unlock(&philo[i].life);
-		i = (i + 1) % philo->context.members;
+		i++;
 	}
 	return (NULL);
 }
 
 void	ft_philo(t_philo *philos)
 {
-	pthread_t		azrael;
 	pthread_mutex_t	mut_printf;
 
 	pthread_mutex_init(&mut_printf, NULL);
 	ft_share_printf_mutex(philos, &mut_printf);
-	ft_put_thread_on_routine(philos);
-	pthread_create(&azrael, NULL, ft_soul_taking, philos);
-
-
-
-
-	ft_join_them_all(philos);
-	pthread_join(azrael, NULL);
+	if (philos->context.meals_max)
+	{
+		ft_put_thread_on_routine(philos);
+		ft_soul_taking(philos);
+		ft_join_them_all(philos);
+	}
 	pthread_mutex_destroy(&mut_printf);
 	ft_unset_philos(philos);
-}
-
-void	ft_set_handedness(t_philo *tab)
-{
-	int	i;
-
-	i = -1;
-	while (++i < tab->context.members)
-	{
-		if (tab[i].id % 2 == 0)
-		{
-			tab[i].first = &tab[i].right;
-			tab[i].last = tab[i].left;
-		}
-		else
-		{
-			tab[i].first = tab[i].left;
-			tab[i].last = &tab[i].right;
-		}
-	}
 }
 
 void	ft_init_mutexes(t_philo *tab)
@@ -506,7 +440,7 @@ t_philo	*ft_init_tab_philo(t_context context)
 		tab[i].id = i + 1;
 		tab[i].alive = 1;
 		tab[i].context = context;
-		tab[i].deadline = context.life_time;
+		tab[i].deadline = (long int)context.life_time;
 		tab[i].meals = 0;
 		tab[i].left = NULL;
 	}
@@ -517,7 +451,6 @@ t_philo	*ft_init_tab_philo(t_context context)
 		while (--i >= 0)
 			tab[i].left = &tab[i + 1].right;
 	}
-	ft_set_handedness(tab);
 	return (tab);
 }
 
