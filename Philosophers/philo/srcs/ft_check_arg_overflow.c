@@ -1,33 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_check_arg_overflow.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/20 21:13:07 by zharzi           ###   ########.fr       */
+/*   Created: 2022/12/20 21:02:10 by zharzi            #+#    #+#             */
+/*   Updated: 2022/12/20 21:04:33 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int ac, char **argv)
+int	ft_check_arg_overflow(char *arg)
 {
-	t_context	context;
-	t_philo		*philos;
+	int	check;
 
-	philos = NULL;
-	if (ft_check_args(ac - 1, argv + 1))
-	{
-		context = ft_init_context(argv + 1, ac -1);
-		philos = ft_init_tab_philo(context);
-		if (philos)
-			ft_philo(philos);
-		else
-			printf("FAILURE\n");
-	}
-	else
-		printf("Wrong arguments.\n");
-	return (EXIT_SUCCESS);
+	check = 1;
+	ft_atoi_safe(arg, &check);
+	if (!check)
+		return (0);
+	return (1);
 }

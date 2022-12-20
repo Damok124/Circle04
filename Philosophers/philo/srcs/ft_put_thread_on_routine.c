@@ -1,33 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_put_thread_on_routine.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/20 21:13:07 by zharzi           ###   ########.fr       */
+/*   Created: 2022/12/20 21:02:57 by zharzi            #+#    #+#             */
+/*   Updated: 2022/12/20 21:09:37 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int ac, char **argv)
+void	ft_put_thread_on_routine(t_philo *tab)
 {
-	t_context	context;
-	t_philo		*philos;
+	struct timeval	beginning;
+	int				i;
 
-	philos = NULL;
-	if (ft_check_args(ac - 1, argv + 1))
+	i = -1;
+	gettimeofday(&beginning, NULL);
+	while (++i < tab->context.members)
 	{
-		context = ft_init_context(argv + 1, ac -1);
-		philos = ft_init_tab_philo(context);
-		if (philos)
-			ft_philo(philos);
-		else
-			printf("FAILURE\n");
+		tab[i].start_time = beginning;
+		pthread_create(&tab[i].philo, NULL, ft_routine, (void *)&tab[i]);
 	}
-	else
-		printf("Wrong arguments.\n");
-	return (EXIT_SUCCESS);
 }

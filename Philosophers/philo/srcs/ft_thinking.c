@@ -1,33 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_thinking.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/20 21:13:07 by zharzi           ###   ########.fr       */
+/*   Created: 2022/12/20 21:03:07 by zharzi            #+#    #+#             */
+/*   Updated: 2022/12/20 21:08:21 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int ac, char **argv)
+void	ft_thinking(t_philo *philo)
 {
-	t_context	context;
-	t_philo		*philos;
-
-	philos = NULL;
-	if (ft_check_args(ac - 1, argv + 1))
+	if (!ft_is_full_or_dead(philo))
 	{
-		context = ft_init_context(argv + 1, ac -1);
-		philos = ft_init_tab_philo(context);
-		if (philos)
-			ft_philo(philos);
-		else
-			printf("FAILURE\n");
+		ft_print_msg(philo, "is thinking");
 	}
-	else
-		printf("Wrong arguments.\n");
-	return (EXIT_SUCCESS);
 }

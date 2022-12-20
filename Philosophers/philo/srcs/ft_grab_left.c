@@ -1,33 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_grab_left.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/20 21:13:07 by zharzi           ###   ########.fr       */
+/*   Created: 2022/12/20 21:02:27 by zharzi            #+#    #+#             */
+/*   Updated: 2022/12/20 21:07:14 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int ac, char **argv)
+void	ft_grab_left(t_philo *philo, int *forks)
 {
-	t_context	context;
-	t_philo		*philos;
-
-	philos = NULL;
-	if (ft_check_args(ac - 1, argv + 1))
-	{
-		context = ft_init_context(argv + 1, ac -1);
-		philos = ft_init_tab_philo(context);
-		if (philos)
-			ft_philo(philos);
-		else
-			printf("FAILURE\n");
-	}
-	else
-		printf("Wrong arguments.\n");
-	return (EXIT_SUCCESS);
+	pthread_mutex_lock(philo->left);
+	ft_print_msg(philo, "has taken a fork");
+	*forks += 2;
 }

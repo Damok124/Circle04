@@ -1,33 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_soul_taking.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/20 21:13:07 by zharzi           ###   ########.fr       */
+/*   Created: 2022/12/20 21:03:05 by zharzi            #+#    #+#             */
+/*   Updated: 2022/12/20 21:10:16 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int ac, char **argv)
+void	*ft_soul_taking(void *arg)
 {
-	t_context	context;
-	t_philo		*philos;
+	t_philo	*philo;
+	int		i;
 
-	philos = NULL;
-	if (ft_check_args(ac - 1, argv + 1))
+	i = 0;
+	philo = (t_philo *)arg;
+	while (!ft_is_full_or_dead(&philo[i]))
 	{
-		context = ft_init_context(argv + 1, ac -1);
-		philos = ft_init_tab_philo(context);
-		if (philos)
-			ft_philo(philos);
-		else
-			printf("FAILURE\n");
+		i = (i + 1) % philo->context.members;
+		usleep(10);
 	}
-	else
-		printf("Wrong arguments.\n");
-	return (EXIT_SUCCESS);
+	if (ft_is_expired(&philo[i]))
+		ft_print_last_msg(&philo[i], "died");
+	i = 0;
+	while (i < philo->context.members)
+	{
+		pthread_mutex_lock(&philo[i].life);
+			philo[i].alive = 0;
+		pthread_mutex_unlock(&philo[i].life);
+		i++;
+	}
+	return (NULL);
 }

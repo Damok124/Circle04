@@ -1,33 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_isdigit.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/20 21:13:07 by zharzi           ###   ########.fr       */
+/*   Created: 2022/12/20 21:02:46 by zharzi            #+#    #+#             */
+/*   Updated: 2022/12/20 21:15:45 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
-
-int	main(int ac, char **argv)
+int	ft_isdigit(int c)
 {
-	t_context	context;
-	t_philo		*philos;
-
-	philos = NULL;
-	if (ft_check_args(ac - 1, argv + 1))
-	{
-		context = ft_init_context(argv + 1, ac -1);
-		philos = ft_init_tab_philo(context);
-		if (philos)
-			ft_philo(philos);
-		else
-			printf("FAILURE\n");
-	}
-	else
-		printf("Wrong arguments.\n");
-	return (EXIT_SUCCESS);
+	if (c >= '0' && c <= '9')
+		return (1);
+	return (0);
 }

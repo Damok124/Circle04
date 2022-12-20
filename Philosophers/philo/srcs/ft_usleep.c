@@ -1,33 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_usleep.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/20 21:13:07 by zharzi           ###   ########.fr       */
+/*   Created: 2022/12/20 21:03:12 by zharzi            #+#    #+#             */
+/*   Updated: 2022/12/20 21:07:30 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int ac, char **argv)
+void	ft_usleep(t_philo *philo, int timer)
 {
-	t_context	context;
-	t_philo		*philos;
+	long int	rest;
 
-	philos = NULL;
-	if (ft_check_args(ac - 1, argv + 1))
-	{
-		context = ft_init_context(argv + 1, ac -1);
-		philos = ft_init_tab_philo(context);
-		if (philos)
-			ft_philo(philos);
-		else
-			printf("FAILURE\n");
-	}
-	else
-		printf("Wrong arguments.\n");
-	return (EXIT_SUCCESS);
+	rest = (long int)timer;
+	if ((long int)philo->deadline \
+		< (long int)ft_get_chrono(philo->start_time) + rest)
+		rest = (long int)philo->deadline \
+			- (long int)ft_get_chrono(philo->start_time);
+	if (rest < 0)
+		rest = 0;
+	usleep((rest + 1) * 1000);
 }

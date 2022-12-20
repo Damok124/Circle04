@@ -1,33 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_unset_philos.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/20 21:13:07 by zharzi           ###   ########.fr       */
+/*   Created: 2022/12/20 21:03:10 by zharzi            #+#    #+#             */
+/*   Updated: 2022/12/20 21:09:19 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int ac, char **argv)
+void	ft_unset_philos(t_philo *tab)
 {
-	t_context	context;
-	t_philo		*philos;
+	int	i;
 
-	philos = NULL;
-	if (ft_check_args(ac - 1, argv + 1))
+	i = tab->context.members;
+	while (--i >= 0)
 	{
-		context = ft_init_context(argv + 1, ac -1);
-		philos = ft_init_tab_philo(context);
-		if (philos)
-			ft_philo(philos);
-		else
-			printf("FAILURE\n");
+		pthread_mutex_destroy(&tab[i].right);
+		pthread_mutex_destroy(&tab[i].life);
+		tab[i].left = NULL;
 	}
-	else
-		printf("Wrong arguments.\n");
-	return (EXIT_SUCCESS);
+	ft_true_free((void **)&tab);
 }

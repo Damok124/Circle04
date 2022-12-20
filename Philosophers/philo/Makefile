@@ -6,7 +6,7 @@
 #    By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/31 13:40:41 by zharzi            #+#    #+#              #
-#    Updated: 2022/12/12 15:31:11 by zharzi           ###   ########.fr        #
+#    Updated: 2022/12/20 21:32:10 by zharzi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,34 @@ BINARY = philo
 SRCSDIR = ./srcs/
 
 SRCS = \
-${SRCSDIR}test.c
+${SRCSDIR}ft_isdigit.c \
+${SRCSDIR}ft_atoi_safe.c \
+${SRCSDIR}ft_true_free.c \
+${SRCSDIR}ft_get_chrono.c \
+${SRCSDIR}ft_print_msg.c \
+${SRCSDIR}ft_print_last_msg.c \
+${SRCSDIR}ft_usleep.c \
+${SRCSDIR}ft_check_args.c \
+${SRCSDIR}ft_check_arg_positive.c \
+${SRCSDIR}ft_check_arg_overflow.c \
+${SRCSDIR}ft_is_expired.c \
+${SRCSDIR}ft_is_full_or_dead.c \
+${SRCSDIR}ft_init_context.c \
+${SRCSDIR}ft_init_tab_philo.c \
+${SRCSDIR}ft_share_printf_mutex.c \
+${SRCSDIR}ft_init_mutexes.c \
+${SRCSDIR}ft_grab_right.c \
+${SRCSDIR}ft_grab_left.c \
+${SRCSDIR}ft_eating.c \
+${SRCSDIR}ft_sleeping.c \
+${SRCSDIR}ft_thinking.c \
+${SRCSDIR}ft_routine.c \
+${SRCSDIR}ft_put_thread_on_routine.c \
+${SRCSDIR}ft_soul_taking.c \
+${SRCSDIR}ft_philo.c \
+${SRCSDIR}ft_join_them_all.c \
+${SRCSDIR}ft_unset_philos.c
+
 
 HEADERDIR = includes/
 
@@ -31,11 +58,13 @@ FLAGS = -Wall -Wextra -Werror -g3
 
 IFLAG = -I$(HEADERDIR)
 
-all : libphilo.a
-	$(CC) $(FLAGS) main.c $(IFLAG) -L. -lphilo -o $(BINARY) -lpthread
+all : $(BINARY)
+
+$(BINARY): libphilo.a
+	$(CC) $(FLAGS) main.c -lpthread $(IFLAG) -L. -lphilo -o $(BINARY)
 
 %.o : %.c
-	$(CC) $(FLAGS) $(IFLAG) -o $@ -c $^  -lpthread
+	$(CC) $(FLAGS) $(IFLAG) -o $@ -c $^
 
 libphilo.a : $(OBJ) $(HEADERDIR)$(HEADER)
 	ar -rcs $(NAME) $^

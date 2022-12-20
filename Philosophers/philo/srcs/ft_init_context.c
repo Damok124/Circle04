@@ -1,33 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_init_context.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/20 21:13:07 by zharzi           ###   ########.fr       */
+/*   Created: 2022/12/20 21:02:32 by zharzi            #+#    #+#             */
+/*   Updated: 2022/12/20 21:05:02 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int ac, char **argv)
+t_context	ft_init_context(char **argv, int ac)
 {
 	t_context	context;
-	t_philo		*philos;
+	int			check;
 
-	philos = NULL;
-	if (ft_check_args(ac - 1, argv + 1))
-	{
-		context = ft_init_context(argv + 1, ac -1);
-		philos = ft_init_tab_philo(context);
-		if (philos)
-			ft_philo(philos);
-		else
-			printf("FAILURE\n");
-	}
+	check = 1;
+	context.members = ft_atoi_safe(argv[0], &check);
+	context.life_time = ft_atoi_safe(argv[1], &check);
+	context.meal_time = ft_atoi_safe(argv[2], &check);
+	context.rest_time = ft_atoi_safe(argv[3], &check);
+	if (ac == 5)
+		context.meals_max = ft_atoi_safe(argv[4], &check);
 	else
-		printf("Wrong arguments.\n");
-	return (EXIT_SUCCESS);
+		context.meals_max = -1;
+	return (context);
 }

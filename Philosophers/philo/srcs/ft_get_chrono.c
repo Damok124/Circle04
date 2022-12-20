@@ -1,33 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_get_chrono.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/20 21:13:07 by zharzi           ###   ########.fr       */
+/*   Created: 2022/12/20 21:02:25 by zharzi            #+#    #+#             */
+/*   Updated: 2022/12/20 21:05:23 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int ac, char **argv)
+int	ft_get_chrono(struct timeval start)
 {
-	t_context	context;
-	t_philo		*philos;
+	struct timeval	result;
+	struct timeval	actual;
+	int				time;
 
-	philos = NULL;
-	if (ft_check_args(ac - 1, argv + 1))
-	{
-		context = ft_init_context(argv + 1, ac -1);
-		philos = ft_init_tab_philo(context);
-		if (philos)
-			ft_philo(philos);
-		else
-			printf("FAILURE\n");
-	}
-	else
-		printf("Wrong arguments.\n");
-	return (EXIT_SUCCESS);
+	time = 0;
+	gettimeofday(&actual, NULL);
+	result.tv_sec = actual.tv_sec - start.tv_sec;
+	result.tv_usec = actual.tv_usec - start.tv_usec;
+	time = (result.tv_sec * 1000) + (result.tv_usec / 1000);
+	return (time);
 }

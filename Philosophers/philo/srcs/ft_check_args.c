@@ -1,33 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_check_args.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/20 21:13:07 by zharzi           ###   ########.fr       */
+/*   Created: 2022/12/20 21:02:19 by zharzi            #+#    #+#             */
+/*   Updated: 2022/12/20 21:04:48 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int ac, char **argv)
+int	ft_check_args(int ac, char **argv)
 {
-	t_context	context;
-	t_philo		*philos;
+	int	check;
+	int	i;
 
-	philos = NULL;
-	if (ft_check_args(ac - 1, argv + 1))
+	check = 1;
+	i = 0;
+	if (ac < 4 || ac > 5)
+		return (0);
+	while (argv && argv[i])
 	{
-		context = ft_init_context(argv + 1, ac -1);
-		philos = ft_init_tab_philo(context);
-		if (philos)
-			ft_philo(philos);
-		else
-			printf("FAILURE\n");
+		if (!ft_check_arg_positive(argv[i]) || !ft_check_arg_overflow(argv[i]))
+			return (0);
+		if (ft_atoi_safe(argv[0], &check) < 1)
+			return (0);
+		i++;
 	}
-	else
-		printf("Wrong arguments.\n");
-	return (EXIT_SUCCESS);
+	return (1);
 }
