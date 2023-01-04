@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/24 12:21:40 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/25 16:18:24 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/01/04 08:32:39 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,39 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <signal.h>
 #include <sys/time.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <semaphore.h>
 
 int	main(void)
 {
+	pid_t	x;
+	char	*test;
+	int		i;
+
+	i = 0;
+	x = fork();
+	if (!x)
+	{
+		test = (char *)malloc(sizeof(char) * 8);
+		(void)test;
+		while (i < 3)
+		{
+			printf("lol\n");
+			sleep(1);
+			i++;
+		}
+		free(test);
+	}
+	else
+	{
+		//waitpid(x, NULL, 0);
+		sleep(1);
+		kill(x, SIGKILL);
+	}
+	/*
 	sem_t	*sem;
 
 	// Tentative d'ouverture du sémaphore nommé "semaphore1" sans spécifier de flag
@@ -35,6 +63,7 @@ int	main(void)
 		return 1;
 	}
 
+	*/
 	return 0;
 }
 
