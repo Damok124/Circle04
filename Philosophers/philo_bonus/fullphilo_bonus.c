@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/10 15:34:45 by zharzi            #+#    #+#             */
-/*   Updated: 2023/01/07 09:07:59 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/01/08 23:34:30 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -287,6 +287,43 @@ int	ft_is_expired(t_philo *philo)
 	return (0);
 }
 
+void	ft_print_last_msg(t_philo *philo, char *msg)////////////////////////
+{
+	int	time;
+
+	time = ft_get_chrono(philo->start_time);
+	sem_wait(philo->context->sem_printf);
+	printf("%i %i %s\n", time, philo->id, msg);
+	sem_post(philo->context->sem_over);
+	while (1)
+		usleep(1000000);
+	//sem_post(philo->context->sem_printf);////////////////////////////////
+}
+
+int	ft_action_if_alive(t_philo *philo)
+{
+	if (philo->deadline < ft_get_chrono(philo->start_time))
+	{
+		ft_print_last_msg(philo, "died");
+		return (0);
+	}
+
+	return (1);
+}
+
+void	ft_print_msg(t_philo *philo, char *msg)
+{
+	int	time;
+
+	if (ft_action_if_alive(philo))
+	{
+		sem_wait(philo->context->sem_printf);
+		time = ft_get_chrono(philo->start_time);
+		printf("%i %i %s\n", time, philo->id, msg);
+		sem_post(philo->context->sem_printf);
+	}
+}
+
 int	ft_is_full_or_dead(t_philo *philo)
 {
 	sem_wait(philo->life);
@@ -310,40 +347,19 @@ int	ft_is_full_or_dead(t_philo *philo)
 	return (0);
 }
 
-void	ft_print_msg(t_philo *philo, char *msg)
-{
-	int	time;
-
-	if (!ft_is_full_or_dead(philo))
-	{
-		sem_wait(philo->context->sem_printf);
-		time = ft_get_chrono(philo->start_time);
-		printf("%i %i %s\n", time, philo->id, msg);
-		sem_post(philo->context->sem_printf);
-	}
-}
-
-void	ft_print_last_msg(t_philo *philo, char *msg)////////////////////////
-{
-	int	time;
-
-	time = ft_get_chrono(philo->start_time);
-	sem_wait(philo->context->sem_printf);
-	printf("%i %i %s\n", time, philo->id, msg);
-	sem_post(philo->context->sem_printf);////////////////////////////////
-}
-
 void	ft_grab_right(t_philo *philo, int *forks)///////////////////////////
 {
 	sem_wait(philo->context->sem_forks);
-	ft_print_msg(philo, "has taken a fork");
+	if (ft_action_if_alive(philo))
+		ft_print_msg(philo, "has taken a fork");
 	*forks += 1;
 }
 
 void	ft_grab_left(t_philo *philo, int *forks)////////////////////////////
 {
 	sem_wait(philo->context->sem_forks);
-	ft_print_msg(philo, "has taken a fork");
+	if (ft_action_if_alive(philo))
+		ft_print_msg(philo, "has taken a fork");
 	*forks += 2;
 }
 
@@ -358,26 +374,36 @@ void	ft_usleep(t_philo *philo, int timer)
 			- (long int)ft_get_chrono(philo->start_time);
 	if (rest < 0)
 		rest = 0;
-	usleep((rest + 1) * 1000);
+	usleep(rest * 1000);
+	if (!ft_action_if_alive(philo))
+		usleep(1000000);
 }
 
 void	ft_sleeping(t_philo *philo, int *forks)
 {
-	if (*forks > 2)
+	if (ft_action_if_alive(philo))
 	{
-		sem_post(philo->context->sem_forks);
-		*forks -= 2;
+		if (*forks > 2)
+		{
+			sem_post(philo->context->sem_forks);
+			*forks -= 2;
+		}
+		if (*forks > 0)
+		{
+			sem_post(philo->context->sem_forks);
+			*forks -= 1;
+		}
+			ft_print_msg(philo, "is sleeping");
+			ft_usleep(philo, philo->context->rest_time);
 	}
-	if (*forks > 0)
-	{
-		sem_post(philo->context->sem_forks);
-		*forks -= 1;
-	}
-	if (!ft_is_full_or_dead(philo))
-	{
-		ft_print_msg(philo, "is sleeping");
-		ft_usleep(philo, philo->context->rest_time);
-	}
+	else
+		usleep(1000000);
+}
+
+void	ft_die_alone(t_philo *philo)
+{
+	while (ft_action_if_alive(philo))
+		usleep(100);
 }
 
 int	ft_eating(t_philo *philo)
@@ -390,10 +416,10 @@ int	ft_eating(t_philo *philo)
 	if (philo->context->members > 1)
 		ft_grab_left(philo, &forks);
 	else
-		ft_usleep(philo, philo->context->life_time \
-			- ft_get_chrono(philo->start_time));
-	sem_post(philo->context->sem_meal);
-	if (!ft_is_full_or_dead(philo) && philo->context->members > 1)
+		ft_die_alone(philo);
+	if (ft_action_if_alive(philo))
+		sem_post(philo->context->sem_meal);
+	if (ft_action_if_alive(philo) && philo->context->members > 1)
 	{
 		sem_wait(philo->life);
 		philo->deadline = (long int)ft_get_chrono(philo->start_time) \
@@ -403,6 +429,8 @@ int	ft_eating(t_philo *philo)
 		ft_usleep(philo, philo->context->meal_time);
 		sem_wait(philo->life);
 		philo->meals++;
+		if (philo->meals == philo->context->meals_max)
+			sem_post(philo->context->sem_full);
 		sem_post(philo->life);
 	}
 	return (forks);
@@ -410,9 +438,16 @@ int	ft_eating(t_philo *philo)
 
 void	ft_thinking(t_philo *philo)
 {
-	if (!ft_is_full_or_dead(philo))
+	int	timer;
+
+	timer = philo->context->meal_time - philo->context->rest_time;
+	if (ft_action_if_alive(philo))
 	{
 		ft_print_msg(philo, "is thinking");
+		if (philo->context->rest_time <= philo->context->meal_time)
+		{
+			ft_usleep(philo, timer + 1);
+		}
 	}
 }
 
@@ -427,13 +462,11 @@ void	ft_routine(void *arg)
 		&& philo->id == (philo->context->members)))
 	{
 		ft_print_msg(philo, "is thinking");
-		usleep(6000);
+		ft_usleep(philo, philo->context->meal_time);
 	}
-	while (!ft_is_full_or_dead(philo))
+	while (ft_action_if_alive(philo))
 	{
-		// sem_wait(philo->context->sem_meal);
 		forks = ft_eating(philo);
-		// sem_post(philo->context->sem_meal);
 		if (philo->context->members == 1)
 			usleep(1000);
 		ft_sleeping(philo, &forks);
@@ -506,37 +539,64 @@ void	ft_put_processes_on_routine(t_philo *tab, t_context *context)
 
 void	ft_soul_taking(t_philo *philo)
 {
-	int		i;
+	// int		i;
 
-	i = 0;
-	while (!ft_is_full_or_dead(&philo[i]))
-	{
-		i = (i + 1) % philo->context->members;
-		usleep(10);
-	}
-	if (ft_is_expired(&philo[i]))
-		ft_print_last_msg(&philo[i], "died");
+	// i = 0;
+	// while (!ft_is_full_or_dead(&philo[i]))
+	// {
+	// 	i = (i + 1) % philo->context->members;
+	// 	usleep(10);
+	// }
+	sem_wait(philo->context->sem_over);
+	// if (ft_is_expired(&philo[i]))
+	// 	ft_print_last_msg(&philo[i], "died");
+	// i = 0;
+	// while (i < philo->context->members)
+	// {
+	// 	sem_wait(philo[i].life);
+	// 	philo[i].alive = 0;
+	// 	sem_post(philo[i].life);
+	// 	i++;
+	// }
+}
+
+void	ft_wait_last_plate(t_philo *philo)
+{
+	int	i;
+
 	i = 0;
 	while (i < philo->context->members)
 	{
-		sem_wait(philo[i].life);
-		philo[i].alive = 0;
-		sem_post(philo[i].life);
+		sem_wait(philo->context->sem_full);
 		i++;
 	}
+	usleep(200);
+	sem_post(philo->context->sem_over);
+	while (1)
+		usleep(100000);
 }
 
 void	ft_philo(t_philo *philos, t_context *context)
 {
+	pid_t	full_checker;
 	//pthread_mutex_t	mut_printf;
 
 	//pthread_mutex_init(&mut_printf, NULL);
 	//ft_share_printf_mutex(philos, &mut_printf);
+	full_checker = -1;
 	if (philos->context->meals_max)
 	{
 		// ft_put_thread_on_routine(philos);
 		ft_put_processes_on_routine(philos, context);
-		ft_soul_taking(philos);
+		if (philos->context->meals_max > 0)
+		{
+			full_checker = fork();
+			if (!full_checker)
+				ft_wait_last_plate(philos);
+		}
+		ft_soul_taking(philos);////////////////////////////
+		if (full_checker > -1)
+			kill(full_checker, SIGKILL);
 		ft_kill_them_all(philos);
 	}
 	// pthread_mutex_destroy(&mut_printf);
