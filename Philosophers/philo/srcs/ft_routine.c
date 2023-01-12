@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 21:02:59 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/20 21:20:35 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/01/09 13:52:02 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	*ft_routine(void *arg)
 		ft_print_msg(philo, "is thinking");
 		usleep(6000);
 	}
-	while (!ft_is_full_or_dead(philo))
+	while (!ft_is_dead(philo))
 	{
 		forks = ft_eating(philo);
 		if (philo->context.members == 1)

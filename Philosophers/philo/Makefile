@@ -6,7 +6,7 @@
 #    By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/31 13:40:41 by zharzi            #+#    #+#              #
-#    Updated: 2022/12/20 21:32:10 by zharzi           ###   ########.fr        #
+#    Updated: 2023/01/09 16:14:40 by zharzi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,8 @@ ${SRCSDIR}ft_check_args.c \
 ${SRCSDIR}ft_check_arg_positive.c \
 ${SRCSDIR}ft_check_arg_overflow.c \
 ${SRCSDIR}ft_is_expired.c \
-${SRCSDIR}ft_is_full_or_dead.c \
+${SRCSDIR}ft_is_full.c \
+${SRCSDIR}ft_is_dead.c \
 ${SRCSDIR}ft_init_context.c \
 ${SRCSDIR}ft_init_tab_philo.c \
 ${SRCSDIR}ft_share_printf_mutex.c \
@@ -44,7 +45,6 @@ ${SRCSDIR}ft_soul_taking.c \
 ${SRCSDIR}ft_philo.c \
 ${SRCSDIR}ft_join_them_all.c \
 ${SRCSDIR}ft_unset_philos.c
-
 
 HEADERDIR = includes/
 

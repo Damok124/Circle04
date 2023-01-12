@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 15:33:15 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/20 21:27:38 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/01/09 13:49:25 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef struct s_philo {
 	int				id;
 	pthread_mutex_t	life;
 	int				alive;
+	int				full;
 	int				meals;
 	long int		deadline;
 	struct timeval	start_time;
@@ -68,7 +69,8 @@ int			ft_check_arg_overflow(char *arg);
 //	CHECKERS
 /////////////////////////
 int			ft_is_expired(t_philo *philo);
-int			ft_is_full_or_dead(t_philo *philo);
+void		ft_is_full(t_philo *philo, int *all_full);
+int			ft_is_dead(t_philo *philo);
 
 /////////////////////////
 //	INITIALIZERS

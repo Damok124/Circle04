@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 21:02:38 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/20 21:11:35 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/01/09 13:49:53 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ t_philo	*ft_init_tab_philo(t_context context)
 	{
 		tab[i].id = i + 1;
 		tab[i].alive = 1;
+		tab[i].full = 0;
 		tab[i].context = context;
 		tab[i].deadline = (long int)context.life_time;
 		tab[i].meals = 0;

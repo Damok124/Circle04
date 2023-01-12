@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 21:03:03 by zharzi            #+#    #+#             */
-/*   Updated: 2022/12/20 21:07:48 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/01/09 13:52:11 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	ft_sleeping(t_philo *philo, int *forks)
 		pthread_mutex_unlock(&philo->right);
 		*forks -= 1;
 	}
-	if (!ft_is_full_or_dead(philo))
+	if (!ft_is_dead(philo))
 	{
 		ft_print_msg(philo, "is sleeping");
 		ft_usleep(philo, philo->context.rest_time);
