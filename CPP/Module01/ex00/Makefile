@@ -1,15 +1,16 @@
-NAME = my_apb
+NAME = brainz
 
 SRCS = \
 main.cpp \
-PhoneBook.cpp \
-Contact.cpp
+Zombie.cpp \
+newZombie.cpp \
+randomChump.cpp
 
 OBJ = $(SRCS:.cpp=.o)
 
 CC = c++
 
-FLAGS = -Wall -Wextra -Werror -std=c++98
+FLAGS = -Wall -Wextra -Werror -std=c++98 -g3
 
 .c.o:
 	@$(CC) $(FLAGS) -c $< -o $(<:.cpp=.o)

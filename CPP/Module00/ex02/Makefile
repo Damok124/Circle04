@@ -1,13 +1,22 @@
-NAME = megaphone
+NAME = gbu
+
+SRCS = \
+tests.cpp \
+Account.cpp
+
+OBJ = $(SRCS:.cpp=.o)
 
 CC = c++
 
 FLAGS = -Wall -Wextra -Werror -std=c++98
 
+.c.o:
+	@$(CC) $(FLAGS) -c $< -o $(<:.cpp=.o)
+
 all : $(NAME)
 
-$(NAME) :
-	@$(CC) $(FLAGS) megaphone.cpp -o $(NAME)
+$(NAME) : $(OBJ)
+	@$(CC) $(FLAGS) $(OBJ) -o $(NAME)
 
 clean :
 	@rm -f $(OBJ)
