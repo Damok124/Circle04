@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 19:23:27 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/05 20:42:11 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/03/06 08:05:12 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,9 @@ int	main(void)
 // Pour un zombie nommé Foo, le message serait :
 // Foo: BraiiiiiiinnnzzzZ...
 //
+
+
+
 // Ensuite, implémentez les fonctions suivantes :
 //
 // • Zombie* newZombie( std::string name );
