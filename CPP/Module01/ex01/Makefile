@@ -5,18 +5,18 @@
 #                                                     +:+ +:+         +:+      #
 #    By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/03/08 22:22:19 by zharzi            #+#    #+#              #
-#    Updated: 2023/03/08 22:23:21 by zharzi           ###   ########.fr        #
+#    Created: 2023/03/08 22:22:15 by zharzi            #+#    #+#              #
+#    Updated: 2023/03/08 22:23:20 by zharzi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = brainz
+NAME = moar_brainz
 
 SRCS = \
 main.cpp \
 Zombie.cpp \
-newZombie.cpp \
-randomChump.cpp
+zombieHorde.cpp
+
 
 OBJ = $(SRCS:.cpp=.o)
 

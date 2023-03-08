@@ -1,21 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   randomChump.cpp                                    :+:      :+:    :+:   */
+/*   zombieHorde.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/08 16:33:38 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/08 18:59:47 by zharzi           ###   ########.fr       */
+/*   Created: 2023/03/05 23:19:28 by zharzi            #+#    #+#             */
+/*   Updated: 2023/03/08 21:16:27 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Zombie.hpp"
 
-void	randomChump( std::string name )
+Zombie* zombieHorde( int N, std::string name )
 {
-	Zombie inst;
+	Zombie* horde =	new Zombie[N];
+	for(int i = 0; i < N; i++)
+		horde[i].setName(name);
 
-	inst.setName(name);
-	inst.announce();
+	return (horde);
 }

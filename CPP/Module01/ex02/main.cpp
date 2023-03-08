@@ -6,31 +6,26 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 19:23:27 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/08 18:59:23 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/03/08 22:17:11 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Zombie.hpp"
+#include <iostream>
+#include <string>
 
 int	main(void)
 {
-	std::string n1 = "Jean";
-	std::string n2 = "Louis";
-	std::string n3 = "Francois";
+	std::string		string = "HI THIS IS BRAIN";
+	std::string*	stringPTR = &string;
+	std::string&	stringREF = string;
 
-	Zombie* a = newZombie(n1 + "-" + n2);
-	Zombie* b = newZombie(n1 + "-" + n3);
-	Zombie* c = newZombie(n2 + "-" + n3);
-	a->announce();
-	b->announce();
-	c->announce();
-	randomChump(n1);
-	randomChump(n2);
-	randomChump(n3);
+	std::cout << "Adress of    string is " << &string	<< std::endl;
+	std::cout << "Adress of stringPTR is " << stringPTR << std::endl;
+	std::cout << "Adress of stringREF is " << &stringREF << std::endl;
 
-	delete a;
-	delete b;
-	delete c;
+	std::cout << "Value of    string is " << string	<< std::endl;
+	std::cout << "Value of stringPTR is " << *stringPTR << std::endl;
+	std::cout << "Value of stringREF is " << stringREF << std::endl;
 
 	return (0);
 }

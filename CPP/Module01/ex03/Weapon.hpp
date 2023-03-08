@@ -1,39 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Zombie.hpp                                         :+:      :+:    :+:   */
+/*   Weapon.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/05 23:13:47 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/08 18:57:57 by zharzi           ###   ########.fr       */
+/*   Created: 2023/03/08 22:22:03 by zharzi            #+#    #+#             */
+/*   Updated: 2023/03/08 22:35:11 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ZOMBIE_HPP
-# define ZOMBIE_HPP
+#ifndef WEAPON_HPP
+# define WEAPON_HPP
 
 # include <iostream>
 # include <string>
-# include <new>
 
-class Zombie {
+
+class Weapon {
 	public:
-						Zombie();
-						Zombie( std::string name );
-						~Zombie();
-
-		std::string	getName( void ) const;
-
-		void			setName(std::string name);
-
-		void			announce( void );
-
+						Weapon();
+						~Weapon();
+		std::string&	getType() const;
+		void			setType(std::string new_type);
 	private:
-		std::string	name;
+		std::string type;
 };
 
-void	randomChump( std::string name );
-Zombie*	newZombie( std::string name );
+
+/*
+Implement a Weapon class that has:
+• A private attribute type, which is a string.
+• A getType() member function that returns a const reference to type.
+• A setType() member function that sets type using the new one passed as parameter.
+*/
+
 
 #endif

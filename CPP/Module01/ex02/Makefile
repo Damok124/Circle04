@@ -5,18 +5,16 @@
 #                                                     +:+ +:+         +:+      #
 #    By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/03/08 22:22:19 by zharzi            #+#    #+#              #
-#    Updated: 2023/03/08 22:23:21 by zharzi           ###   ########.fr        #
+#    Created: 2023/03/08 22:22:12 by zharzi            #+#    #+#              #
+#    Updated: 2023/03/08 22:23:18 by zharzi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = brainz
+NAME = hi
 
 SRCS = \
-main.cpp \
-Zombie.cpp \
-newZombie.cpp \
-randomChump.cpp
+main.cpp
+
 
 OBJ = $(SRCS:.cpp=.o)
 

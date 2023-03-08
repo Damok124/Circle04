@@ -5,24 +5,25 @@
 #                                                     +:+ +:+         +:+      #
 #    By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/03/08 22:22:19 by zharzi            #+#    #+#              #
-#    Updated: 2023/03/08 22:23:21 by zharzi           ###   ########.fr        #
+#    Created: 2023/03/08 22:22:05 by zharzi            #+#    #+#              #
+#    Updated: 2023/03/08 22:23:17 by zharzi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = brainz
+NAME = violence
 
 SRCS = \
 main.cpp \
-Zombie.cpp \
-newZombie.cpp \
-randomChump.cpp
+HumanA.cpp \
+HumanB.cpp \
+Weapon.cpp
+
 
 OBJ = $(SRCS:.cpp=.o)
 
 CC = c++
 
-FLAGS = -Wall -Wextra -Werror -std=c++98
+FLAGS = -Wall -Wextra -Werror -std=c++98 -g3
 
 .c.o:
 	@$(CC) $(FLAGS) -c $< -o $(<:.cpp=.o)
