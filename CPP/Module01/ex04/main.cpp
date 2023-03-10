@@ -1,14 +1,23 @@
 #include <iostream>
 
-void increment(int& x)
+class Person
 {
-    x++;
+public:
+    std::string name;
+    int age;
+};
+
+void print_person(const Person& p)
+{
+    std::cout << "Name: " << p.name << std::endl;
+    std::cout << "Age: " << p.age << std::endl;
 }
 
 int main()
 {
-    int y = 5;
-    increment(y);
-    std::cout << y << std::endl; // affiche 6
+    Person my_person;
+    my_person.name = "Alice";
+    my_person.age = 30;
+    print_person(my_person);
     return 0;
 }

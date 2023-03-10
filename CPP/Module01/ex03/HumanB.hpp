@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 22:21:56 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/10 01:09:43 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/03/10 18:44:30 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 
 # include <iostream>
 # include "Weapon.hpp"
-// # include <string>
-
 
 class HumanB {
 	public:
