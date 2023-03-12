@@ -6,24 +6,21 @@
 #    By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/08 22:22:05 by zharzi            #+#    #+#              #
-#    Updated: 2023/03/11 07:59:27 by zharzi           ###   ########.fr        #
+#    Updated: 2023/03/11 07:59:20 by zharzi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = violence
+NAME = my_sed
 
 SRCS = \
-main.cpp \
-HumanA.cpp \
-HumanB.cpp \
-Weapon.cpp
+main.cpp
 
 
 OBJ = $(SRCS:.cpp=.o)
 
 CC = c++
 
-FLAGS = -Wall -Wextra -Werror -std=c++98
+FLAGS = -Wall -Wextra -Werror -std=c++98 -g3
 
 .c.o:
 	@$(CC) $(FLAGS) -c $< -o $(<:.cpp=.o)
