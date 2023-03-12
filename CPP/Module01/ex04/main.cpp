@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 07:54:05 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/12 11:28:25 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/03/12 14:49:42 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,17 +96,3 @@ int	main(int ac, char **argv)
 		print_error("Wrong number of arguments.");
 	return (0);
 }
-
-
-/*
-Create a program that takes three parameters in the following order: a filename and two strings, s1 and s2.
-
-It will open the file <filename>
-and copies its content into a new file <filename>.replace, replacing every occurrence of s1 with s2.
-
-Using C file manipulation functions is forbidden and will be considered cheating.
-All the member functions of the class std::string are allowed, except replace. Use them wisely!
-
-Handle unexpected inputs and errors.
-tests to ensure your program works as expected.
-*/

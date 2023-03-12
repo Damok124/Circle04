@@ -6,13 +6,14 @@
 #    By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/08 22:22:05 by zharzi            #+#    #+#              #
-#    Updated: 2023/03/12 14:54:46 by zharzi           ###   ########.fr        #
+#    Updated: 2023/03/12 18:32:24 by zharzi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = my_sed
+NAME = harl2
 
 SRCS = \
+Harl.cpp \
 main.cpp
 
 OBJ = $(SRCS:.cpp=.o)
