@@ -6,14 +6,14 @@
 #    By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/08 22:22:05 by zharzi            #+#    #+#              #
-#    Updated: 2023/03/12 18:32:33 by zharzi           ###   ########.fr        #
+#    Updated: 2023/03/13 09:24:22 by zharzi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = HarlFilter
+NAME = Test
 
 SRCS = \
-Harl.cpp \
+MyClass.cpp \
 main.cpp
 
 OBJ = $(SRCS:.cpp=.o)

@@ -1,11 +1,13 @@
 #include "MaClasse.hpp"
 
-void useFunction(MaClasse& obj, int index) {
-	void (MaClasse::*f)() = obj.getFunction(index);
-	(obj.*f)();
+void useFunction(MaClasse& obj, int index)
+{
+	void (MaClasse::*quoi)() = obj.getFunction(index);
+	(obj.*quoi)();
 }
 
-int main() {
+int main(void)
+{
 	MaClasse obj;
 	useFunction(obj, 0);
 	useFunction(obj, 1);

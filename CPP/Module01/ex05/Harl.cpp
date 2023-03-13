@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 14:55:51 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/12 18:27:35 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/03/13 14:50:16 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 Harl::Harl()
 {
-	this->_level[0] = "DEBUG";
-	this->_level[1] = "INFO";
-	this->_level[2] = "WARNING";
-	this->_level[3] = "ERROR";
-	message[0] = &Harl::debug;
-	message[1] = &Harl::info;
-	message[2] = &Harl::warning;
-	message[3] = &Harl::error;
+	setTitle(0, "DEBUG");
+	setTitle(1, "INFO");
+	setTitle(2, "WARNING");
+	setTitle(3, "ERROR");
+	_mode[0] = &Harl::debug;
+	_mode[1] = &Harl::info;
+	_mode[2] = &Harl::warning;
+	_mode[3] = &Harl::error;
 }
 
 Harl::~Harl()
@@ -48,15 +48,25 @@ void	Harl::error( void )
 	std::cout << "You're dead. My poisonous flowerbed killed you." << std::endl;
 }
 
+std::string const	Harl::getTitle( int index ) const
+{
+	return (_title[index]);
+}
+
+void	Harl::setTitle( int index, std::string title )
+{
+	_title[index] = title;
+}
+
 void	Harl::complain( std::string level )
 {
 	int	i;
 
 	for (i = 0; i < 4; i++)
 	{
-		if (level.compare(_level[i]) == 0)
+		if (level.compare(getTitle(i)) == 0)
 		{
-			(this->*message[i])();
+			(this->*_mode[i])();
 			break ;
 		}
 	}

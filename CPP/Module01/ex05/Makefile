@@ -6,11 +6,11 @@
 #    By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/08 22:22:05 by zharzi            #+#    #+#              #
-#    Updated: 2023/03/12 18:32:24 by zharzi           ###   ########.fr        #
+#    Updated: 2023/03/13 10:03:56 by zharzi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = harl2
+NAME = Harl
 
 SRCS = \
 Harl.cpp \

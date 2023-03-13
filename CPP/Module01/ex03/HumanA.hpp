@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 22:21:51 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/10 01:09:40 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/03/13 17:49:23 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ class HumanA {
 						~HumanA();
 
 		std::string		getName(void) const;
-
 		void			setName(std::string name);
 
 		void			attack();

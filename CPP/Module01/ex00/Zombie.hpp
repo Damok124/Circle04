@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 23:13:47 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/10 08:54:23 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/03/13 16:51:41 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,14 @@ class Zombie {
 						Zombie( std::string name );
 						~Zombie();
 
-		std::string	getName( void ) const;
+		std::string		getName( void ) const;
 
 		void			setName(std::string name);
 
 		void			announce( void );
 
 	private:
-		std::string	name;
+		std::string		name;
 };
 
 void	randomChump( std::string name );

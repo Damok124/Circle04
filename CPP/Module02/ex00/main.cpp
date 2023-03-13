@@ -6,20 +6,22 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 07:54:05 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/12 22:54:06 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/03/13 16:14:44 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Harl.hpp"
 
-void	print_levels(int level, Harl& inst, std::string* lvl)
+void	print_levels(int level, Harl& inst)
 {
+	std::string str;
 	if (level < 4)
 	{
 		while (level < 4)
 		{
-			std::cout << "[ " << lvl[level] << " ]" << std::endl;
-			inst.complain(lvl[level]);
+			str = inst.getTitle(level);
+			std::cout << "[ " << str << " ]" << std::endl;
+			inst.complain(str);
 			std::cout << std::endl;
 			level++;
 		}
@@ -30,39 +32,34 @@ void	print_levels(int level, Harl& inst, std::string* lvl)
 
 int	main(int ac, char **argv)
 {
-	std::string lvl[4];
-	lvl[0] = "DEBUG";
-	lvl[1] = "INFO";
-	lvl[2] = "WARNING";
-	lvl[3] = "ERROR";
-	int	i = 0;
-	std::string level;
 	Harl inst;
+	std::string level;
+	int	i = 0;
 
 	if (ac == 2)
 	{
 		level = argv[1];
 		for (i = 0; i < 4; i++)
 		{
-			if (level.compare(lvl[i]) == 0)
+			if (level.compare(inst.getTitle(i)) == 0)
 				break ;
 		}
 		switch (i)
 		{
 			case 0:
-				print_levels(0, inst, lvl);
+				print_levels(0, inst);
 				break ;
 			case 1:
-				print_levels(1, inst, lvl);
+				print_levels(1, inst);
 				break ;
 			case 2:
-				print_levels(2, inst, lvl);
+				print_levels(2, inst);
 				break ;
 			case 3:
-				print_levels(3, inst, lvl);
+				print_levels(3, inst);
 				break ;
 			default :
-				print_levels(4, inst, lvl);
+				print_levels(4, inst);
 				break ;
 		}
 	}

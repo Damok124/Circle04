@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 07:54:05 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/12 14:49:42 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/03/13 17:50:34 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,9 +88,7 @@ int	main(int ac, char **argv)
 	if (ac == 4)
 	{
 		if (my_sed_parsing(argv, infile, outfile))
-		{
 			my_sed(argv, infile, outfile);
-		}
 	}
 	else
 		print_error("Wrong number of arguments.");
