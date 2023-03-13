@@ -1,10 +1,10 @@
 #include "MaClasse.hpp"
 
 MaClasse::MaClasse() {
-    m_func[0] = &MaClasse::func1;
-    m_func[1] = &MaClasse::func2;
-    m_func[2] = &MaClasse::func3;
-    m_func[3] = &MaClasse::func4;
+	m_func[0] = &MaClasse::func1;
+	m_func[1] = &MaClasse::func2;
+	m_func[2] = &MaClasse::func3;
+	m_func[3] = &MaClasse::func4;
 }
 
 void MaClasse::func1(void)
@@ -29,5 +29,5 @@ void MaClasse::func4(void)
 
 
 void (MaClasse::*MaClasse::getFunction(int index))() {
-    return m_func[index];
+	return m_func[index];
 }
