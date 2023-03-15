@@ -6,13 +6,14 @@
 #    By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/08 22:22:05 by zharzi            #+#    #+#              #
-#    Updated: 2023/03/15 08:57:51 by zharzi           ###   ########.fr        #
+#    Updated: 2023/03/13 07:29:27 by zharzi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = a.out
+NAME = Test
 
 SRCS = \
+MaClasse.cpp \
 main.cpp
 
 OBJ = $(SRCS:.cpp=.o)
