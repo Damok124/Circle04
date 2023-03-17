@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 08:54:20 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/17 15:14:58 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/03/17 16:54:05 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,17 @@ Fixed::Fixed()
 	std::cout << "Default constructor called" << std::endl;
 	_rawBits = 0;
 }
+
+Fixed::Fixed(int const integer)
+{
+	setRawBits(integer);
+}
+
+Fixed::Fixed(float const floatting)
+{
+	toInt(floatting);
+}
+
 
 Fixed::Fixed(Fixed const& source)
 {
@@ -40,14 +51,28 @@ Fixed::~Fixed()
 	std::cout << "Destructor called" << std::endl;
 }
 
+float	Fixed::toFloat( void ) const
+{
+	return (0);
+}
+
+int		Fixed::toInt( void ) const
+{
+	return (0);
+}
 
 int	Fixed::getRawBits( void ) const
 {
-	std::cout << "getRawBits member function called" << std::endl;
 	return (_rawBits);
 }
 
 void	Fixed::setRawBits( int const raw )
 {
 	_rawBits = raw;
+}
+
+std::ostream& operator<<(std::ostream & out, Fixed const& inst)
+{
+	out << inst.getRawBits();
+	return (out);
 }
