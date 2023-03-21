@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 08:54:20 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/20 07:48:08 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/03/21 10:22:57 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,3 +78,116 @@ std::ostream& operator<<(std::ostream & out, Fixed const& inst)
 	out << inst.toFloat();
 	return (out);
 }
+
+bool Fixed::operator>(Fixed const& source)
+{
+	return (getRawBits() > source.getRawBits());
+}
+
+bool Fixed::operator<(Fixed const& source)
+{
+	return (getRawBits() < source.getRawBits());
+}
+
+bool Fixed::operator>=(Fixed const& source)
+{
+	return (getRawBits() >= source.getRawBits());
+}
+
+bool Fixed::operator<=(Fixed const& source)
+{
+	return (getRawBits() <= source.getRawBits());
+}
+
+bool Fixed::operator==(Fixed const& source)
+{
+	return (getRawBits() == source.getRawBits());
+}
+
+bool Fixed::operator!=(Fixed const& source)
+{
+	return (getRawBits() != source.getRawBits());
+}
+
+Fixed Fixed::operator+(Fixed const& source)
+{
+	Fixed inst;
+	inst._rawBits = getRawBits() + source.getRawBits();
+	return (inst);
+}
+
+Fixed Fixed::operator-(Fixed const& source)
+{
+	Fixed inst;
+	inst._rawBits = getRawBits() - source.getRawBits();
+	return (inst);
+}
+
+Fixed Fixed::operator*(Fixed const& source)
+{
+	Fixed inst;
+	inst._rawBits = getRawBits() * source.getRawBits();
+	return (inst);
+}
+
+Fixed Fixed::operator/(Fixed const& source)
+{
+	Fixed inst;
+	if (source.getRawBits() != 0)
+	{
+		inst.setRawBits(getRawBits() / source.getRawBits());
+		return (inst);
+	}
+	std::cout << "Error : you tried to divide by 0" << std::endl;
+	inst.setRawBits(0);
+	return (inst);
+}
+
+Fixed& Fixed::operator++(void)
+{
+	setRawBits(getRawBits() + 1);
+	return (*this);
+}
+
+Fixed Fixed::operator++(int)
+{
+	Fixed tmp(*this);
+	setRawBits(getRawBits() + 1);
+	return (tmp);
+}
+
+Fixed& Fixed::operator--(void)
+{
+	setRawBits(getRawBits() - 1);
+	return (*this);
+}
+
+Fixed Fixed::operator--(int)
+{
+	Fixed tmp(*this);
+	setRawBits(getRawBits() - 1);
+	return (tmp);
+}
+
+Fixed&	min(Fixed& a, Fixed& b)
+{
+	if (a <= b)
+		return (a);
+	return (b);
+}
+
+Fixed&	max(Fixed& a, Fixed& b)
+{
+	if (a >= b)
+		return (a);
+	return (b);
+}
+
+Fixed&	min(Fixed const&a, Fixed const&b)
+{
+}
+
+Fixed&	max(Fixed const& a, Fixed const& b)
+{
+}
+
