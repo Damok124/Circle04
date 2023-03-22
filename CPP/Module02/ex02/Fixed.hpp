@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 08:54:24 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/21 10:22:55 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/03/22 07:52:46 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,8 @@ class Fixed {
 // • A static member function max that takes as parameters two references to constant fixed-point numbers, and returns a reference to the greatest one.
 		static Fixed&		min(Fixed& a, Fixed& b);
 		static Fixed&		max(Fixed& a, Fixed& b);
-		static Fixed&		min(Fixed const&a, Fixed const&b);
-		static Fixed&		max(Fixed const& a, Fixed const& b);
+		static Fixed const&	min(Fixed const&a, Fixed const&b);
+		static Fixed const&	max(Fixed const& a, Fixed const& b);
 
 
 

@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 08:54:20 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/21 10:22:57 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/03/22 07:52:44 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,16 @@ Fixed::Fixed(int const integer)
 {
 	std::cout << "Int constructor called" << std::endl;
 	setRawBits(integer << _eight);
+	std::cout << "test " << integer << std::endl;
+	std::cout << "test " << _rawBits << std::endl;
 }
 
 Fixed::Fixed(float const floatting)
 {
 	std::cout << "Float constructor called" << std::endl;
 	setRawBits(roundf(floatting * (1 << _eight)));
+	std::cout << "test " << floatting << std::endl;
+	std::cout << "test " << _rawBits << std::endl;
 }
 
 
@@ -126,7 +130,7 @@ Fixed Fixed::operator-(Fixed const& source)
 Fixed Fixed::operator*(Fixed const& source)
 {
 	Fixed inst;
-	inst._rawBits = getRawBits() * source.getRawBits();
+	inst.setRawBits(getRawBits() * source.getRawBits());
 	return (inst);
 }
 
@@ -183,11 +187,17 @@ Fixed&	max(Fixed& a, Fixed& b)
 	return (b);
 }
 
-Fixed&	min(Fixed const&a, Fixed const&b)
+Fixed const&	min(Fixed const&a, Fixed const&b)
 {
+	if (a.getRawBits() <= b.getRawBits())
+		return (a);
+	return (b);
 }
 
-Fixed&	max(Fixed const& a, Fixed const& b)
+Fixed const&	max(Fixed const& a, Fixed const& b)
 {
+	if (a.getRawBits() >= b.getRawBits())
+		return (a);
+	return (b);
 }
 
