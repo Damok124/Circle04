@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 08:54:24 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/22 07:52:46 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/03/23 16:03:10 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,17 +31,17 @@ class Fixed {
 // • The 4 increment/decrement (pre-increment and post-increment, pre-decrement and
 // post-decrement) operators, that will increase or decrease the fixed-point value from
 // the smallest representable ε such as 1 + ε > 1.
-		bool				operator>(Fixed const& source);
-		bool				operator<(Fixed const& source);
-		bool				operator>=(Fixed const& source);
-		bool				operator<=(Fixed const& source);
-		bool				operator==(Fixed const& source);
-		bool				operator!=(Fixed const& source);
+		bool				operator>(Fixed const& source) const;
+		bool				operator<(Fixed const& source) const;
+		bool				operator>=(Fixed const& source) const;
+		bool				operator<=(Fixed const& source) const;
+		bool				operator==(Fixed const& source) const;
+		bool				operator!=(Fixed const& source) const;
 
-		Fixed				operator+(Fixed const& source);
-		Fixed				operator-(Fixed const& source);
-		Fixed				operator*(Fixed const& source);
-		Fixed				operator/(Fixed const& source);
+		Fixed				operator+(Fixed const& source) const;
+		Fixed				operator-(Fixed const& source) const;
+		Fixed				operator*(Fixed const& source) const;
+		Fixed				operator/(Fixed const& source) const;
 
 		Fixed				operator++(int);
 		Fixed&				operator++(void);
@@ -55,7 +55,7 @@ class Fixed {
 // • A static member function max that takes as parameters two references to constant fixed-point numbers, and returns a reference to the greatest one.
 		static Fixed&		min(Fixed& a, Fixed& b);
 		static Fixed&		max(Fixed& a, Fixed& b);
-		static Fixed const&	min(Fixed const&a, Fixed const&b);
+		static Fixed const&	min(Fixed const& a, Fixed const& b);
 		static Fixed const&	max(Fixed const& a, Fixed const& b);
 
 
