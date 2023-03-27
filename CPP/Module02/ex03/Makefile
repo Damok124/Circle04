@@ -6,7 +6,7 @@
 #    By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/08 22:22:05 by zharzi            #+#    #+#              #
-#    Updated: 2023/03/24 16:19:50 by zharzi           ###   ########.fr        #
+#    Updated: 2023/03/27 10:58:13 by zharzi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ CC = c++
 
 FLAGS = -Wall -Wextra -Werror -std=c++98 -g3
 
-.c.o:
+.cpp.o:
 	@$(CC) $(FLAGS) -c $< -o $(<:.cpp=.o)
 
 all : $(NAME)

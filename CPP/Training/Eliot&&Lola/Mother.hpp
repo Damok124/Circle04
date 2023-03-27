@@ -1,45 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Point.cpp                                          :+:      :+:    :+:   */
+/*   Mother.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/24 08:13:34 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/27 10:59:30 by zharzi           ###   ########.fr       */
+/*   Created: 2023/03/27 12:48:42 by zharzi            #+#    #+#             */
+/*   Updated: 2023/03/27 16:09:51 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Point.hpp"
+#ifndef MOTHER_HPP
+# define MOTHER_HPP
+#include <iostream>
 
-Point::Point()
-{
-}
+class Daughter;
 
-Point::Point(float const x, float const y): x(x), y(y)
+class Mother
 {
-}
+	public:
+		Mother();
+		Mother(int age, char eye_color);
+		virtual ~Mother();
 
-Point::Point(Point const& source): x(source.getX()), y(source.getY())
-{
-}
+		int getAge(void) const;
+		char getEyeColor(void) const;
 
-Fixed const&	Point::getX(void) const
-{
-	return (x);
-}
+		virtual void	job();
 
-Fixed const&	Point::getY(void) const
-{
-	return (y);
-}
+		void	argue(Daughter& girl);
 
-Point& Point::operator=(Point const& source)
-{
-	(void)source;
-	return (*this);
-}
+	protected:
+		int		age;
+		char	eye_color;
+};
 
-Point::~Point()
-{
-}
+#endif //_________________________________________________________MOTHER.HPP

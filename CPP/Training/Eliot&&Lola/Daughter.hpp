@@ -1,45 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Point.cpp                                          :+:      :+:    :+:   */
+/*   Daughter.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/24 08:13:34 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/27 10:59:30 by zharzi           ###   ########.fr       */
+/*   Created: 2023/03/27 12:51:59 by zharzi            #+#    #+#             */
+/*   Updated: 2023/03/27 16:11:18 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Point.hpp"
+#ifndef DAUGHTER_HPP
+# define DAUGHTER_HPP
+# include <iostream>
+# include "Mother.hpp"
 
-Point::Point()
+class Daughter : public Mother
 {
-}
+	public:
+		Daughter();
+		Daughter(int age, char eye_color, bool tattoo);
+		~Daughter();
 
-Point::Point(float const x, float const y): x(x), y(y)
-{
-}
+		virtual void	job();
 
-Point::Point(Point const& source): x(source.getX()), y(source.getY())
-{
-}
+	private:
+		bool tattoo;
 
-Fixed const&	Point::getX(void) const
-{
-	return (x);
-}
+};
 
-Fixed const&	Point::getY(void) const
-{
-	return (y);
-}
-
-Point& Point::operator=(Point const& source)
-{
-	(void)source;
-	return (*this);
-}
-
-Point::~Point()
-{
-}
+#endif //__________________________________________________________DAUGHTER_HPP

@@ -6,14 +6,14 @@
 #    By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/08 22:22:05 by zharzi            #+#    #+#              #
-#    Updated: 2023/03/27 10:58:26 by zharzi           ###   ########.fr        #
+#    Updated: 2023/03/27 11:08:48 by zharzi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = a.out
 
 SRCS = \
-Fixed.cpp \
+ClapTrap.cpp \
 main.cpp
 
 OBJ = $(SRCS:.cpp=.o)

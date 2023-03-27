@@ -1,45 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Point.cpp                                          :+:      :+:    :+:   */
+/*   Daughter.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/24 08:13:34 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/27 10:59:30 by zharzi           ###   ########.fr       */
+/*   Created: 2023/03/27 13:03:20 by zharzi            #+#    #+#             */
+/*   Updated: 2023/03/27 14:03:24 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Point.hpp"
+#include "Daughter.hpp"
 
-Point::Point()
+Daughter::Daughter()
 {
 }
 
-Point::Point(float const x, float const y): x(x), y(y)
+Daughter::Daughter(int age, char eye_color, bool tattoo) : Mother(age, eye_color)
 {
+	// this->age = age;
+	// this->eye_color = eye_color;
+	this->tattoo = tattoo;
+
+	std::cout << "Daughter Constructor" << std::endl;
 }
 
-Point::Point(Point const& source): x(source.getX()), y(source.getY())
+Daughter::~Daughter()
 {
+	std::cout << "Daughter destructor" << std::endl;
 }
 
-Fixed const&	Point::getX(void) const
+void	Daughter::job()
 {
-	return (x);
-}
-
-Fixed const&	Point::getY(void) const
-{
-	return (y);
-}
-
-Point& Point::operator=(Point const& source)
-{
-	(void)source;
-	return (*this);
-}
-
-Point::~Point()
-{
+	std::cout << "Wesh, I'm a stud" << std::endl;
 }

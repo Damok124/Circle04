@@ -1,45 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Point.cpp                                          :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/24 08:13:34 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/27 10:59:30 by zharzi           ###   ########.fr       */
+/*   Created: 2023/03/24 08:13:32 by zharzi            #+#    #+#             */
+/*   Updated: 2023/03/27 11:04:58 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Point.hpp"
+#include <iostream>
+#include "ClapTrap.hpp"
 
-Point::Point()
+int main( void )
 {
-}
-
-Point::Point(float const x, float const y): x(x), y(y)
-{
-}
-
-Point::Point(Point const& source): x(source.getX()), y(source.getY())
-{
-}
-
-Fixed const&	Point::getX(void) const
-{
-	return (x);
-}
-
-Fixed const&	Point::getY(void) const
-{
-	return (y);
-}
-
-Point& Point::operator=(Point const& source)
-{
-	(void)source;
-	return (*this);
-}
-
-Point::~Point()
-{
+	return (0);
 }

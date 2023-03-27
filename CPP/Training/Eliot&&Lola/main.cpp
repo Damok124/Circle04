@@ -1,45 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Point.cpp                                          :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/24 08:13:34 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/27 10:59:30 by zharzi           ###   ########.fr       */
+/*   Created: 2023/03/27 13:04:00 by zharzi            #+#    #+#             */
+/*   Updated: 2023/03/27 14:00:45 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Point.hpp"
+#include <iostream>
+#include "Mother.hpp"
+#include "Daughter.hpp"
 
-Point::Point()
+int main(void)
 {
-}
+	Mother Sylvie(45, 'B');
+	Mother* Lilou = new Daughter(15, 'M', false);
 
-Point::Point(float const x, float const y): x(x), y(y)
-{
-}
+	Daughter Cecile(20, 'B', true);
 
-Point::Point(Point const& source): x(source.getX()), y(source.getY())
-{
-}
+	std::cout << Lilou->getAge() << std::endl;
 
-Fixed const&	Point::getX(void) const
-{
-	return (x);
-}
+	Sylvie.job();
+	Lilou->job();
 
-Fixed const&	Point::getY(void) const
-{
-	return (y);
-}
+	Sylvie.argue(Cecile);
 
-Point& Point::operator=(Point const& source)
-{
-	(void)source;
-	return (*this);
-}
-
-Point::~Point()
-{
+	delete Lilou;
+	std::cout << "End" << std::endl;
+	return (0);
 }
