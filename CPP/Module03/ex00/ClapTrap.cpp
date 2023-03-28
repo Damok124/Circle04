@@ -6,123 +6,120 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 08:54:20 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/27 11:08:33 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/03/28 17:13:17 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ClapTrap.hpp"
 
-ClapTrap::ClapTrap()
+ClapTrap::ClapTrap(): Name("NoName"), Hit(10), Energy(10), Attack(0)
 {
+	std::cout << "Constructor by default called" << std::endl;
+}
+
+ClapTrap::ClapTrap(std::string name): Name(name), Hit(10), Energy(10), Attack(0)
+{
+	std::cout << "Constructor with name specified called" << std::endl;
 }
 
 ClapTrap::ClapTrap(ClapTrap const& source)
 {
+	std::cout << "Constructor by copy called" << std::endl;
 	*this = source;
-	return ;
+	return ;/////////////////////////////////////////////////////////
 }
 
-// ClapTrap& ClapTrap::operator=(ClapTrap const& source)
-// {
-// 	return (source);
-// }
+ClapTrap& ClapTrap::operator=(ClapTrap const& source)
+{
+	std::cout << "Affectation operator overloading called" << std::endl;
+	if (this != &source)
+	{
+		Name = source.Name;
+		Hit = source.Hit;
+		Energy = source.Energy;
+		Attack = source.Attack;
+	}
+	return (*this);
+}
 
 ClapTrap::~ClapTrap()
 {
+	std::cout << "Destructor called" << std::endl;
 }
 
-// std::ostream& operator<<(std::ostream & out, ClapTrap const& inst)
-// {
-// 	out << inst.toFloat();
-// 	return (out);
-// }
+std::string	ClapTrap::getName(void) const
+{
+	return (Name);
+}
 
-// bool ClapTrap::operator>(ClapTrap const& source) const
-// {
-// 	return (getRawBits() > source.getRawBits());
-// }
+int		ClapTrap::getHit(void) const
+{
+	return (Hit);
+}
 
-// bool ClapTrap::operator<(ClapTrap const& source) const
-// {
-// 	return (getRawBits() < source.getRawBits());
-// }
+int		ClapTrap::getEnergy(void) const
+{
+	return (Energy);
+}
 
-// bool ClapTrap::operator>=(ClapTrap const& source) const
-// {
-// 	return (getRawBits() >= source.getRawBits());
-// }
+int		ClapTrap::getAttack(void) const
+{
+	return (Attack);
+}
 
-// bool ClapTrap::operator<=(ClapTrap const& source) const
-// {
-// 	return (getRawBits() <= source.getRawBits());
-// }
+void	ClapTrap::setName(std::string name)
+{
+	Name = name;
+}
 
-// bool ClapTrap::operator==(ClapTrap const& source) const
-// {
-// 	return (getRawBits() == source.getRawBits());
-// }
+void	ClapTrap::setHit(int hit)
+{
+	Hit = hit;
+}
 
-// bool ClapTrap::operator!=(ClapTrap const& source) const
-// {
-// 	return (getRawBits() != source.getRawBits());
-// }
+void	ClapTrap::setEnergy(int energy)
+{
+	Energy = energy;
+}
 
-// ClapTrap ClapTrap::operator+(ClapTrap const& source) const
-// {
-// 	ClapTrap inst;
-// 	inst._rawBits = getRawBits() + source.getRawBits();
-// 	return (inst);
-// }
+void	ClapTrap::setAttack(int attack)
+{
+	Attack = attack;
+}
 
-// ClapTrap ClapTrap::operator-(ClapTrap const& source) const
-// {
-// 	ClapTrap inst;
-// 	inst._rawBits = getRawBits() - source.getRawBits();
-// 	return (inst);
-// }
+void	ClapTrap::attack(const std::string& target)
+{// Quand ClapTrap attaque, sa cible perd <attack damage> hit points.
+// Les actions attaquer et rÃ©parer coÃ»tent chacune 1 point dâ€™Ã©nergie.
 
-// ClapTrap ClapTrap::operator*(ClapTrap const& source) const
-// {
-// 	ClapTrap inst(toFloat() * source.toFloat());
-// 	return (inst);
-// }
+	if (getHit() != 0 && getEnergy() != 0)
+	{
+		(void)target;
+		std::cout << "ClapTrap <name> attacks <target>, causing <damage> points of damage!" << std::endl;
+	}
+}
+// When ClapTrack attacks, it causes its target to lose <attack damage> hit points.
+// When ClapTrap repairs itself, it gets <amount> hit points back. Attacking and repairing
+// cost 1 energy point each. Of course, ClapTrap canâ€™t do anything if it has no hit points
+// or energy points left.
+void	ClapTrap::takeDamage(unsigned int amount)
+{
 
-// ClapTrap ClapTrap::operator/(ClapTrap const& source) const
-// {
-// 	ClapTrap inst;
-// 	if (source.getRawBits() != 0)
-// 	{
-// 		inst.setRawBits((toFloat() / source.toFloat()) * (1 << _eight));
-// 		return (inst);
-// 	}
-// 	std::cout << "Division by 0 is forbidden" << std::endl;
-// 	inst.setRawBits(0);
-// 	return (inst);
-// }
 
-// ClapTrap& ClapTrap::operator++(void)
-// {
-// 	setRawBits(getRawBits() + 1);
-// 	return (*this);
-// }
+	if (getHit() != 0 && getEnergy() != 0)
+	{
+		(void)amount;
+		std::cout << "takeDamage" << std::endl;
+	}
+}
 
-// ClapTrap ClapTrap::operator++(int)
-// {
-// 	ClapTrap tmp(*this);
-// 	setRawBits(getRawBits() + 1);
-// 	return (tmp);
-// }
+void	ClapTrap::beRepaired(unsigned int amount)
+{
+	if (getHit() != 0 && getEnergy() != 0)
+	{
+		setHit(getHit() + amount);
+		setEnergy(getEnergy() - 1);
+		std::cout << "beRepaired" << std::endl;
+	}
+}
 
-// ClapTrap& ClapTrap::operator--(void)
-// {
-// 	setRawBits(getRawBits() - 1);
-// 	return (*this);
-// }
-
-// ClapTrap ClapTrap::operator--(int)
-// {
-// 	ClapTrap tmp(*this);
-// 	setRawBits(getRawBits() - 1);
-// 	return (tmp);
-// }
-
+// Implement and turn in your own tests to ensure your code works as expected.
