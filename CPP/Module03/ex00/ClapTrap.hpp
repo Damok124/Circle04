@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 08:54:24 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/28 17:13:16 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/03/30 16:29:05 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,5 @@ class ClapTrap {
 		int			Energy;
 		int			Attack;
 };
-
-std::ostream& operator<<(std::ostream & out, ClapTrap const& inst);/////////////
 
 #endif //___________________________________________________________ClapTrap_HPP

@@ -6,18 +6,19 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 08:13:32 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/29 08:40:15 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/03/31 15:51:46 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include "ClapTrap.hpp"
+#include "ScavTrap.hpp"
 
 int main( void )
 {
-	ClapTrap unknown;
-	ClapTrap boris("Boris");
-	ClapTrap fakeboris(boris);
+	ScavTrap unknown;
+	ScavTrap boris("Boris");
+	ScavTrap fakeboris(boris);
 	// unknown = boris;//NoName becomes Boris when this line is active
 	fakeboris.attack("Alix");//fakeboris remains 9/10 energy points
 	fakeboris.takeDamage(5);//fakeboris remains 5/10 HP
@@ -51,5 +52,7 @@ int main( void )
 	unknown.attack("Leonardo");//NoName can't attack because 0f 0 energy point
 	unknown.attack("Mael");//NoName still can't attack because 0f 0 energy point
 	unknown.attack("Nestor");//NoName still can't attack because 0f 0 energy point
+	fakeboris.takeDamage(5000);//fakeboris remains 0/10 HP
+	fakeboris.beRepaired(5);//fakeboris can't repair because of 0 HP remaining
 	return (0);
 }

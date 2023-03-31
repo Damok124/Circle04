@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 08:54:20 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/29 08:34:45 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/03/30 16:26:58 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,23 @@
 
 ClapTrap::ClapTrap(): Name("NoName"), Hit(10), Energy(10), Attack(0)
 {
-	std::cout << "Constructor by default called" << std::endl;
+	std::cout << "ClapTrap Constructor by default called" << std::endl;
 }
 
 ClapTrap::ClapTrap(std::string name): Name(name), Hit(10), Energy(10), Attack(0)
 {
-	std::cout << "Constructor with name specified called" << std::endl;
+	std::cout << "ClapTrap Constructor with name specified called" << std::endl;
 }
 
 ClapTrap::ClapTrap(ClapTrap const& source)
 {
-	std::cout << "Constructor by copy called" << std::endl;
+	std::cout << "ClapTrap Constructor by copy called" << std::endl;
 	*this = source;
 }
 
 ClapTrap& ClapTrap::operator=(ClapTrap const& source)
 {
-	std::cout << "Affectation operator overloading called" << std::endl;
+	std::cout << "ClapTrap Affectation operator overloading called" << std::endl;
 	if (this != &source)
 	{
 		Name = source.Name;
@@ -43,7 +43,7 @@ ClapTrap& ClapTrap::operator=(ClapTrap const& source)
 
 ClapTrap::~ClapTrap()
 {
-	std::cout << "Destructor called" << std::endl;
+	std::cout << "ClapTrap Destructor called" << std::endl;
 }
 
 std::string	ClapTrap::getName(void) const
