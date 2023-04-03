@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 08:41:37 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/01 08:42:12 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/03 14:55:57 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define SCAVTRAP_HPP
 
 # include <iostream>
-# include <fstream>
 # include "ClapTrap.hpp"
 
 class ScavTrap : public ClapTrap {

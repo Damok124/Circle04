@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 08:54:24 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/30 16:29:05 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/03 14:54:14 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define CLAPTRAP_HPP
 
 # include <iostream>
-# include <fstream>
 
 class ClapTrap {
 	public:
