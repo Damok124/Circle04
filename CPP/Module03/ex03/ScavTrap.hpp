@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 08:41:37 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/03 14:58:50 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/04 18:28:51 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,11 @@ class ScavTrap : public ClapTrap {
 					~ScavTrap();
 
 			void	guardGate();
+
+			void	setName(std::string name);
+			void	setHit(void);
+			void	setEnergy(void);
+			void	setAttack(void);
 };
 
 #endif //___________________________________________________________ScavTrap_HPP

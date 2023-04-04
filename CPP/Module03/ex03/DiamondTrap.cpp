@@ -6,18 +6,18 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 08:41:34 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/03 17:23:15 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/04 17:27:16 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "DiamondTrap.hpp"
 
-DiamondTrap::DiamondTrap(): ClapTrap("NoName")
+DiamondTrap::DiamondTrap(): ScavTrap("NoName"), FragTrap("NoName")
 {
 	std::cout << "DiamondTrap Constructor by default called" << std::endl;
 }
 
-DiamondTrap::DiamondTrap(std::string name)
+DiamondTrap::DiamondTrap(std::string name): ScavTrap(name), FragTrap(name)
 {
 }
 

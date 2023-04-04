@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 08:54:20 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/30 16:26:58 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/04 18:52:09 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,7 @@ ClapTrap& ClapTrap::operator=(ClapTrap const& source)
 {
 	std::cout << "ClapTrap Affectation operator overloading called" << std::endl;
 	if (this != &source)
-	{
-		Name = source.Name;
-		Hit = source.Hit;
-		Energy = source.Energy;
-		Attack = source.Attack;
-	}
+		setName(source.Name);
 	return (*this);
 }
 
@@ -68,22 +63,22 @@ int		ClapTrap::getAttack(void) const
 
 void	ClapTrap::setName(std::string name)
 {
-	Name = name;
+	setName(name);
 }
 
-void	ClapTrap::setHit(int hit)
+void	ClapTrap::setHit()
 {
-	Hit = hit;
+	setHit(10);
 }
 
-void	ClapTrap::setEnergy(int energy)
+void	ClapTrap::setEnergy()
 {
-	Energy = energy;
+	setEnergy(10);
 }
 
-void	ClapTrap::setAttack(int attack)
+void	ClapTrap::setAttack()
 {
-	Attack = attack;
+	setAttack(0);
 }
 
 void	ClapTrap::attack(const std::string& target)

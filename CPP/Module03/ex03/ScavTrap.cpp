@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 08:41:34 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/31 15:50:22 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/04 17:43:00 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,17 @@
 
 ScavTrap::ScavTrap(): ClapTrap("NoName")
 {
-	Hit = 100;
-	Energy = 50;
-	Attack = 20;
+	setHit(100);
+	setEnergy(50);
+	setAttack(20);
 	std::cout << "ScavTrap Constructor by default called" << std::endl;
 }
 
 ScavTrap::ScavTrap(std::string name): ClapTrap(name)
 {
-	Hit = 100;
-	Energy = 50;
-	Attack = 20;
+	setHit(100);
+	setEnergy(50);
+	setAttack(20);
 	std::cout << "ScavTrap Constructor with name specified called" << std::endl;
 }
 
@@ -39,10 +39,10 @@ ScavTrap& ScavTrap::operator=(ScavTrap const& source)
 	std::cout << "ScavTrap Affectation operator overloading called" << std::endl;
 	if (this != &source)
 	{
-		Name = source.Name;
-		Hit = source.Hit;
-		Energy = source.Energy;
-		Attack = source.Attack;
+		ClapTrap::setName(source.Name);
+		ClapTrap::setHit(source.Hit);
+		ClapTrap::setEnergy(source.Energy);
+		ClapTrap::setAttack(source.Attack);
 	}
 	return (*this);
 }

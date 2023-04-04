@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 08:30:49 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/01 08:48:24 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/04 19:30:02 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,17 @@
 
 FragTrap::FragTrap(): ClapTrap("NoName")
 {
-	Hit = 100;
-	Energy = 100;
-	Attack = 30;
+	setHit();
+	setEnergy();
+	setAttack();
 	std::cout << "FragTrap Constructor by default called" << std::endl;
 }
 
 FragTrap::FragTrap(std::string name): ClapTrap(name)
 {
-	Hit = 100;
-	Energy = 100;
-	Attack = 30;
+	setHit();
+	setEnergy();
+	setAttack();
 	std::cout << "FragTrap Constructor with name specified called" << std::endl;
 }
 
@@ -38,12 +38,7 @@ FragTrap& FragTrap::operator=(FragTrap const& source)
 {
 	std::cout << "FragTrap Affectation operator overloading called" << std::endl;
 	if (this != &source)
-	{
-		Name = source.Name;
-		Hit = source.Hit;
-		Energy = source.Energy;
-		Attack = source.Attack;
-	}
+		setName(source.Name);
 	return (*this);
 }
 
@@ -60,4 +55,19 @@ void	FragTrap::highFivesGuys(void)
 	}
 	else if (getHit() == 0)
 		std::cout << "ClapTrap " << getName() << " is totally broken. It cannot keep the gate!" << std::endl;
+}
+
+void	FragTrap::setHit()
+{
+	setHit(100);
+}
+
+void	FragTrap::setEnergy()
+{
+	setEnergy(100);
+}
+
+void	FragTrap::setAttack()
+{
+	setAttack(30);
 }

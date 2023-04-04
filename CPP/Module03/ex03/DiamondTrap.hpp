@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 08:41:37 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/03 17:23:17 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/04 17:24:43 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include "FragTrap.hpp"
 # include "ScavTrap.hpp"
 
-class DiamondTrap : public ScavTrap, public FragTrap {
+class DiamondTrap : virtual public ScavTrap, virtual public FragTrap {
 	public:
 					DiamondTrap();
 					DiamondTrap(std::string name);
