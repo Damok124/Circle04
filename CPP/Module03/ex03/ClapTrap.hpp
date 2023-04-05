@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 08:54:24 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/04 18:35:36 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/05 17:07:15 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@ class ClapTrap {
 		int			getAttack(void) const;
 
 		void		setName(std::string name);
-		void		setHit(void);
-		void		setEnergy(void);
-		void		setAttack(void);
+		void		setHit(int hit);
+		void		setEnergy(int energy);
+		void		setAttack(int attack);
 
 	protected:
 		std::string	Name;

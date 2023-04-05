@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 08:13:32 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/01 17:49:43 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/05 19:42:01 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@
 
 int main( void )
 {
-	FragTrap unknown;
-	FragTrap boris("Boris");
-	FragTrap fakeboris(boris);
+	DiamondTrap unknown;
+	DiamondTrap boris("Boris");
+	DiamondTrap fakeboris(boris);
 	// unknown = boris;//NoName becomes Boris when this line is active
 	fakeboris.attack("Alix");//fakeboris remains 9/10 energy points
 	fakeboris.takeDamage(5);//fakeboris remains 5/10 HP
@@ -59,5 +59,8 @@ int main( void )
 	boris.highFivesGuys();
 	fakeboris.highFivesGuys();
 	unknown.highFivesGuys();
+	boris.whoAmI();
+	fakeboris.whoAmI();
+	unknown.whoAmI();
 	return (0);
 }

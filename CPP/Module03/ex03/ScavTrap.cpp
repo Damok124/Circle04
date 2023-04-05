@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 08:41:34 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/04 17:43:00 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/05 18:24:37 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,17 @@
 
 ScavTrap::ScavTrap(): ClapTrap("NoName")
 {
-	setHit(100);
-	setEnergy(50);
-	setAttack(20);
+	ScavTrap::setHit(100);
+	ScavTrap::setEnergy(50);
+	ScavTrap::setAttack(20);
 	std::cout << "ScavTrap Constructor by default called" << std::endl;
 }
 
 ScavTrap::ScavTrap(std::string name): ClapTrap(name)
 {
-	setHit(100);
-	setEnergy(50);
-	setAttack(20);
+	ScavTrap::setHit(100);
+	ScavTrap::setEnergy(50);
+	ScavTrap::setAttack(20);
 	std::cout << "ScavTrap Constructor with name specified called" << std::endl;
 }
 
@@ -38,12 +38,7 @@ ScavTrap& ScavTrap::operator=(ScavTrap const& source)
 {
 	std::cout << "ScavTrap Affectation operator overloading called" << std::endl;
 	if (this != &source)
-	{
 		ClapTrap::setName(source.Name);
-		ClapTrap::setHit(source.Hit);
-		ClapTrap::setEnergy(source.Energy);
-		ClapTrap::setAttack(source.Attack);
-	}
 	return (*this);
 }
 
@@ -60,4 +55,19 @@ void ScavTrap::guardGate()
 	}
 	else if (getHit() == 0)
 		std::cout << "ClapTrap " << getName() << " is totally broken. It cannot keep the gate!" << std::endl;
+}
+
+void	ScavTrap::setHit(int hit)
+{
+	Hit = hit;
+}
+
+void	ScavTrap::setEnergy(int energy)
+{
+	Energy = energy;
+}
+
+void	ScavTrap::setAttack(int attack)
+{
+	Attack = attack;
 }

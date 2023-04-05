@@ -6,22 +6,29 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 08:41:34 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/04 17:27:16 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/05 20:23:08 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "DiamondTrap.hpp"
 
-DiamondTrap::DiamondTrap(): ScavTrap("NoName"), FragTrap("NoName")
+DiamondTrap::DiamondTrap(): ClapTrap("NoName_clap_name"), ScavTrap("NoName"), FragTrap("NoName")
 {
+	FragTrap::setHit(100);
+	ScavTrap::setEnergy(50);
+	FragTrap::setAttack(30);
 	std::cout << "DiamondTrap Constructor by default called" << std::endl;
 }
 
-DiamondTrap::DiamondTrap(std::string name): ScavTrap(name), FragTrap(name)
+DiamondTrap::DiamondTrap(std::string name): ClapTrap(name + "_clap_name"), ScavTrap(name), FragTrap(name)
 {
+	FragTrap::setHit(100);
+	ScavTrap::setEnergy(50);
+	FragTrap::setAttack(30);
+	std::cout << "DiamondTrap Constructor with name called" << std::endl;
 }
 
-DiamondTrap::DiamondTrap(DiamondTrap const& source)
+DiamondTrap::DiamondTrap(DiamondTrap const& source): ClapTrap("NoName_clap_name"), ScavTrap("NoName"), FragTrap("NoName")
 {
 	std::cout << "DiamondTrap Constructor by copy called" << std::endl;
 	*this = source;
@@ -29,58 +36,28 @@ DiamondTrap::DiamondTrap(DiamondTrap const& source)
 
 DiamondTrap& DiamondTrap::operator=(DiamondTrap const& source)
 {
+	std::cout << "DiamondTrap Affectation operator overloading called" << std::endl;
+	if (this != &source)
+		DiamondTrap::setName(source.Name);
+	return (*this);
 }
 
 DiamondTrap::~DiamondTrap()
 {
+	std::cout << "DiamondTrap Destructor called" << std::endl;
 }
 
-// ScavTrap::ScavTrap(): ClapTrap("NoName")
-// {
-// 	Hit = 100;
-// 	Energy = 50;
-// 	Attack = 20;
-// 	std::cout << "ScavTrap Constructor by default called" << std::endl;
-// }
+void	DiamondTrap::setName(std::string name)
+{
+	Name = name;
+}
 
-// ScavTrap::ScavTrap(std::string name): ClapTrap(name)
-// {
-// 	Hit = 100;
-// 	Energy = 50;
-// 	Attack = 20;
-// 	std::cout << "ScavTrap Constructor with name specified called" << std::endl;
-// }
+void	DiamondTrap::whoAmI()
+{
+	std::cout << "My true name is " << getName() << " but my ClapName is " << ClapTrap::getName() << std::endl;
+}
 
-// ScavTrap::ScavTrap(ScavTrap const& source) : ClapTrap(source)
-// {
-// 	std::cout << "ScavTrap Constructor by copy called" << std::endl;
-// 	*this = source;
-// }
-
-// ScavTrap& ScavTrap::operator=(ScavTrap const& source)
-// {
-// 	std::cout << "ScavTrap Affectation operator overloading called" << std::endl;
-// 	if (this != &source)
-// 	{
-// 		Name = source.Name;
-// 		Hit = source.Hit;
-// 		Energy = source.Energy;
-// 		Attack = source.Attack;
-// 	}
-// 	return (*this);
-// }
-
-// ScavTrap::~ScavTrap()
-// {
-// 	std::cout << "ScavTrap Destructor called" << std::endl;
-// }
-
-// void ScavTrap::guardGate()
-// {
-// 	if (getHit() != 0)
-// 	{
-// 		std::cout << Name << " is now in Gate keeper mode" << std::endl;
-// 	}
-// 	else if (getHit() == 0)
-// 		std::cout << "ClapTrap " << getName() << " is totally broken. It cannot keep the gate!" << std::endl;
-// }
+std::string	DiamondTrap::getName(void) const
+{
+	return (Name);
+}

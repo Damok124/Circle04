@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 08:30:49 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/04 19:30:02 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/05 17:10:47 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,17 @@
 
 FragTrap::FragTrap(): ClapTrap("NoName")
 {
-	setHit();
-	setEnergy();
-	setAttack();
+	setHit(100);
+	setEnergy(100);
+	setAttack(30);
 	std::cout << "FragTrap Constructor by default called" << std::endl;
 }
 
 FragTrap::FragTrap(std::string name): ClapTrap(name)
 {
-	setHit();
-	setEnergy();
-	setAttack();
+	setHit(100);
+	setEnergy(100);
+	setAttack(30);
 	std::cout << "FragTrap Constructor with name specified called" << std::endl;
 }
 
@@ -57,17 +57,17 @@ void	FragTrap::highFivesGuys(void)
 		std::cout << "ClapTrap " << getName() << " is totally broken. It cannot keep the gate!" << std::endl;
 }
 
-void	FragTrap::setHit()
+void	FragTrap::setHit(int hit)
 {
-	setHit(100);
+	Hit = hit;
 }
 
-void	FragTrap::setEnergy()
+void	FragTrap::setEnergy(int energy)
 {
-	setEnergy(100);
+	Energy = energy;
 }
 
-void	FragTrap::setAttack()
+void	FragTrap::setAttack(int attack)
 {
-	setAttack(30);
+	Attack = attack;
 }

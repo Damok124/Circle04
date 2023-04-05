@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 08:41:37 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/04 17:24:43 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/05 19:26:28 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include "FragTrap.hpp"
 # include "ScavTrap.hpp"
 
-class DiamondTrap : virtual public ScavTrap, virtual public FragTrap {
+class DiamondTrap : virtual public ClapTrap, virtual public ScavTrap, virtual public FragTrap {
 	public:
 					DiamondTrap();
 					DiamondTrap(std::string name);
@@ -25,10 +25,12 @@ class DiamondTrap : virtual public ScavTrap, virtual public FragTrap {
 					DiamondTrap& operator=(DiamondTrap const& source);
 					~DiamondTrap();
 
-			// void	whoAmI();//Cette fonction membre affichera à la fois son nom et le nom de son sous-objet ClapTrap.
+			void	setName(std::string name);
+			std::string	getName(void) const;
+			void	whoAmI();//Cette fonction membre affichera à la fois son nom et le nom de son sous-objet ClapTrap.
 
-	// private:
-		// std::string	Name;//??? -Name, son nom, qui sera passé en paramètre d’un constructeur
+	private:
+		std::string	Name;//??? -Name, son nom, qui sera passé en paramètre d’un constructeur
 		// ClapTrap::Name;//??? -Claptrap::name (paramètre du constructeur suivi du suffixe "_clap_name")
 
 		// Hit points (FragTrap)

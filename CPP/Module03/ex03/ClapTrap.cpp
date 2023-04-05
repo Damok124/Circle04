@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 08:54:20 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/04 18:52:09 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/05 17:22:52 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,22 +63,22 @@ int		ClapTrap::getAttack(void) const
 
 void	ClapTrap::setName(std::string name)
 {
-	setName(name);
+	Name = name;
 }
 
-void	ClapTrap::setHit()
+void	ClapTrap::setHit(int hit)
 {
-	setHit(10);
+	Hit = hit;
 }
 
-void	ClapTrap::setEnergy()
+void	ClapTrap::setEnergy(int energy)
 {
-	setEnergy(10);
+	Energy = energy;
 }
 
-void	ClapTrap::setAttack()
+void	ClapTrap::setAttack(int attack)
 {
-	setAttack(0);
+	Attack = attack;
 }
 
 void	ClapTrap::attack(const std::string& target)
