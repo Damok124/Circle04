@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 08:41:34 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/05 20:23:08 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/06 17:15:43 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,25 @@
 
 DiamondTrap::DiamondTrap(): ClapTrap("NoName_clap_name"), ScavTrap("NoName"), FragTrap("NoName")
 {
+	Name = "NoName";
 	FragTrap::setHit(100);
 	ScavTrap::setEnergy(50);
-	FragTrap::setAttack(30);
+	FragTrap::setAttackDamage(30);
 	std::cout << "DiamondTrap Constructor by default called" << std::endl;
 }
 
 DiamondTrap::DiamondTrap(std::string name): ClapTrap(name + "_clap_name"), ScavTrap(name), FragTrap(name)
 {
+	Name = name;
 	FragTrap::setHit(100);
 	ScavTrap::setEnergy(50);
-	FragTrap::setAttack(30);
+	FragTrap::setAttackDamage(30);
 	std::cout << "DiamondTrap Constructor with name called" << std::endl;
 }
 
-DiamondTrap::DiamondTrap(DiamondTrap const& source): ClapTrap("NoName_clap_name"), ScavTrap("NoName"), FragTrap("NoName")
+DiamondTrap::DiamondTrap(DiamondTrap const& source): ClapTrap(source.getName() + "_clap_name"), ScavTrap(source.getName()), FragTrap(source.getName())
 {
+
 	std::cout << "DiamondTrap Constructor by copy called" << std::endl;
 	*this = source;
 }
@@ -54,7 +57,7 @@ void	DiamondTrap::setName(std::string name)
 
 void	DiamondTrap::whoAmI()
 {
-	std::cout << "My true name is " << getName() << " but my ClapName is " << ClapTrap::getName() << std::endl;
+	std::cout << "My true name is " << Name << " but my ClapName is " << ClapTrap::getName() << std::endl;
 }
 
 std::string	DiamondTrap::getName(void) const

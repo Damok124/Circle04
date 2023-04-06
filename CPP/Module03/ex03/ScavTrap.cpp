@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 08:41:34 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/05 18:24:37 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/06 17:07:12 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ ScavTrap::ScavTrap(): ClapTrap("NoName")
 {
 	ScavTrap::setHit(100);
 	ScavTrap::setEnergy(50);
-	ScavTrap::setAttack(20);
+	ScavTrap::setAttackDamage(20);
 	std::cout << "ScavTrap Constructor by default called" << std::endl;
 }
 
@@ -24,7 +24,7 @@ ScavTrap::ScavTrap(std::string name): ClapTrap(name)
 {
 	ScavTrap::setHit(100);
 	ScavTrap::setEnergy(50);
-	ScavTrap::setAttack(20);
+	ScavTrap::setAttackDamage(20);
 	std::cout << "ScavTrap Constructor with name specified called" << std::endl;
 }
 
@@ -67,7 +67,7 @@ void	ScavTrap::setEnergy(int energy)
 	Energy = energy;
 }
 
-void	ScavTrap::setAttack(int attack)
+void	ScavTrap::setAttackDamage(int attack)
 {
-	Attack = attack;
+	AttackDamage = attack;
 }

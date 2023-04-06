@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 08:30:49 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/05 17:10:47 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/06 17:06:33 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ FragTrap::FragTrap(): ClapTrap("NoName")
 {
 	setHit(100);
 	setEnergy(100);
-	setAttack(30);
+	setAttackDamage(30);
 	std::cout << "FragTrap Constructor by default called" << std::endl;
 }
 
@@ -24,7 +24,7 @@ FragTrap::FragTrap(std::string name): ClapTrap(name)
 {
 	setHit(100);
 	setEnergy(100);
-	setAttack(30);
+	setAttackDamage(30);
 	std::cout << "FragTrap Constructor with name specified called" << std::endl;
 }
 
@@ -67,7 +67,7 @@ void	FragTrap::setEnergy(int energy)
 	Energy = energy;
 }
 
-void	FragTrap::setAttack(int attack)
+void	FragTrap::setAttackDamage(int attack)
 {
-	Attack = attack;
+	AttackDamage = attack;
 }

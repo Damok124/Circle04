@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 08:41:37 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/05 18:24:43 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/06 17:06:49 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class ScavTrap : virtual public ClapTrap {
 
 			void	setHit(int hit);
 			void	setEnergy(int energy);
-			void	setAttack(int attack);
+			void	setAttackDamage(int attack);
 };
 
 #endif //___________________________________________________________ScavTrap_HPP

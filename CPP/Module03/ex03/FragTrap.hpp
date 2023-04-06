@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 08:27:55 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/05 17:07:41 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/06 17:06:42 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class FragTrap : virtual public ClapTrap {
 
 			void	setHit(int hit);
 			void	setEnergy(int energy);
-			void	setAttack(int attack);
+			void	setAttackDamage(int attack);
 };
 
 #endif //___________________________________________________________FragTrap_HPP
