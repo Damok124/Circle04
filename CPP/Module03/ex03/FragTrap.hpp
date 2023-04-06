@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 08:27:55 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/06 17:06:42 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/07 00:54:21 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ class FragTrap : virtual public ClapTrap {
 					~FragTrap();
 
 			void	highFivesGuys(void);
+			void	attack(const std::string& target);
 
 			void	setHit(int hit);
 			void	setEnergy(int energy);

@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 08:13:32 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/06 17:57:45 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/07 00:56:11 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@
 
 void	testClapTrap(void)
 {
-	ClapTrap unknown;
-	ClapTrap clovis("Clovis");
-	ClapTrap chloe("Chloe");
-	ClapTrap fake_clovis(clovis);
-	unknown = chloe;
+	// ClapTrap unknown;
+	// ClapTrap clovis("Clovis");
+	// ClapTrap chloe("Chloe");
+	// ClapTrap fake_clovis(clovis);
+	// unknown = chloe;
 }
 
 void	testFragTrap(void)

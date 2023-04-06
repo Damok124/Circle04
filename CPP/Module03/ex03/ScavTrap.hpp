@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 08:41:37 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/06 17:06:49 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/07 00:47:11 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ class ScavTrap : virtual public ClapTrap {
 					~ScavTrap();
 
 			void	guardGate();
+			void	attack(const std::string& target);
 
 			void	setHit(int hit);
 			void	setEnergy(int energy);
