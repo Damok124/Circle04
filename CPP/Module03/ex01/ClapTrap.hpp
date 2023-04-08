@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 08:54:24 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/03 14:56:02 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/07 16:05:27 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,31 +17,31 @@
 
 class ClapTrap {
 	public:
-					ClapTrap();
-					ClapTrap(std::string name);
-					ClapTrap(ClapTrap const& source);
-					ClapTrap& operator=(ClapTrap const& source);
-					~ClapTrap();
+						ClapTrap();
+						ClapTrap(std::string name);
+						ClapTrap(ClapTrap const& source);
+						ClapTrap& operator=(ClapTrap const& source);
+						~ClapTrap();
 
-		void		attack(const std::string& target);
-		void		takeDamage(unsigned int amount);
-		void		beRepaired(unsigned int amount);
+		void			attack(const std::string& target);
+		void			takeDamage(unsigned int amount);
+		void			beRepaired(unsigned int amount);
 
-		std::string	getName(void) const;
-		int			getHit(void) const;
-		int			getEnergy(void) const;
-		int			getAttack(void) const;
+		std::string		getName(void) const;
+		unsigned int	getHit(void) const;
+		unsigned int	getEnergy(void) const;
+		unsigned int	getAttackDamage(void) const;
 
-		void		setName(std::string name);
-		void		setHit(int hit);
-		void		setEnergy(int energy);
-		void		setAttack(int attack);
+		void			setName(std::string name);
+		void			setHit(unsigned int hit);
+		void			setEnergy(unsigned int energy);
+		void			setAttackDamage(unsigned int attack);
 
 	protected:
-		std::string	Name;
-		int			Hit;
-		int			Energy;
-		int			Attack;
+		std::string		Name;
+		unsigned int	Hit;
+		unsigned int	Energy;
+		unsigned int	AttackDamage;
 };
 
 #endif //___________________________________________________________ClapTrap_HPP

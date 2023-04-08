@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 08:13:32 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/07 00:56:11 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/07 18:16:04 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,78 +16,442 @@
 #include "FragTrap.hpp"
 #include "DiamondTrap.hpp"
 
-void	testClapTrap(void)
+void	checkUp(ClapTrap& inst)
 {
-	// ClapTrap unknown;
-	// ClapTrap clovis("Clovis");
-	// ClapTrap chloe("Chloe");
-	// ClapTrap fake_clovis(clovis);
-	// unknown = chloe;
+	std::cout << "CHECK UP : " << inst.getName() << " : " << inst.getHit() << " Hit points, "
+		<< inst.getEnergy() << " Energy points, "
+		<< inst.getAttackDamage() << " AttackDamage" << std::endl;
 }
 
-void	testFragTrap(void)
+void	testClapTrap(void)
 {
-
+	{
+		ClapTrap unknown;
+		checkUp(unknown);
+	}
+	std::cout << std::endl;
+	{
+		ClapTrap axel("Axel");
+		checkUp(axel);
+	}
+	std::cout << std::endl;
+	{
+		ClapTrap boris("Boris");
+		ClapTrap clone(boris);
+		checkUp(clone);
+	}
+	std::cout << std::endl;
+	{
+		ClapTrap david("David");
+		ClapTrap fake = david;
+		checkUp(fake);
+	}
+	std::cout << std::endl;
+	{
+		ClapTrap eric("Eric");
+		checkUp(eric);
+		eric.attack("target");
+		checkUp(eric);
+		eric.takeDamage(0);
+		checkUp(eric);
+		eric.beRepaired(5);
+		checkUp(eric);
+		while (eric.getHit() != 0 && eric.getEnergy() != 0)
+		{
+			eric.attack("target");
+			checkUp(eric);
+		}
+		eric.attack("target");
+		checkUp(eric);
+		eric.takeDamage(0);
+		checkUp(eric);
+		eric.beRepaired(-1);
+		checkUp(eric);
+	}
+	std::cout << std::endl;
+	{
+		ClapTrap fary("Fary");
+		checkUp(fary);
+		fary.attack("target");
+		checkUp(fary);
+		fary.takeDamage(0);
+		checkUp(fary);
+		fary.beRepaired(5);
+		checkUp(fary);
+		while (fary.getHit() != 0 && fary.getEnergy() != 0)
+		{
+			fary.takeDamage(1);
+			checkUp(fary);
+		}
+		fary.attack("target");
+		checkUp(fary);
+		fary.takeDamage(0);
+		checkUp(fary);
+		fary.beRepaired(-1);
+		checkUp(fary);
+	}
+	std::cout << std::endl;
+	{
+		ClapTrap guile("Guile");
+		checkUp(guile);
+		guile.attack("target");
+		checkUp(guile);
+		guile.takeDamage(0);
+		checkUp(guile);
+		guile.beRepaired(5);
+		checkUp(guile);
+		while (guile.getEnergy() != 0)
+		{
+			guile.beRepaired(1000000000);
+			checkUp(guile);
+		}
+		guile.attack("target");
+		checkUp(guile);
+		guile.takeDamage(0);
+		checkUp(guile);
+		guile.beRepaired(-1);
+		checkUp(guile);
+	}
 }
 
 void	testScavTrap(void)
 {
+	{
+		ScavTrap unknown;
+		checkUp(unknown);
+	}
+	std::cout << std::endl;
+	{
+		ScavTrap axel("Axel");
+		checkUp(axel);
+	}
+	std::cout << std::endl;
+	{
+		ScavTrap boris("Boris");
+		ScavTrap clone(boris);
+		checkUp(clone);
+	}
+	std::cout << std::endl;
+	{
+		ScavTrap david("David");
+		ScavTrap fake = david;
+		checkUp(fake);
+	}
+	std::cout << std::endl;
+	{
+		ScavTrap eric("Eric");
+		checkUp(eric);
+		eric.guardGate();
+		checkUp(eric);
+		eric.attack("target");
+		checkUp(eric);
+		eric.takeDamage(0);
+		checkUp(eric);
+		eric.beRepaired(5);
+		checkUp(eric);
+		while (eric.getHit() != 0 && eric.getEnergy() != 0)
+		{
+			eric.attack("target");
+			checkUp(eric);
+		}
+		eric.attack("target");
+		checkUp(eric);
+		eric.takeDamage(0);
+		checkUp(eric);
+		eric.beRepaired(-1);
+		checkUp(eric);
+		eric.guardGate();
+		checkUp(eric);
+	}
+	std::cout << std::endl;
+	{
+		ScavTrap fary("Fary");
+		checkUp(fary);
+		fary.attack("target");
+		checkUp(fary);
+		fary.takeDamage(0);
+		checkUp(fary);
+		fary.beRepaired(5);
+		checkUp(fary);
+		fary.guardGate();
+		checkUp(fary);
+		while (fary.getHit() != 0 && fary.getEnergy() != 0)
+		{
+			fary.takeDamage(1);
+			checkUp(fary);
+		}
+		fary.attack("target");
+		checkUp(fary);
+		fary.takeDamage(0);
+		checkUp(fary);
+		fary.beRepaired(-1);
+		checkUp(fary);
+		fary.guardGate();
+		checkUp(fary);
+	}
+	std::cout << std::endl;
+	{
+		ScavTrap guile("Guile");
+		checkUp(guile);
+		guile.attack("target");
+		checkUp(guile);
+		guile.guardGate();
+		checkUp(guile);
+		guile.takeDamage(0);
+		checkUp(guile);
+		guile.beRepaired(5);
+		checkUp(guile);
+		while (guile.getEnergy() != 0)
+		{
+			guile.beRepaired(1000000000);
+			checkUp(guile);
+		}
+		guile.attack("target");
+		checkUp(guile);
+		guile.takeDamage(0);
+		checkUp(guile);
+		guile.beRepaired(-1);
+		checkUp(guile);
+		guile.guardGate();
+		checkUp(guile);
+	}
+}
 
+void	testFragTrap(void)
+{
+	{
+		FragTrap unknown;
+		checkUp(unknown);
+	}
+	std::cout << std::endl;
+	{
+		FragTrap axel("Axel");
+		checkUp(axel);
+	}
+	std::cout << std::endl;
+	{
+		FragTrap boris("Boris");
+		FragTrap clone(boris);
+		checkUp(clone);
+	}
+	std::cout << std::endl;
+	{
+		FragTrap david("David");
+		FragTrap fake = david;
+		checkUp(fake);
+	}
+	std::cout << std::endl;
+	{
+		FragTrap eric("Eric");
+		checkUp(eric);
+		eric.highFivesGuys();
+		checkUp(eric);
+		eric.attack("target");
+		checkUp(eric);
+		eric.takeDamage(0);
+		checkUp(eric);
+		eric.beRepaired(5);
+		checkUp(eric);
+		while (eric.getHit() != 0 && eric.getEnergy() != 0)
+		{
+			eric.attack("target");
+			checkUp(eric);
+		}
+		eric.attack("target");
+		checkUp(eric);
+		eric.takeDamage(0);
+		checkUp(eric);
+		eric.beRepaired(-1);
+		checkUp(eric);
+		eric.highFivesGuys();
+		checkUp(eric);
+	}
+	std::cout << std::endl;
+	{
+		FragTrap fary("Fary");
+		checkUp(fary);
+		fary.attack("target");
+		checkUp(fary);
+		fary.takeDamage(0);
+		checkUp(fary);
+		fary.beRepaired(5);
+		checkUp(fary);
+		fary.highFivesGuys();
+		checkUp(fary);
+		while (fary.getHit() != 0 && fary.getEnergy() != 0)
+		{
+			fary.takeDamage(1);
+			checkUp(fary);
+		}
+		fary.attack("target");
+		checkUp(fary);
+		fary.takeDamage(0);
+		checkUp(fary);
+		fary.beRepaired(-1);
+		checkUp(fary);
+		fary.highFivesGuys();
+		checkUp(fary);
+	}
+	std::cout << std::endl;
+	{
+		FragTrap guile("Guile");
+		checkUp(guile);
+		guile.attack("target");
+		checkUp(guile);
+		guile.highFivesGuys();
+		checkUp(guile);
+		guile.takeDamage(0);
+		checkUp(guile);
+		guile.beRepaired(5);
+		checkUp(guile);
+		while (guile.getEnergy() != 0)
+		{
+			guile.beRepaired(1000000000);
+			checkUp(guile);
+		}
+		guile.attack("target");
+		checkUp(guile);
+		guile.takeDamage(0);
+		checkUp(guile);
+		guile.beRepaired(-1);
+		checkUp(guile);
+		guile.highFivesGuys();
+		checkUp(guile);
+	}
 }
 
 void	testDiamondTrap(void)
 {
-	DiamondTrap unknown;
-	DiamondTrap boris("Boris");
-	DiamondTrap fakeboris(boris);
-	unknown = boris;
-	fakeboris.attack("Alix");
-	fakeboris.takeDamage(5);
-	fakeboris.takeDamage(5);
-	fakeboris.beRepaired(5);
-	fakeboris.takeDamage(5);
-	fakeboris.beRepaired(5);
-	boris.attack("Ben");
-	boris.beRepaired(1000000);
-	boris.beRepaired(0);
-	boris.beRepaired(1);
-	boris.beRepaired(-1);
-	boris.beRepaired(4294967295);
-	boris.beRepaired(10);
-	boris.beRepaired(10);
-	boris.beRepaired(10);
-	boris.beRepaired(10);
-	boris.beRepaired(10);
-	boris.beRepaired(10);
-	boris.beRepaired(10);
-	unknown.attack("Carl");
-	unknown.attack("Dany");
-	unknown.attack("Emma");
-	unknown.attack("Fidel");
-	unknown.attack("Gustavo");
-	unknown.attack("Helene");
-	unknown.attack("Ianis");
-	unknown.attack("Jose");
-	unknown.attack("Kennedy");
-	unknown.beRepaired(15);
-	unknown.attack("Leonardo");
-	unknown.attack("Mael");
-	unknown.attack("Nestor");
-	fakeboris.takeDamage(5000);
-	fakeboris.beRepaired(5);
-	boris.highFivesGuys();
-	fakeboris.highFivesGuys();
-	unknown.highFivesGuys();
-	boris.whoAmI();
-	fakeboris.whoAmI();
-	unknown.whoAmI();
+	{
+		DiamondTrap unknown;
+		checkUp(unknown);
+	}
+	std::cout << std::endl;
+	{
+		DiamondTrap axel("Axel");
+		checkUp(axel);
+	}
+	std::cout << std::endl;
+	{
+		DiamondTrap boris("Boris");
+		DiamondTrap clone(boris);
+		checkUp(clone);
+	}
+	std::cout << std::endl;
+	{
+		DiamondTrap david("David");
+		DiamondTrap fake = david;
+		checkUp(fake);
+	}
+	std::cout << std::endl;
+	{
+		DiamondTrap eric("Eric");
+		checkUp(eric);
+		eric.whoAmI();
+		checkUp(eric);
+		eric.highFivesGuys();
+		checkUp(eric);
+		eric.guardGate();
+		checkUp(eric);
+		eric.attack("target");
+		checkUp(eric);
+		eric.takeDamage(0);
+		checkUp(eric);
+		eric.beRepaired(5);
+		checkUp(eric);
+		while (eric.getHit() != 0 && eric.getEnergy() != 0)
+		{
+			eric.attack("target");
+			checkUp(eric);
+		}
+		eric.attack("target");
+		checkUp(eric);
+		eric.takeDamage(0);
+		checkUp(eric);
+		eric.beRepaired(-1);
+		checkUp(eric);
+		eric.highFivesGuys();
+		checkUp(eric);
+		eric.guardGate();
+		checkUp(eric);
+		eric.whoAmI();
+		checkUp(eric);
+	}
+	std::cout << std::endl;
+	{
+		DiamondTrap fary("Fary");
+		checkUp(fary);
+		fary.attack("target");
+		checkUp(fary);
+		fary.takeDamage(0);
+		checkUp(fary);
+		fary.beRepaired(5);
+		checkUp(fary);
+		fary.highFivesGuys();
+		checkUp(fary);
+		fary.guardGate();
+		checkUp(fary);
+		fary.whoAmI();
+		checkUp(fary);
+		while (fary.getHit() != 0 && fary.getEnergy() != 0)
+		{
+			fary.takeDamage(1);
+			checkUp(fary);
+		}
+		fary.attack("target");
+		checkUp(fary);
+		fary.takeDamage(0);
+		checkUp(fary);
+		fary.beRepaired(-1);
+		checkUp(fary);
+		fary.highFivesGuys();
+		checkUp(fary);
+		fary.guardGate();
+		checkUp(fary);
+		fary.whoAmI();
+		checkUp(fary);
+	}
+	std::cout << std::endl;
+	{
+		DiamondTrap guile("Guile");
+		checkUp(guile);
+		guile.attack("target");
+		checkUp(guile);
+		guile.highFivesGuys();
+		checkUp(guile);
+		guile.guardGate();
+		checkUp(guile);
+		guile.whoAmI();
+		checkUp(guile);
+		guile.takeDamage(0);
+		checkUp(guile);
+		guile.beRepaired(5);
+		checkUp(guile);
+		while (guile.getEnergy() != 0)
+		{
+			guile.beRepaired(1000000000);
+			checkUp(guile);
+		}
+		guile.attack("target");
+		checkUp(guile);
+		guile.takeDamage(0);
+		checkUp(guile);
+		guile.beRepaired(-1);
+		checkUp(guile);
+		guile.highFivesGuys();
+		checkUp(guile);
+		guile.guardGate();
+		checkUp(guile);
+		guile.whoAmI();
+		checkUp(guile);
+	}
 }
 
 int main( void )
 {
-	testClapTrap();
-	testFragTrap();
-	testScavTrap();
+	// testClapTrap();
+	// testScavTrap();
+	// testFragTrap();
 	testDiamondTrap();
 	return (0);
 }

@@ -6,50 +6,107 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 08:13:32 by zharzi            #+#    #+#             */
-/*   Updated: 2023/03/29 08:40:15 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/07 17:04:54 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include "ClapTrap.hpp"
 
+void	checkUp(ClapTrap& inst)
+{
+	std::cout << "CHECK UP : " << inst.getName() << " : " << inst.getHit() << " Hit points, "
+		<< inst.getEnergy() << " Energy points, "
+		<< inst.getAttackDamage() << " AttackDamage" << std::endl << std::endl;
+}
+
+void	testClapTrap(void)
+{
+	{
+		ClapTrap unknown;
+		checkUp(unknown);
+	}
+	{
+		ClapTrap axel("Axel");
+		checkUp(axel);
+	}
+	{
+		ClapTrap boris("Boris");
+		ClapTrap clone(boris);
+		checkUp(clone);
+	}
+	{
+		ClapTrap david("David");
+		ClapTrap fake = david;
+		checkUp(fake);
+	}
+	{
+		ClapTrap eric("Eric");
+		checkUp(eric);
+		eric.attack("target");
+		checkUp(eric);
+		eric.takeDamage(0);
+		checkUp(eric);
+		eric.beRepaired(5);
+		checkUp(eric);
+		while (eric.getHit() != 0 && eric.getEnergy() != 0)
+		{
+			eric.attack("target");
+			checkUp(eric);
+		}
+		eric.attack("target");
+		checkUp(eric);
+		eric.takeDamage(0);
+		checkUp(eric);
+		eric.beRepaired(-1);
+		checkUp(eric);
+	}
+	{
+		ClapTrap fary("Fary");
+		checkUp(fary);
+		fary.attack("target");
+		checkUp(fary);
+		fary.takeDamage(0);
+		checkUp(fary);
+		fary.beRepaired(5);
+		checkUp(fary);
+		while (fary.getHit() != 0 && fary.getEnergy() != 0)
+		{
+			fary.takeDamage(1);
+			checkUp(fary);
+		}
+		fary.attack("target");
+		checkUp(fary);
+		fary.takeDamage(0);
+		checkUp(fary);
+		fary.beRepaired(-1);
+		checkUp(fary);
+	}
+	{
+		ClapTrap guile("Guile");
+		checkUp(guile);
+		guile.attack("target");
+		checkUp(guile);
+		guile.takeDamage(0);
+		checkUp(guile);
+		guile.beRepaired(5);
+		checkUp(guile);
+		while (guile.getEnergy() != 0)
+		{
+			guile.beRepaired(1000000000);
+			checkUp(guile);
+		}
+		guile.attack("target");
+		checkUp(guile);
+		guile.takeDamage(0);
+		checkUp(guile);
+		guile.beRepaired(-1);
+		checkUp(guile);
+	}
+}
+
 int main( void )
 {
-	ClapTrap unknown;
-	ClapTrap boris("Boris");
-	ClapTrap fakeboris(boris);
-	// unknown = boris;//NoName becomes Boris when this line is active
-	fakeboris.attack("Alix");//fakeboris remains 9/10 energy points
-	fakeboris.takeDamage(5);//fakeboris remains 5/10 HP
-	fakeboris.takeDamage(5);//fakeboris remains 0/10 HP
-	fakeboris.beRepaired(5);//fakeboris can't repair because of 0 HP remaining
-	fakeboris.takeDamage(5);//fakeboris still at 0 HP, but can be overkilled someway
-	fakeboris.beRepaired(5);//fakeboris still can't repair because of 0 HP remaining
-	boris.attack("Ben");//Boris remains 9/10 energy points
-	boris.beRepaired(1000000);//Boris remains 8/10 energy points
-	boris.beRepaired(0);//Boris remains 7/10 energy points
-	boris.beRepaired(1);//Boris remains 6/10 energy points
-	boris.beRepaired(-1);//Boris remains 5/10 energy points
-	boris.beRepaired(4294967295);//Boris remains 4/10 energy points
-	boris.beRepaired(10);//Boris remains 3/10 energy points
-	boris.beRepaired(10);//Boris remains 2/10 energy points
-	boris.beRepaired(10);//Boris remains 1/10 energy points
-	boris.beRepaired(10);//Boris remains 0/10 energy points
-	boris.beRepaired(10);//Boris can't repair because of 0 energy point remaining
-	boris.beRepaired(10);//Boris still can't repair because of 0 energy point remaining
-	boris.beRepaired(10);//Boris still can't repair because of 0 energy point remaining
-	unknown.attack("Carl");//NoName remains 9/10 energy points
-	unknown.attack("Dany");//NoName remains 8/10 energy points
-	unknown.attack("Emma");//NoName remains 7/10 energy points
-	unknown.attack("Fidel");//NoName remains 6/10 energy points
-	unknown.attack("Gustavo");//NoName remains 5/10 energy points
-	unknown.attack("Helene");//NoName remains 4/10 energy points
-	unknown.attack("Ianis");//NoName remains 3/10 energy points
-	unknown.attack("Jose");//NoName remains 2/10 energy points
-	unknown.attack("Kennedy");//NoName remains 1/10 energy points
-	unknown.beRepaired(15);//NoName remains 0/10 energy points
-	unknown.attack("Leonardo");//NoName can't attack because 0f 0 energy point
-	unknown.attack("Mael");//NoName still can't attack because 0f 0 energy point
-	unknown.attack("Nestor");//NoName still can't attack because 0f 0 energy point
+	testClapTrap();
 	return (0);
 }
