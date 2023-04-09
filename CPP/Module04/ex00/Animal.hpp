@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:02 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/08 15:07:57 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/09 01:16:46 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,15 @@
 class Animal {
 	public:
 						Animal();
-						Animal(Animal const& animal);
-						Animal& operator=(Animal const& animal);
+						Animal(Animal const& source);
+						Animal& operator=(Animal const& source);
 						~Animal();
 
 		std::string		getType() const;
 
-				void	setType(std::string type);
+				void	setType(std::string const type);
+
+				void	makeSound() const;
 
 	protected:
 		std::string		type;

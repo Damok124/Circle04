@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:07 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/08 14:53:08 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/08 19:32:40 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,13 @@
 # define CAT_HPP
 
 # include <iostream>
+# include "Animal.hpp"
 
-class Cat {
+class Cat : public Animal {
 	public:
-	protected:
-	private:
+						Cat();
+						Cat(Cat const& animal);
+						Cat& operator=(Cat const& animal);
+						~Cat();
 };
-
 #endif
