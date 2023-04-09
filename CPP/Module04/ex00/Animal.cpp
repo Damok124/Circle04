@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:00 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/09 01:16:54 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/09 19:10:52 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,5 @@ void	Animal::setType(std::string const type)
 
 void	Animal::makeSound() const
 {
-	if (getType() == "Dog")
-		std::cout << "Woof ! Woof !" << std::endl;
-	else if (getType() == "Cat")
-		std::cout << "Meowwwwww ..." << std::endl;
+	std::cout << "* some animal noises *" << std::endl;
 }

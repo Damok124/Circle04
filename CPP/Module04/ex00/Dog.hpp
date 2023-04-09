@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:07 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/08 19:33:40 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/09 19:15:50 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,5 +22,7 @@ class Dog : public Animal {
 						Dog(Dog const& animal);
 						Dog& operator=(Dog const& animal);
 						~Dog();
+
+		virtual void	makeSound() const;
 };
 #endif

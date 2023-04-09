@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:04 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/09 01:17:31 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/09 19:19:13 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,4 +36,9 @@ Cat& Cat::operator=(Cat const& source)
 Cat::~Cat()
 {
 	std::cout << "Cat DESTRUCTOR called" << std::endl;
+}
+
+void	Cat::makeSound() const
+{
+	std::cout << "Meowwww..." << std::endl;
 }

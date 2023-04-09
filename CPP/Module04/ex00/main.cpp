@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 08:13:32 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/09 01:26:44 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/09 19:52:36 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,24 @@
 
 int main()
 {
-	const Animal* meta = new Animal();
-	const Animal* j = new Dog();
-	const Animal* i = new Cat();
-	std::cout << j->getType() << " " << std::endl;
+	const WrongAnimal* meta = new WrongAnimal();
+	const WrongAnimal* i = new WrongCat();
 	std::cout << i->getType() << " " << std::endl;
-	i->makeSound(); //will output the cat sound!
-	j->makeSound();
+	i->makeSound();
 	meta->makeSound();
-	// ...
 	return 0;
 }
+
+// int main()
+// {
+// 	const Animal* meta = new Animal();
+// 	const Animal* j = new Dog();
+// 	const Animal* i = new Cat();
+// 	std::cout << j->getType() << " " << std::endl;
+// 	std::cout << i->getType() << " " << std::endl;
+// 	i->makeSound(); //will output the cat sound!
+// 	j->makeSound();
+// 	meta->makeSound();
+// 	// ...
+// 	return 0;
+// }
