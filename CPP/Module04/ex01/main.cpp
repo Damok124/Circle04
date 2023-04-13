@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 08:13:32 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/11 20:33:59 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/13 19:21:20 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,6 @@
 #include "WrongAnimal.hpp"
 #include "WrongCat.hpp"
 
-// Les constructeurs et les destructeurs de chaque classe doivent afficher des messages
-// qui leur sont propres.
-// Implémentez une classe Brain (cerveau) contenant un tableau de 100 std::string
-// appelé ideas (idées).
-// Ainsi, les classes Dog et Cat auront un attribut privé Brain*.
 // À la construction, les classes Dog et Cat créeront leur Brain avec new Brain();
 // À la destruction, les classes Dog et Cat devront delete leur Brain.
 // Dans votre fonction main, créez et remplissez un tableau d’objets Animal dont la
