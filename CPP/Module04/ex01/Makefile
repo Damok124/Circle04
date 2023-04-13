@@ -6,13 +6,18 @@
 #    By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/08 22:22:05 by zharzi            #+#    #+#              #
-#    Updated: 2023/04/08 14:42:17 by zharzi           ###   ########.fr        #
+#    Updated: 2023/04/08 14:47:12 by zharzi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = a.out
 
 SRCS = \
+Animal.cpp \
+Cat.cpp \
+Dog.cpp \
+WrongAnimal.cpp \
+WrongCat.cpp \
 main.cpp
 
 OBJ = $(SRCS:.cpp=.o)

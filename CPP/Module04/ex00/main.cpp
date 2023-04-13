@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 08:13:32 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/10 16:27:07 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/11 18:57:54 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,6 @@
 #include "Dog.hpp"
 #include "WrongAnimal.hpp"
 #include "WrongCat.hpp"
-
-void test1(const Animal *animal)
-{
-	std::cout << animal->getType() << std::endl;
-}
-
-void test2(const Animal *animal)
-{
-	animal->makeSound();
-}
 
 void testWrong1(const WrongAnimal *animal)
 {
@@ -37,21 +27,15 @@ void testWrong2(const WrongAnimal *animal)
 	animal->makeSound();
 }
 
-// int	main(void)
-// {
-// 	const Animal* a = new Animal();
-// 	const Animal* c = new Cat();
-// 	const Animal* d = new Dog();
+void test1(const Animal *animal)
+{
+	std::cout << animal->getType() << std::endl;
+}
 
-// 	test1(a); // type animal
-// 	test1(c); // type chat
-// 	test1(d); //type chien
-
-// 	test2(a); //bruit animal
-// 	test2(c); //bruit chien
-// 	test2(d); //bruit chat
-// 	return (0);
-// }
+void test2(const Animal *animal)
+{
+	animal->makeSound();
+}
 
 void	test3(void)
 {
@@ -172,30 +156,6 @@ void	test7(void)
 	}
 	std::cout << std::endl;
 }
-
-// int main()
-// {
-// 	const Animal* meta = new Animal();
-// 	const Animal* j = new Dog();
-// 	const Animal* i = new Cat();
-// 	std::cout << j->getType() << " " << std::endl;
-// 	std::cout << i->getType() << " " << std::endl;
-// 	i->makeSound(); //will output the cat sound!
-// 	j->makeSound();
-// 	meta->makeSound();
-// 	// ...
-// 	return 0;
-// }
-
-// int main()
-// {
-// 	const WrongAnimal* meta = new WrongAnimal();
-// 	const WrongAnimal* i = new WrongCat();
-// 	std::cout << i->getType() << " " << std::endl;
-// 	i->makeSound();
-// 	meta->makeSound();
-// 	return 0;
-// }
 
 int main(void)
 {
