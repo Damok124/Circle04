@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:07 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/13 18:49:10 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/14 20:34:48 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,4 +31,5 @@ class Dog : public Animal {
 	private :
 		Brain*			_brain;
 };
+
 #endif

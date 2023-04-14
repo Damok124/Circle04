@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:04 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/13 19:33:13 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/14 20:33:23 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,17 +48,16 @@ void	Dog::makeSound() const
 	std::cout << "Woof woof !" << std::endl;
 }
 
-void	setBrain(Brain *brain)
+void	Dog::setBrain(Brain *brain)
 {
-	int	i = -1;
-
 	if (_brain)
 		delete _brain;
 	_brain = new Brain;
+	if (!_brain)
+		exit (1);
 	if (brain)
 	{
-		while (++i <= 100)
-			_brain.ideas[i] = brain->ideas[i];
+		for (i = 0; i <= 100; i++)
+			_brain.setOneIdea(brain.getOneIdea(i), i);
 	}
-	else///////////////////////
 }
