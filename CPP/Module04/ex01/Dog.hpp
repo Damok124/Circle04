@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:07 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/14 20:34:48 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/15 19:49:32 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,9 @@ class Dog : public Animal {
 
 		virtual void	makeSound() const;
 
+		void			setBrain(Brain *brain);
 		void			setBrain();
+		Brain*			getBrain() const;
 
 	private :
 		Brain*			_brain;

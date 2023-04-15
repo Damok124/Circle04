@@ -6,11 +6,10 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:04 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/14 20:33:23 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/15 20:10:16 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Animal.hpp"
 #include "Dog.hpp"
 
 Dog::Dog() : Animal()
@@ -24,16 +23,17 @@ Dog::Dog(Dog const& source) : Animal()
 {
 	std::cout << "Dog constructor by COPY called" << std::endl;
 	*this = source;
-	setBrain();
 }
 
 Dog& Dog::operator=(Dog const& source)
 {
 	std::cout << "Dog assignation OPERATOR called" << std::endl;
 	if (this != &source)
+	{
 		setType(source.getType());
+		setBrain(source.getBrain());
+	}
 	return *this;
-
 }
 
 Dog::~Dog()
@@ -53,11 +53,24 @@ void	Dog::setBrain(Brain *brain)
 	if (_brain)
 		delete _brain;
 	_brain = new Brain;
-	if (!_brain)
-		exit (1);
 	if (brain)
 	{
-		for (i = 0; i <= 100; i++)
-			_brain.setOneIdea(brain.getOneIdea(i), i);
+		for (int i = 0; i < 100; i++)
+			_brain->setOneIdea(brain->getOneIdea(i), i);
 	}
+
+}
+
+void	Dog::setBrain()
+{
+	if (_brain)
+		delete _brain;
+	_brain = new Brain;
+	for (int i = 0; i < 100; i++)
+		_brain->setOneIdea(std::string(), i);
+}
+
+Brain*	Dog::getBrain() const
+{
+	return (_brain);
 }

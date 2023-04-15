@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 08:13:32 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/13 19:21:20 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/15 19:51:20 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ void	test7(void)
 		testWrong1(&fake);
 		testWrong2(&fake);
 	}
-	std::cout << std::endl;
+	std::cout << "End of test 7" << std::endl;
 }
 
 int main(void)

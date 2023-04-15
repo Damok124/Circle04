@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 19:05:56 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/14 20:41:12 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/15 18:53:09 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ Brain& Brain::operator=(Brain const& source)
 	std::cout << "Brain assignation OPERATOR called" << std::endl;
 	if (this != &source)
 	{
-		for (i = 0; i <= 100; i++)
+		for (int i = 0; i <= 100; i++)
 			setOneIdea(source.getOneIdea(i), i);
 	}
 	return *this;
@@ -47,7 +47,7 @@ void	Brain::setOneIdea(std::string idea, int i)
 		std::cout << "setIdeas failed" << std::endl;
 }
 
-std::string	Brain::getOneIdeas(int i) const
+std::string	Brain::getOneIdea(int i) const
 {
 	if (i >= 0 && i <= 100)
 		return (ideas[i]);
@@ -55,7 +55,7 @@ std::string	Brain::getOneIdeas(int i) const
 		return std::string();
 }
 
-std::string	Brain::getIdeas() const
+std::string*	Brain::getIdeas()
 {
 	return ideas;
 }
