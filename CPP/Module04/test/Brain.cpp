@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 19:05:56 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/15 18:53:09 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/17 03:32:19 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,12 @@ Brain::Brain(Brain const& source)
 Brain& Brain::operator=(Brain const& source)
 {
 	std::cout << "Brain assignation OPERATOR called" << std::endl;
-	if (this != &source)
-	{
-		for (int i = 0; i <= 100; i++)
-			setOneIdea(source.getOneIdea(i), i);
-	}
+	(void)source;///////////////////////////////////////////////////////////
+	// if (this != &source)
+	// {
+	// 	for (int i = 0; i <= 100; i++)
+	// 		setOneIdea(source.getOneIdea(i), i);
+	// }
 	return *this;
 }
 

@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:00 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/19 20:04:10 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/09 19:10:52 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,7 @@ Animal& Animal::operator=(Animal const& source)
 {
 	std::cout << "Ani assignation OPERATOR called" << std::endl;
 	if (this != &source)
-	{
 		setType(source.getType());
-	}
 	return *this;
 }
 

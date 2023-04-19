@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 08:13:32 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/11 18:57:54 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/19 19:48:20 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,46 +17,46 @@
 #include "WrongAnimal.hpp"
 #include "WrongCat.hpp"
 
-void testWrong1(const WrongAnimal *animal)
+void testWrong1(const WrongAnimal& animal)
 {
-	std::cout << animal->getType() << std::endl;
+	std::cout << animal.getType() << std::endl;
 }
 
-void testWrong2(const WrongAnimal *animal)
+void testWrong2(const WrongAnimal& animal)
 {
-	animal->makeSound();
+	animal.makeSound();
 }
 
-void test1(const Animal *animal)
+void test1(const Animal& animal)
 {
-	std::cout << animal->getType() << std::endl;
+	std::cout << animal.getType() << std::endl;
 }
 
-void test2(const Animal *animal)
+void test2(const Animal& animal)
 {
-	animal->makeSound();
+	animal.makeSound();
 }
 
 void	test3(void)
 {
 	{
 		Animal unknown;
-		test1(&unknown);
-		test2(&unknown);
+		test1(unknown);
+		test2(unknown);
 	}
 	std::cout << std::endl;
 	{
 		Animal alpha;
 		Animal clone(alpha);
-		test1(&clone);
-		test2(&clone);
+		test1(clone);
+		test2(clone);
 	}
 	std::cout << std::endl;
 	{
 		Animal beta;
 		Animal fake = beta;
-		test1(&fake);
-		test2(&fake);
+		test1(fake);
+		test2(fake);
 	}
 	std::cout << std::endl;
 }
@@ -65,22 +65,22 @@ void	test4(void)
 {
 	{
 		Cat unknown;
-		test1(&unknown);
-		test2(&unknown);
+		test1(unknown);
+		test2(unknown);
 	}
 	std::cout << std::endl;
 	{
 		Cat alpha;
 		Cat clone(alpha);
-		test1(&clone);
-		test2(&clone);
+		test1(clone);
+		test2(clone);
 	}
 	std::cout << std::endl;
 	{
 		Cat beta;
 		Cat fake = beta;
-		test1(&fake);
-		test2(&fake);
+		test1(fake);
+		test2(fake);
 	}
 	std::cout << std::endl;
 }
@@ -89,22 +89,22 @@ void	test5(void)
 {
 	{
 		Dog unknown;
-		test1(&unknown);
-		test2(&unknown);
+		test1(unknown);
+		test2(unknown);
 	}
 	std::cout << std::endl;
 	{
 		Dog alpha;
 		Dog clone(alpha);
-		test1(&clone);
-		test2(&clone);
+		test1(clone);
+		test2(clone);
 	}
 	std::cout << std::endl;
 	{
 		Dog beta;
 		Dog fake = beta;
-		test1(&fake);
-		test2(&fake);
+		test1(fake);
+		test2(fake);
 	}
 	std::cout << std::endl;
 }
@@ -113,22 +113,22 @@ void	test6(void)
 {
 	{
 		WrongAnimal unknown;
-		testWrong1(&unknown);
-		testWrong2(&unknown);
+		testWrong1(unknown);
+		testWrong2(unknown);
 	}
 	std::cout << std::endl;
 	{
 		WrongAnimal alpha;
 		WrongAnimal clone(alpha);
-		testWrong1(&clone);
-		testWrong2(&clone);
+		testWrong1(clone);
+		testWrong2(clone);
 	}
 	std::cout << std::endl;
 	{
 		WrongAnimal beta;
 		WrongAnimal fake = beta;
-		testWrong1(&fake);
-		testWrong2(&fake);
+		testWrong1(fake);
+		testWrong2(fake);
 	}
 	std::cout << std::endl;
 }
@@ -137,22 +137,22 @@ void	test7(void)
 {
 	{
 		WrongCat unknown;
-		testWrong1(&unknown);
-		testWrong2(&unknown);
+		testWrong1(unknown);
+		testWrong2(unknown);
 	}
 	std::cout << std::endl;
 	{
 		WrongCat alpha;
 		WrongCat clone(alpha);
-		testWrong1(&clone);
-		testWrong2(&clone);
+		testWrong1(clone);
+		testWrong2(clone);
 	}
 	std::cout << std::endl;
 	{
 		WrongCat beta;
 		WrongCat fake = beta;
-		testWrong1(&fake);
-		testWrong2(&fake);
+		testWrong1(fake);
+		testWrong2(fake);
 	}
 	std::cout << std::endl;
 }
