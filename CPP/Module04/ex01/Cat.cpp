@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:04 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/23 12:08:03 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/23 20:32:03 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,13 @@ Cat::Cat() : Animal()
 {
 	std::cout << "Cat constructor by DEFAULT called" << std::endl;
 	setType("Cat");
+	_brain = new Brain();
 }
 
 Cat::Cat(Cat const& source) : Animal()
 {
 	std::cout << "Cat constructor by COPY called" << std::endl;
+	_brain = new Brain();
 	*this = source;
 }
 
@@ -35,6 +37,7 @@ Cat& Cat::operator=(Cat const& source)
 
 Cat::~Cat()
 {
+	delete _brain;
 	std::cout << "Cat DESTRUCTOR called" << std::endl;
 }
 
@@ -52,4 +55,20 @@ void	Cat::setBrain(Brain const& source)
 Brain const&	Cat::getBrain() const
 {
 	return (*_brain);
+}
+
+void	Cat::checkBrain() const
+{
+	_brain->showAllIdeas();
+}
+
+void	Cat::setIdea(std::string str, int i)
+{
+	_brain->setIdea(str, i);
+}
+
+void	Cat::resetBrain()
+{
+	delete _brain;
+	_brain = new Brain();
 }

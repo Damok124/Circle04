@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:07 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/23 12:00:36 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/23 20:29:52 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,11 @@ class Dog : virtual public Animal {
 
 				void	setBrain(Brain const& source);
 		Brain const&	getBrain() const;
+
+				void	checkBrain() const;
+				void	setIdea(std::string str, int i);
+
+				void	resetBrain();
 
 	private:
 				Brain*	_brain;
