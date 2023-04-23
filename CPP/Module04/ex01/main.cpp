@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 08:13:32 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/19 19:47:49 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/22 07:47:05 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,22 +17,22 @@
 #include "WrongAnimal.hpp"
 #include "WrongCat.hpp"
 
-void testWrong1(const WrongAnimal& animal)
+void	testWrong1(const WrongAnimal& animal)
 {
 	std::cout << animal.getType() << std::endl;
 }
 
-void testWrong2(const WrongAnimal& animal)
+void	testWrong2(const WrongAnimal& animal)
 {
 	animal.makeSound();
 }
 
-void test1(const Animal& animal)
+void	test1(const Animal& animal)
 {
 	std::cout << animal.getType() << std::endl;
 }
 
-void test2(const Animal& animal)
+void	test2(const Animal& animal)
 {
 	animal.makeSound();
 }
@@ -157,12 +157,22 @@ void	test7(void)
 	std::cout << std::endl;
 }
 
-int main(void)
+// int	main(void)
+// {
+// 	test3();
+// 	test4();
+// 	test5();
+// 	test6();
+// 	test7();
+// 	return (0);
+// }
+
+int main()
 {
-	test3();
-	test4();
-	test5();
-	test6();
-	test7();
-	return (0);
+	const Animal* j = new Dog();
+	const Animal* i = new Cat();
+	delete j;//should not create a leak
+	delete i;
+// ...
+	return 0;
 }

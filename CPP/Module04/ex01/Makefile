@@ -6,13 +6,14 @@
 #    By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/08 22:22:05 by zharzi            #+#    #+#              #
-#    Updated: 2023/04/08 14:47:12 by zharzi           ###   ########.fr        #
+#    Updated: 2023/04/22 07:16:41 by zharzi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = a.out
 
 SRCS = \
+Brain.cpp \
 Animal.cpp \
 Cat.cpp \
 Dog.cpp \
