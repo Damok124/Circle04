@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:04 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/22 07:18:07 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/23 12:08:03 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,4 +41,15 @@ Cat::~Cat()
 void	Cat::makeSound() const
 {
 	std::cout << "Meowwww..." << std::endl;
+}
+
+void	Cat::setBrain(Brain const& source)
+{
+	for (int i = 0; i < 100; i++)
+		_brain->setIdea(source.getIdea(i), i);
+}
+
+Brain const&	Cat::getBrain() const
+{
+	return (*_brain);
 }

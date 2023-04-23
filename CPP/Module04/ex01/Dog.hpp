@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:07 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/22 07:54:40 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/23 12:00:36 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,12 @@ class Dog : virtual public Animal {
 						Dog();
 						Dog(Dog const& source);
 						Dog& operator=(Dog const& source);
-						~Dog();
+				virtual	~Dog();
 
 		virtual void	makeSound() const;
+
+				void	setBrain(Brain const& source);
+		Brain const&	getBrain() const;
 
 	private:
 				Brain*	_brain;
