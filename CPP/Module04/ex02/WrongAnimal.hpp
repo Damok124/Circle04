@@ -1,40 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Dog.hpp                                            :+:      :+:    :+:   */
+/*   WrongAnimal.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/08 14:48:07 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/24 10:14:11 by zharzi           ###   ########.fr       */
+/*   Created: 2023/04/08 14:48:02 by zharzi            #+#    #+#             */
+/*   Updated: 2023/04/09 01:16:46 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef DOG_HPP
-# define DOG_HPP
+#ifndef WRONGANIMAL_HPP
+# define WRONGANIMAL_HPP
 
 # include <iostream>
-# include "Animal.hpp"
-# include "Brain.hpp"
 
-class Dog : virtual public Animal {
+class WrongAnimal {
 	public:
-						Dog();
-						Dog(Dog const& source);
-						Dog& operator=(Dog const& source);
-				virtual	~Dog();
+						WrongAnimal();
+						WrongAnimal(WrongAnimal const& source);
+						WrongAnimal& operator=(WrongAnimal const& source);
+						~WrongAnimal();
 
-		virtual void	makeSound() const;
+		std::string		getType() const;
 
-				void	setBrain(Brain const& source);
-		Brain const&	getBrain() const;
+				void	setType(std::string const type);
 
-				void	checkBrain() const;
-				void	setIdea(std::string str, int i);
+				void	makeSound() const;
 
-				void	resetBrain();
-
-	private:
-				Brain*	_brain;
+	protected:
+		std::string		type;
 };
+
 #endif

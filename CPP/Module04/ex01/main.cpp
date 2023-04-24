@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 08:13:32 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/23 20:39:32 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/24 15:55:01 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,11 @@ void	test8(void)
 		clone.setIdea("ALLO", 33);
 		clone.setIdea("quoi !", 99);
 		clone.setIdea("LOL", 100);
+		std::cout << "clone checkBrain :" << std::endl;
 		clone.checkBrain();
+		alpha = clone;
+		std::cout << "alpha checkBrain :" << std::endl;
+		alpha.checkBrain();
 		clone.resetBrain();
 		clone.checkBrain();
 	}
@@ -204,23 +208,35 @@ void	test8(void)
 // 	return (0);
 // }
 
-int main()
-{
-	const Animal* j = new Dog();
-	const Animal* i = new Cat();
-	delete j;//should not create a leak
-	delete i;
-// ...
-	return 0;
-}
+// int main()
+// {
+// 	const Animal* j = new Dog();
+// 	const Animal* i = new Cat();
+// 	delete j;//should not create a leak
+// 	delete i;
+// // ...
+// 	return 0;
+// }
 
-/*
-Dans votre fonction main, créez et remplissez un tableau d’objets Animal dont la
-moitié est composée d’objets Dog et l’autre moitié d’objets Cat. À la fin de l’exécution
-du programme, parcourez ce tableau afin de delete chaque Animal. Vous devez delete
-directement les chiens et les chats en tant qu’Animal. Les destructeurs correspondants
-doivent être appelés dans le bon ordre.
-N’oubliez pas de vérifier que vous n’avez pas de fuites de mémoire.
-La copie d’un objet Dog ou d’un objet Cat ne doit pas être superficielle. Par consé-
-quent, vous devez vous assurer que vos copies sont bien des copies profondes.
-*/
+int main(void)
+{
+	int size = 10;
+	int i = 0;
+	Animal* tab[size];
+
+	while (i < size / 2)
+	{
+		tab[i] = new Dog();
+		i++;
+	}
+	while (i < size)
+	{
+		tab[i] = new Cat();
+		i++;
+	}
+	while (--i >= 0)
+		tab[i]->makeSound();
+	while (++i < size)
+		delete tab[i];
+	return (0);
+}

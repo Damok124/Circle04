@@ -1,40 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Dog.hpp                                            :+:      :+:    :+:   */
+/*   WrongCat.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:07 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/24 10:14:11 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/09 19:35:13 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef DOG_HPP
-# define DOG_HPP
+#ifndef WRONGCAT_HPP
+# define WRONGCAT_HPP
 
 # include <iostream>
-# include "Animal.hpp"
-# include "Brain.hpp"
+# include "WrongAnimal.hpp"
 
-class Dog : virtual public Animal {
+class WrongCat : public WrongAnimal {
 	public:
-						Dog();
-						Dog(Dog const& source);
-						Dog& operator=(Dog const& source);
-				virtual	~Dog();
+						WrongCat();
+						WrongCat(WrongCat const& animal);
+						WrongCat& operator=(WrongCat const& animal);
+						~WrongCat();
 
 		virtual void	makeSound() const;
-
-				void	setBrain(Brain const& source);
-		Brain const&	getBrain() const;
-
-				void	checkBrain() const;
-				void	setIdea(std::string str, int i);
-
-				void	resetBrain();
-
-	private:
-				Brain*	_brain;
 };
 #endif

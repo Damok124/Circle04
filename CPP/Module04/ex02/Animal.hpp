@@ -1,40 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Dog.hpp                                            :+:      :+:    :+:   */
+/*   Animal.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/08 14:48:07 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/24 10:14:11 by zharzi           ###   ########.fr       */
+/*   Created: 2023/04/08 14:48:02 by zharzi            #+#    #+#             */
+/*   Updated: 2023/04/23 10:06:25 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef DOG_HPP
-# define DOG_HPP
+#ifndef ANIMAL_HPP
+# define ANIMAL_HPP
 
 # include <iostream>
-# include "Animal.hpp"
-# include "Brain.hpp"
 
-class Dog : virtual public Animal {
+class Animal {
 	public:
-						Dog();
-						Dog(Dog const& source);
-						Dog& operator=(Dog const& source);
-				virtual	~Dog();
+						Animal();
+						Animal(Animal const& source);
+						Animal& operator=(Animal const& source);
+				virtual	~Animal();
+
+		std::string		getType() const;
+
+				void	setType(std::string const type);
 
 		virtual void	makeSound() const;
 
-				void	setBrain(Brain const& source);
-		Brain const&	getBrain() const;
-
-				void	checkBrain() const;
-				void	setIdea(std::string str, int i);
-
-				void	resetBrain();
-
-	private:
-				Brain*	_brain;
+	protected:
+		std::string		type;
 };
+
 #endif

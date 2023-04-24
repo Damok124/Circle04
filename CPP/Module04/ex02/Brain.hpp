@@ -1,40 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Dog.hpp                                            :+:      :+:    :+:   */
+/*   Brain.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/08 14:48:07 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/24 10:14:11 by zharzi           ###   ########.fr       */
+/*   Created: 2023/04/22 07:18:41 by zharzi            #+#    #+#             */
+/*   Updated: 2023/04/23 19:18:57 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef DOG_HPP
-# define DOG_HPP
+#ifndef BRAIN_HPP
+# define BRAIN_HPP
 
 # include <iostream>
-# include "Animal.hpp"
-# include "Brain.hpp"
 
-class Dog : virtual public Animal {
+class Brain {
 	public:
-						Dog();
-						Dog(Dog const& source);
-						Dog& operator=(Dog const& source);
-				virtual	~Dog();
+					Brain();
+					Brain(Brain const& source);
+					Brain& operator=(Brain const& source);
+					~Brain();
 
-		virtual void	makeSound() const;
+		void		setIdea(std::string const str, int i);
+		std::string	getIdea(int i) const;
 
-				void	setBrain(Brain const& source);
-		Brain const&	getBrain() const;
-
-				void	checkBrain() const;
-				void	setIdea(std::string str, int i);
-
-				void	resetBrain();
-
+		void		showAllIdeas();
 	private:
-				Brain*	_brain;
+		std::string ideas[100];
 };
+
 #endif
