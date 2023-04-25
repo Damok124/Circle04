@@ -6,12 +6,12 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 08:13:32 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/24 15:55:01 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/25 17:29:48 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
-#include "Animal.hpp"
+#include "AAnimal.hpp"
 #include "Cat.hpp"
 #include "Dog.hpp"
 #include "WrongAnimal.hpp"
@@ -27,39 +27,39 @@ void	testWrong2(WrongAnimal const& animal)
 	animal.makeSound();
 }
 
-void	test1(Animal const& animal)
+void	test1(AAnimal const& animal)
 {
 	std::cout << animal.getType() << std::endl;
 }
 
-void	test2(Animal const& animal)
+void	test2(AAnimal const& animal)
 {
 	animal.makeSound();
 }
 
-void	test3(void)
-{
-	{
-		Animal unknown;
-		test1(unknown);
-		test2(unknown);
-	}
-	std::cout << std::endl;
-	{
-		Animal alpha;
-		Animal clone(alpha);
-		test1(clone);
-		test2(clone);
-	}
-	std::cout << std::endl;
-	{
-		Animal beta;
-		Animal fake = beta;
-		test1(fake);
-		test2(fake);
-	}
-	std::cout << std::endl;
-}
+// void	test3(void)
+// {
+// 	{
+// 		AAnimal unknown;
+// 		test1(unknown);
+// 		test2(unknown);
+// 	}
+// 	std::cout << std::endl;
+// 	{
+// 		AAnimal alpha;
+// 		AAnimal clone(alpha);
+// 		test1(clone);
+// 		test2(clone);
+// 	}
+// 	std::cout << std::endl;
+// 	{
+// 		AAnimal beta;
+// 		AAnimal fake = beta;
+// 		test1(fake);
+// 		test2(fake);
+// 	}
+// 	std::cout << std::endl;
+// }
 
 void	test4(void)
 {
@@ -197,46 +197,13 @@ void	test8(void)
 	std::cout << std::endl;
 }
 
-// int	main(void)
-// {
-// 	// test3();
-// 	// test4();
-// 	// test5();
-// 	// test6();
-// 	// test7();
-// 	test8();
-// 	return (0);
-// }
-
-// int main()
-// {
-// 	const Animal* j = new Dog();
-// 	const Animal* i = new Cat();
-// 	delete j;//should not create a leak
-// 	delete i;
-// // ...
-// 	return 0;
-// }
-
-int main(void)
+int	main(void)
 {
-	int size = 10;
-	int i = 0;
-	Animal* tab[size];
-
-	while (i < size / 2)
-	{
-		tab[i] = new Dog();
-		i++;
-	}
-	while (i < size)
-	{
-		tab[i] = new Cat();
-		i++;
-	}
-	while (--i >= 0)
-		tab[i]->makeSound();
-	while (++i < size)
-		delete tab[i];
+	// test3();
+	test4();
+	test5();
+	test6();
+	test7();
+	test8();
 	return (0);
 }

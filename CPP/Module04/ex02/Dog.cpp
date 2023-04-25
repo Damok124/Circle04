@@ -6,21 +6,20 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:04 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/24 15:46:28 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/25 17:30:32 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Animal.hpp"
 #include "Dog.hpp"
 
-Dog::Dog() : Animal()
+Dog::Dog() : AAnimal()
 {
 	std::cout << "Dog constructor by DEFAULT called" << std::endl;
 	setType("Dog");
 	_brain = new Brain();
 }
 
-Dog::Dog(Dog const& source) : Animal()
+Dog::Dog(Dog const& source) : AAnimal()
 {
 	std::cout << "Dog constructor by COPY called" << std::endl;
 	_brain = new Brain();

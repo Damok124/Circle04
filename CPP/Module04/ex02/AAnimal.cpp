@@ -1,29 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Animal.cpp                                         :+:      :+:    :+:   */
+/*   AAnimal.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:00 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/09 19:10:52 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/25 17:27:48 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Animal.hpp"
+#include "AAnimal.hpp"
 
-Animal::Animal()
+AAnimal::AAnimal()
 {
 	std::cout << "Ani constructor by DEFAULT called" << std::endl;
 }
 
-Animal::Animal(Animal const& source)
+AAnimal::AAnimal(AAnimal const& source)
 {
 	std::cout << "Ani constructor by COPY called" << std::endl;
 	*this = source;
 }
 
-Animal& Animal::operator=(Animal const& source)
+AAnimal& AAnimal::operator=(AAnimal const& source)
 {
 	std::cout << "Ani assignation OPERATOR called" << std::endl;
 	if (this != &source)
@@ -31,22 +31,17 @@ Animal& Animal::operator=(Animal const& source)
 	return *this;
 }
 
-Animal::~Animal()
+AAnimal::~AAnimal()
 {
 	std::cout << "Ani DESTRUCTOR called" << std::endl;
 }
 
-std::string	Animal::getType() const
+std::string	AAnimal::getType() const
 {
 	return (type);
 }
 
-void	Animal::setType(std::string const type)
+void	AAnimal::setType(std::string const type)
 {
 	this->type = type;
-}
-
-void	Animal::makeSound() const
-{
-	std::cout << "* some animal noises *" << std::endl;
 }

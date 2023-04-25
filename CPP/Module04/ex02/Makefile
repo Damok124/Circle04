@@ -6,7 +6,7 @@
 #    By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/08 22:22:05 by zharzi            #+#    #+#              #
-#    Updated: 2023/04/22 07:16:41 by zharzi           ###   ########.fr        #
+#    Updated: 2023/04/25 17:30:20 by zharzi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = a.out
 
 SRCS = \
 Brain.cpp \
-Animal.cpp \
+AAnimal.cpp \
 Cat.cpp \
 Dog.cpp \
 WrongAnimal.cpp \

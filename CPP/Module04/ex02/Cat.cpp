@@ -6,21 +6,20 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:04 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/24 15:46:47 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/25 17:28:09 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Animal.hpp"
 #include "Cat.hpp"
 
-Cat::Cat() : Animal()
+Cat::Cat() : AAnimal()
 {
 	std::cout << "Cat constructor by DEFAULT called" << std::endl;
 	setType("Cat");
 	_brain = new Brain();
 }
 
-Cat::Cat(Cat const& source) : Animal()
+Cat::Cat(Cat const& source) : AAnimal()
 {
 	std::cout << "Cat constructor by COPY called" << std::endl;
 	_brain = new Brain();

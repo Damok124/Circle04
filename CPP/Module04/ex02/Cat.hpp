@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:07 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/23 20:30:06 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/25 17:28:12 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 # define CAT_HPP
 
 # include <iostream>
-# include "Animal.hpp"
+# include "AAnimal.hpp"
 # include "Brain.hpp"
 
-class Cat : virtual public Animal {
+class Cat : virtual public AAnimal {
 	public:
 						Cat();
 						Cat(Cat const& source);
