@@ -6,13 +6,18 @@
 #    By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/08 22:22:05 by zharzi            #+#    #+#              #
-#    Updated: 2023/04/08 14:42:38 by zharzi           ###   ########.fr        #
+#    Updated: 2023/04/25 23:19:31 by zharzi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = a.out
 
 SRCS = \
+AMateria.cpp \
+Character.cpp \
+Cure.cpp \
+Ice.cpp \
+MateriaSource.cpp \
 main.cpp
 
 OBJ = $(SRCS:.cpp=.o)
