@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 23:20:04 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/27 18:38:26 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/28 09:53:09 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,6 @@ class Ice : virtual public AMateria {
 
 		virtual AMateria*	clone() const;
 		virtual void		use(ICharacter& target);
-	private :
-		std::string			type;
 };
 
 #endif

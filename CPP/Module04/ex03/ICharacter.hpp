@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 18:20:17 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/25 19:36:36 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/28 17:06:00 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 # define ICHARACTER_HPP
 
 #include <iostream>
+#include "AMateria.hpp"
+
+class AMateria;
 
 class ICharacter
 {

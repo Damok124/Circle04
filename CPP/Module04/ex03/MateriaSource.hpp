@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 23:20:16 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/27 20:37:27 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/28 09:44:32 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ class MateriaSource : public IMateriaSource
 							MateriaSource& operator=(MateriaSource const& source);
 					virtual	~MateriaSource();
 
-			virtual void	learnMateria(AMateria*) = 0;
-		virtual AMateria*	createMateria(std::string const & type) = 0;
+			virtual void	learnMateria(AMateria*);
+		virtual AMateria*	createMateria(std::string const & type);
 };
 
 #endif
