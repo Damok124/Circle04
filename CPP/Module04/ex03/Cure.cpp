@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 23:19:58 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/28 22:22:59 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/29 18:00:49 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,13 @@
 
 Cure::Cure() : AMateria()
 {
+	type = "cure";
 }
 
 Cure::Cure(Cure const& source) : AMateria(source)
 {
 	(void)source;///////////////////////////del
+	type = "cure";
 }
 
 Cure& Cure::operator=(Cure const& source)
@@ -33,12 +35,14 @@ Cure::~Cure()
 
 AMateria*	Cure::clone() const
 {
-	return (NULL);//////////////////////////del
+	AMateria *inst = new Cure();
+	return (inst);
 }
 
 void	Cure::use(ICharacter& target)
 {
-	(void)target;///////////////////////////del
+	// (void)target;///////////////////////////del
+	std::cout << "* heals " << target.getName() << "’s wounds *" << std::endl;
 }
 
 

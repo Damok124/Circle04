@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 23:19:55 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/27 20:36:21 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/30 18:49:39 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,10 @@ class Character : public ICharacter
 									Character(std::string name);
 									Character(Character const& source);
 									Character& operator=(Character const& source);
-							virtual	~Character();///////////////////////////////////voir si garder virtual
+							virtual	~Character();
 
-		virtual std::string const &	getName() const;
+							void	setName(std::string const name);
+		virtual std::string const&	getName() const;
 					virtual void	equip(AMateria* m);
 					virtual void	unequip(int idx);
 					virtual void	use(int idx, ICharacter& target);
@@ -39,7 +40,9 @@ class Character : public ICharacter
 
 /*
 Le Character a un inventaire de 4 items, soit 4 Materias maximum. À la construction,
-l’inventaire est vide. Les Materias sont équipées au premier emplacement vide trouvé, soit
+l’inventaire est vide.
+
+Les Materias sont équipées au premier emplacement vide trouvé, soit
 dans l’ordre suivant : de l’emplacement 0 au 3. Dans le cas où on essaie d’ajouter une
 Materia à un inventaire plein, ou d’utiliser/retirer une Materia qui n’existe pas, ne faites
 rien (cela n’autorise pas les bugs pour autant).

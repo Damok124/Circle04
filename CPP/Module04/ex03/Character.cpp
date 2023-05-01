@@ -6,17 +6,21 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 23:19:53 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/28 23:27:54 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/30 18:49:53 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Character.hpp"
 
-Character::Character()
+// std::string	name;
+// AMateria*	inventory[4];
+
+Character::Character() : ICharacter(), name("NoName")
 {
+	// setName("NoName");
 }
 
-Character::Character(std::string name)
+Character::Character(std::string name) : ICharacter()
 {
 	(void)name;///////////////////////////del
 }
@@ -57,6 +61,10 @@ void	Character::use(int idx, ICharacter& target)
 	(void)target;///////////////////////////del
 }
 
+void	Character::setName(std::string const name)
+{
+	this->name = name;
+}
 
 /*
 Le Character a un inventaire de 4 items, soit 4 Materias maximum. À la construction,

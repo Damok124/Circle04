@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 19:37:26 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/25 19:42:28 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/04/29 17:48:44 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ class IMateriaSource
 {
 	public:
 		virtual				~IMateriaSource() {}
+
 		virtual void		learnMateria(AMateria*) = 0;
 		virtual AMateria*	createMateria(std::string const & type) = 0;
 };
