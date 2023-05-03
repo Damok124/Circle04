@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 08:13:32 by zharzi            #+#    #+#             */
-/*   Updated: 2023/05/03 07:20:18 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/05/03 16:51:07 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,43 @@ void	test2()
 
 void	test3()
 {
-	AMateria* ice = new Ice();
+	AMateria* ice1 = new Ice();
+	AMateria* ice2 = new Ice();
+	AMateria* ice3 = new Ice();
+	AMateria* ice4 = new Ice();
+	AMateria* cure1 = new Cure();
 	ICharacter* me = new Character("Code reviewer");
-	me->equip(ice);
+	me->equip(ice1);
+	me->equip(ice2);
+	me->equip(ice3);
+	me->equip(ice4);
 	ICharacter* one(me);
-	delete me;
+	std::cout << "inventory full of ice materia" << std::endl;
+	one->use(-150, *me);
+	one->use(0, *me);
+	one->use(1, *me);
+	one->use(2, *me);
+	one->use(3, *me);
+	one->use(3567488941, *me);
+	me->unequip(2);
+	std::cout << "inventory[2] now empty" << std::endl;
+	one->use(0, *me);
+	one->use(1, *me);
+	one->use(2, *me);
+	one->use(3, *me);
+	me->equip(cure1);
+	std::cout << "inventory now full of ice and only one cure materia" << std::endl;
+	one->use(0, *me);
+	one->use(1, *me);
+	one->use(2, *me);
+	one->use(3, *me);
+	me->unequip(-98987);
+	me->unequip(0);
+	me->unequip(1);
+	me->unequip(2);
+	me->unequip(3);
+	me->unequip(412399785);
 	delete one;
-	delete ice;
 }
 
 
