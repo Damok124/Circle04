@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 08:13:32 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/30 18:51:58 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/05/03 07:20:18 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@
 
 void	test1()
 {
-	AMateria * ice = new Ice();
-	AMateria * cure = new Cure();
+	AMateria* ice = new Ice();
+	AMateria* cure = new Cure();
 	ICharacter* me = new Character();
 	ice->use(*me);
 	cure->use(*me);
@@ -33,9 +33,9 @@ void	test1()
 
 void	test2()
 {
-	AMateria * ice = new Ice();
-	AMateria * cure = new Cure();
-	ICharacter* me = new Character("Corrector");
+	AMateria* ice = new Ice();
+	AMateria* cure = new Cure();
+	ICharacter* me = new Character("Code reviewer");
 	ice->use(*me);
 	cure->use(*me);
 	delete me;
@@ -43,9 +43,23 @@ void	test2()
 	delete cure;
 }
 
+void	test3()
+{
+	AMateria* ice = new Ice();
+	ICharacter* me = new Character("Code reviewer");
+	me->equip(ice);
+	ICharacter* one(me);
+	delete me;
+	delete one;
+	delete ice;
+}
+
+
 int main( void )
 {
-	test1();
+	// test1();
+	// test2();
+	test3();
 	return (0);
 }
 

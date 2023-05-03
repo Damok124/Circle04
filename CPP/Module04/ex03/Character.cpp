@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 23:19:53 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/30 18:49:53 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/05/03 07:20:22 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,22 +17,39 @@
 
 Character::Character() : ICharacter(), name("NoName")
 {
-	// setName("NoName");
+	for (int i = 0; i < 4; i++)
+		inventory[i] = NULL;
 }
 
-Character::Character(std::string name) : ICharacter()
+Character::Character(std::string name) : ICharacter(), name(name)
 {
-	(void)name;///////////////////////////del
+	for (int i = 0; i < 4; i++)
+		inventory[i] = NULL;
 }
 
-Character::Character(Character const& source)
+Character::Character(Character const& source) : ICharacter()
 {
-	(void)source;///////////////////////////del
+	// (void)source;///////////////////////////del
+	*this = source;
 }
 
 Character& Character::operator=(Character const& source)
 {
-	(void)source;///////////////////////////del
+	// (void)source;///////////////////////////del
+	if (this != &source)
+	{
+		this->setName(source.getName());
+		for (int i = 0; i < 4; i++)
+		{
+			if (inventory[i] == NULL)
+				inventory[i] = source.inventory[i];
+			else
+			{
+				delete inventory[i];
+				inventory[i] = source.inventory[i];
+			}
+		}
+	}
 	return (*this);
 }
 
@@ -48,6 +65,7 @@ std::string const &	Character::getName() const
 void	Character::equip(AMateria* m)
 {
 	(void)m;///////////////////////////del
+	inventory[1] = m;//////////////////del
 }
 
 void	Character::unequip(int idx)
