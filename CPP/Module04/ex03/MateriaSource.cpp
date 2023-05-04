@@ -6,24 +6,30 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 23:20:13 by zharzi            #+#    #+#             */
-/*   Updated: 2023/05/03 17:03:22 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/05/04 17:53:48 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "MateriaSource.hpp"
 
-MateriaSource::MateriaSource()
+MateriaSource::MateriaSource() : IMateriaSource()
 {
+	for (int i = 0; i < 4; i++)
+		memory[i] = NULL;
 }
 
-MateriaSource::MateriaSource(MateriaSource const& source)
+MateriaSource::MateriaSource(MateriaSource const& source) : IMateriaSource()
 {
-	(void)source;///////////////////////////del
+	*this = source;
 }
 
 MateriaSource& MateriaSource::operator=(MateriaSource const& source)
 {
-	(void)source;///////////////////////////del
+	if (this != &source)
+	{
+		for (int i = 0; i < 4; i++)
+			memory[i] = source.memory[i];//faire copie profonde
+	}
 	return (*this);
 }
 
@@ -31,9 +37,16 @@ MateriaSource::~MateriaSource()
 {
 }
 
-void	MateriaSource::learnMateria(AMateria* name)//////////////rename it
+void	MateriaSource::learnMateria(AMateria* materia)
 {
-	(void)name;///////////////////////////del
+	for (int i = 0; i < 4; i++)
+	{
+		if (memory[i] == NULL)
+		{
+			memory[i] = materia;
+			break ;
+		}
+	}
 }
 
 AMateria*	MateriaSource::createMateria(std::string const & type)
@@ -43,10 +56,6 @@ AMateria*	MateriaSource::createMateria(std::string const & type)
 }
 
 /*
-• learnMateria(AMateria*)
-Copie la Materia passée en paramètre et la stocke en mémoire afin de la cloner
-plus tard. Tout comme le Character, la MateriaSource peut contenir 4 Materias
-maximum. Ces dernières ne sont pas forcément uniques.
 
 • createMateria(std::string const &)
 Retourne une nouvelle Materia. Celle-ci est une copie de celle apprise précédem-

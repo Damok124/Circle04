@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 23:19:53 by zharzi            #+#    #+#             */
-/*   Updated: 2023/05/03 16:55:04 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/05/04 17:40:02 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,11 @@ Character& Character::operator=(Character const& source)
 		for (int i = 0; i < 4; i++)
 		{
 			if (inventory[i] == NULL)
-				inventory[i] = source.inventory[i];
+				inventory[i] = source.inventory[i];//faire deep copy
 			else
 			{
 				delete inventory[i];
-				inventory[i] = source.inventory[i];
+				inventory[i] = source.inventory[i];//faire deep copy
 			}
 		}
 		floor = source.floor;
