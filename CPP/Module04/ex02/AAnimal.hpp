@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:02 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/25 17:27:40 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/05/05 18:31:09 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,10 @@ class AAnimal {
 						AAnimal();
 						AAnimal(AAnimal const& source);
 						AAnimal& operator=(AAnimal const& source);
-				virtual	~AAnimal();
+		virtual			~AAnimal();
 
 		std::string		getType() const;
-
-				void	setType(std::string const type);
-
+		void			setType(std::string const type);
 		virtual void	makeSound() const = 0;
 
 	protected:

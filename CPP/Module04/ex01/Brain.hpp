@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/22 07:18:41 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/23 19:18:57 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/05/05 18:26:39 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ class Brain {
 					Brain& operator=(Brain const& source);
 					~Brain();
 
-		void		setIdea(std::string const str, int i);
 		std::string	getIdea(int i) const;
-
+		void		setIdea(std::string const str, int i);
 		void		showAllIdeas();
+
 	private:
 		std::string ideas[100];
 };

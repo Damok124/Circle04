@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 08:13:32 by zharzi            #+#    #+#             */
-/*   Updated: 2023/05/03 16:51:07 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/05/05 18:21:56 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,9 @@ void	test1()
 	ICharacter* me = new Character();
 	ice->use(*me);
 	cure->use(*me);
+	std::cout << ice->getType() << std::endl;
+	std::cout << cure->getType() << std::endl;
+	*ice = *cure;
 	delete me;
 	delete ice;
 	delete cure;
@@ -84,40 +87,77 @@ void	test3()
 	delete one;
 }
 
-
-int main( void )
+void	test4()
 {
-	// test1();
-	// test2();
-	test3();
-	return (0);
+	AMateria* ice = new Ice();
+	AMateria* cure = new Cure();
+	MateriaSource source;
+	source.learnMateria(ice);
+	source.learnMateria(ice);
+	source.learnMateria(ice);
+	// source.learnMateria(ice);
+	source.learnMateria(cure);
+	AMateria* clone = source.createMateria("cure");
+	if (!clone)
+		std::cout << "nothing was created" << std::endl;
+	else
+		std::cout << "a materia was created" << std::endl;
+	if (clone)
+		delete clone;
+	delete cure;
+	delete ice;
 }
 
-// int main()
+void	test5()
+{
+	AMateria* ice = new Ice();
+	AMateria* cure = new Cure();
+	MateriaSource source;
+	source.learnMateria(ice);
+	source.learnMateria(cure);
+	AMateria* clone = source.createMateria("");
+	if (!clone)
+		std::cout << "nothing was created" << std::endl;
+	else
+		std::cout << "a materia was created" << std::endl;
+	if (clone)
+		delete clone;
+}
+
+// int main( void )
 // {
-// 	IMateriaSource* src = new MateriaSource();
-// 	src->learnMateria(new Ice());
-// 	src->learnMateria(new Cure());
-// 	ICharacter* me = new Character("me");
-
-// 	AMateria* tmp;
-// 	tmp = src->createMateria("ice");
-// 	me->equip(tmp);
-// 	tmp = src->createMateria("cure");
-// 	me->equip(tmp);
-
-// 	ICharacter* bob = new Character("bob");
-// 	me->use(0, *bob);
-// 	me->use(1, *bob);
-// 	delete bob;
-// 	delete me;
-// 	delete src;
-// 	return 0;
+// 	// test1();
+// 	// test2();
+// 	// test3();
+// 	// test4();
+// 	test5();
+// 	return (0);
 // }
 
+int main()
+{
+	IMateriaSource* src = new MateriaSource();
+	src->learnMateria(new Ice());
+	src->learnMateria(new Cure());
+	ICharacter* me = new Character("me");
+
+	AMateria* tmp;
+	tmp = src->createMateria("ice");
+	me->equip(tmp);
+	tmp = src->createMateria("cure");
+	me->equip(tmp);
+
+	ICharacter* bob = new Character("bob");
+	me->use(0, *bob);
+	me->use(1, *bob);
+	delete bob;
+	delete me;
+	delete src;
+	return 0;
+}
+
 /*
-$> clang++ -W -Wall -Werror *.cpp
-$> ./a.out | cat -e
+EXPECTED OUTPUT :
 * shoots an ice bolt at bob *$
 * heals bob's wounds *$
 */

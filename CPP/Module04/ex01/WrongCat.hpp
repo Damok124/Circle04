@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:07 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/09 19:35:13 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/05/05 18:29:41 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@
 
 class WrongCat : public WrongAnimal {
 	public:
-						WrongCat();
-						WrongCat(WrongCat const& animal);
-						WrongCat& operator=(WrongCat const& animal);
-						~WrongCat();
+				WrongCat();
+				WrongCat(WrongCat const& animal);
+				WrongCat& operator=(WrongCat const& animal);
+				~WrongCat();
 
-		virtual void	makeSound() const;
+		void	makeSound() const;
 };
 #endif

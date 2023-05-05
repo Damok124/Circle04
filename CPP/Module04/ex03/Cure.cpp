@@ -6,26 +6,23 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 23:19:58 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/29 18:00:49 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/05/05 15:51:26 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cure.hpp"
 
-Cure::Cure() : AMateria()
+Cure::Cure() : AMateria("cure")
 {
-	type = "cure";
 }
 
 Cure::Cure(Cure const& source) : AMateria(source)
 {
-	(void)source;///////////////////////////del
-	type = "cure";
 }
 
 Cure& Cure::operator=(Cure const& source)
 {
-	(void)source;///////////////////////////del
+	(void)source;
 	return (*this);
 }
 
@@ -41,23 +38,5 @@ AMateria*	Cure::clone() const
 
 void	Cure::use(ICharacter& target)
 {
-	// (void)target;///////////////////////////del
 	std::cout << "* heals " << target.getName() << "’s wounds *" << std::endl;
 }
-
-
-/*
-Implémentez les Materias Ice (glace) et Cure (soin) sous forme de classes concrètes.
-
-Utilisez leur noms en minuscules ("ice" pour Ice, "cure" pour Cure) comme types
-
-
-
-Bien sûr, leur fonction membre clone() retournera une nouvelle instance de même type
-(en clonant une Materia Ice, on obtient une autre Materia Ice).
-
-Pour ce qui est de la fonction membre use(ICharacter&), elle affichera :
-• Ice : "* shoots an ice bolt at <name> *"
-• Cure : "* heals <name>’s wounds *"
-
-*/

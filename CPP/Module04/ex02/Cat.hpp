@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 14:48:07 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/25 17:28:12 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/05/05 18:32:37 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,16 @@ class Cat : virtual public AAnimal {
 						Cat();
 						Cat(Cat const& source);
 						Cat& operator=(Cat const& source);
-				virtual	~Cat();
+						~Cat();
 
-		virtual void	makeSound() const;
-
-				void	setBrain(Brain const& source);
 		Brain const&	getBrain() const;
-
-				void	checkBrain() const;
-				void	setIdea(std::string str, int i);
-
-				void	resetBrain();
+		void			setBrain(Brain const& source);
+		void			makeSound() const;
+		void			setIdea(std::string str, int i);
+		void			checkBrain() const;
+		void			resetBrain();
 
 	private:
-				Brain*	_brain;
+		Brain*			_brain;
 };
 #endif

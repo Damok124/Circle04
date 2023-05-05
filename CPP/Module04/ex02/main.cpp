@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 08:13:32 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/25 17:29:48 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/05/05 18:42:10 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,29 +37,15 @@ void	test2(AAnimal const& animal)
 	animal.makeSound();
 }
 
-// void	test3(void)
-// {
-// 	{
-// 		AAnimal unknown;
-// 		test1(unknown);
-// 		test2(unknown);
-// 	}
-// 	std::cout << std::endl;
-// 	{
-// 		AAnimal alpha;
-// 		AAnimal clone(alpha);
-// 		test1(clone);
-// 		test2(clone);
-// 	}
-// 	std::cout << std::endl;
-// 	{
-// 		AAnimal beta;
-// 		AAnimal fake = beta;
-// 		test1(fake);
-// 		test2(fake);
-// 	}
-// 	std::cout << std::endl;
-// }
+void	test3(void)
+{
+	{
+		AAnimal* unknown = new Cat();
+		test1(*unknown);
+		test2(*unknown);
+		delete unknown;
+	}
+}
 
 void	test4(void)
 {
@@ -199,7 +185,7 @@ void	test8(void)
 
 int	main(void)
 {
-	// test3();
+	test3();
 	test4();
 	test5();
 	test6();

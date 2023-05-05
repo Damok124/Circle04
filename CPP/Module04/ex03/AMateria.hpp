@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 17:34:28 by zharzi            #+#    #+#             */
-/*   Updated: 2023/04/29 17:50:24 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/05/05 15:54:23 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class AMateria
 							AMateria(AMateria const& source);
 							AMateria& operator=(AMateria const& source);
 							AMateria(std::string const & type);
-					virtual ~AMateria();
+		virtual				~AMateria();
 
 		std::string const &	getType() const;
 
@@ -37,17 +37,3 @@ class AMateria
 };
 
 #endif
-
-/*
-Implémentez les Materias Ice (glace) et Cure (soin) sous forme de classes concrètes.
-Utilisez leur noms en minuscules ("ice" pour Ice, "cure" pour Cure) comme types. Bien
-sûr, leur fonction membre clone() retournera une nouvelle instance de même type (en
-clonant une Materia Ice, on obtient une autre Materia Ice).
-Pour ce qui est de la fonction membre use(ICharacter&), elle affichera :
-• Ice : "* shoots an ice bolt at <name> *"
-• Cure : "* heals <name>’s wounds *"
-<name> est le nom du Character (personnage) passé en paramètre. N’affichez pas les
-chevrons (< et >).
-Quand on assigne une Materia à une autre, copier son type n’a pas
-grand intérêt.
-*/
