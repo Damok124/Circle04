@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 08:13:32 by zharzi            #+#    #+#             */
-/*   Updated: 2023/05/05 18:21:56 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/05/06 07:25:55 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ void	test4()
 	source.learnMateria(ice);
 	source.learnMateria(ice);
 	source.learnMateria(ice);
-	// source.learnMateria(ice);
+	source.learnMateria(ice);
 	source.learnMateria(cure);
 	AMateria* clone = source.createMateria("cure");
 	if (!clone)
@@ -105,7 +105,6 @@ void	test4()
 	if (clone)
 		delete clone;
 	delete cure;
-	delete ice;
 }
 
 void	test5()
@@ -126,10 +125,10 @@ void	test5()
 
 // int main( void )
 // {
-// 	// test1();
-// 	// test2();
-// 	// test3();
-// 	// test4();
+// 	test1();
+// 	test2();
+// 	test3();
+// 	test4();
 // 	test5();
 // 	return (0);
 // }

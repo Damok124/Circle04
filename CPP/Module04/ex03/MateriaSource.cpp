@@ -6,7 +6,7 @@
 /*   By: zharzi <zharzi@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/25 23:20:13 by zharzi            #+#    #+#             */
-/*   Updated: 2023/05/05 18:20:57 by zharzi           ###   ########.fr       */
+/*   Updated: 2023/05/06 07:20:31 by zharzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,22 @@ MateriaSource& MateriaSource::operator=(MateriaSource const& source)
 
 MateriaSource::~MateriaSource()
 {
+	AMateria* tab[4];
+	int j = 0;
+
 	for (int i = 0; i < 4; i++)
-		if (memory[i])
-			delete memory[i];
+		tab[i] = NULL;
+	for (int i = 0; i < 4; i++)
+	{
+		if (memory[i] && memory[i] != tab[0] && memory[i] != tab[1] && memory[i] != tab[2] && memory[i] != tab[3])
+		{
+			tab[j] = memory[i];
+			j++;
+		}
+	}
+	for (int i = 0; i < j; i++)
+		if (tab[i])
+			delete tab[i];
 }
 
 void	MateriaSource::learnMateria(AMateria* materia)
